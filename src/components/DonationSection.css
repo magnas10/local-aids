@@ -1,0 +1,111 @@
+.donation-section {
+  padding: 80px 20px;
+  background: white;
+}
+
+.donation-options {
+  max-width: 1200px;
+  margin: 50px auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.donation-card {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.donation-card.featured {
+  border-color: #20b2aa;
+  transform: scale(1.05);
+}
+
+.donation-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.donation-card.featured:hover {
+  transform: translateY(-5px) scale(1.07);
+}
+
+.donation-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.donation-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.donation-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #20b2aa;
+  margin-bottom: 15px;
+}
+
+.donation-description {
+  color: #7f8c8d;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.donate-btn {
+  width: 100%;
+  background: #20b2aa;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.donate-btn:hover {
+  background: #1a8f88;
+  transform: translateY(-2px);
+}
+
+.payment-methods {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 40px 0 30px;
+  flex-wrap: wrap;
+}
+
+.payment-option {
+  padding: 12px 24px;
+  border: 2px solid #e9ecef;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #495057;
+}
+
+.payment-option:hover {
+  border-color: #20b2aa;
+  color: #20b2aa;
+}
+
+.charity-info {
+  text-align: center;
+  color: #7f8c8d;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}

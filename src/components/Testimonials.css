@@ -1,0 +1,130 @@
+.testimonials {
+  padding: 80px 20px;
+  background: white;
+  position: relative;
+}
+
+.preview-badge {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e9ecef;
+  color: #495057;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.section-subtitle {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 50px;
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.testimonials-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.testimonial-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.testimonial-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.testimonial-info {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.type-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.type-badge.helped {
+  background: #ffeaa7;
+  color: #d63031;
+}
+
+.type-badge.volunteer {
+  background: #81ecec;
+  color: #00b894;
+}
+
+.rating {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.testimonial-quote {
+  color: #5a6c7d;
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.testimonial-footer {
+  border-top: 1px solid #e9ecef;
+  padding-top: 15px;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.testimonial-footer p {
+  margin: 8px 0;
+}
+
+.read-more-section {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.read-more-btn {
+  background: white;
+  color: #20b2aa;
+  border: 2px solid #20b2aa;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.read-more-btn:hover {
+  background: #20b2aa;
+  color: white;
+}
