@@ -7,8 +7,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   const login = (userData) => {
+    console.log('AuthContext login called with:', userData);
     setIsLoggedIn(true);
     setUser(userData || { name: 'User', email: 'user@email.com' });
+    console.log('Login state updated');
   };
 
   const logout = () => {

@@ -20,8 +20,19 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('Login form submitted', formData);
+    
+    // Validate form
+    if (!formData.email || !formData.password) {
+      alert('Please fill in all fields');
+      return;
+    }
+    
     // Login the user
+    console.log('Calling login function');
     login({ name: 'User', email: formData.email });
+    
+    console.log('Redirecting to home');
     // Redirect to home
     navigate('/');
   };
