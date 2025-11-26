@@ -1,30 +1,46 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import './App.css';
 import Header from './components/Header';
-import HeroSection from './components/HeroSection';
-import StatsSection from './components/StatsSection';
-import CommunityStories from './components/CommunityStories';
-import Testimonials from './components/Testimonials';
-import Opportunities from './components/Opportunities';
-import DonationSection from './components/DonationSection';
-import CallToAction from './components/CallToAction';
-import InsightsSection from './components/InsightsSection';
 import Footer from './components/Footer';
+import Home from './pages/Home';
+import Events from './pages/Events';
+import Messages from './pages/Messages';
+import Profile from './pages/Profile';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import About from './pages/About';
+import Donate from './pages/Donate';
+import Contact from './pages/Contact';
+import Gallery from './pages/Gallery';
 
 function App() {
   return (
-    <div className="App">
-      <Header />
-      <HeroSection />
-      <StatsSection />
-      <CommunityStories />
-      <Testimonials />
-      <Opportunities />
-      <DonationSection />
-      <CallToAction />
-      <InsightsSection />
-      <Footer />
-    </div>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Header />
+          <main id="main-content" role="main" tabIndex="-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/gallery" element={<Gallery />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
