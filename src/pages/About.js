@@ -244,35 +244,35 @@ function About() {
       </section>
 
       {/* Team Section */}
-      <section className="about-team-pro">
-        <div className="team-container-pro">
-          <div className="team-header">
-            <span className="section-label">Our Team</span>
-            <h2>Meet the People Behind Local AIDS</h2>
-            <p>Passionate individuals dedicated to making a difference</p>
+      <section className="about-team-pro" style={{ padding: '100px 20px', background: 'white' }}>
+        <div className="team-container-pro" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="team-header" style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <span className="section-label" style={{ color: '#20b2aa', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Our Team</span>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a1a', marginTop: '12px', marginBottom: '12px', lineHeight: 1.2 }}>Meet the People Behind Local AIDS</h2>
+            <p style={{ fontSize: '1.1rem', color: '#666', maxWidth: '600px', margin: '0 auto' }}>Passionate individuals dedicated to making a difference</p>
           </div>
-          <div className="team-grid-pro">
+          <div className="team-grid-pro" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
             {team.map((member, index) => (
-              <div key={index} className="team-card-pro">
-                <div className="team-image-wrapper">
-                  <img src={member.image} alt={member.name} />
-                  <div className="team-social">
-                    <a href={member.linkedin} aria-label="LinkedIn">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
+              <div key={index} className="team-card-pro" style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'all 0.3s ease', border: '1px solid #f0f0f0' }}>
+                <div className="team-image-wrapper" style={{ position: 'relative', height: '280px', overflow: 'hidden', background: 'linear-gradient(135deg, #f0f0f0, #e8e8e8)' }}>
+                  <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div className="team-social" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)', padding: '20px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                    <a href={member.linkedin} aria-label="LinkedIn" style={{ width: '40px', height: '40px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0A66C2' }}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                       </svg>
                     </a>
-                    <a href={member.twitter} aria-label="Twitter">
-                      <svg viewBox="0 0 24 24" fill="currentColor">
+                    <a href={member.twitter} aria-label="Twitter" style={{ width: '40px', height: '40px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1DA1F2' }}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                       </svg>
                     </a>
                   </div>
                 </div>
-                <div className="team-info">
-                  <h3>{member.name}</h3>
-                  <span className="team-role-pro">{member.role}</span>
-                  <p>{member.bio}</p>
+                <div className="team-info" style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px' }}>{member.name}</h3>
+                  <span className="team-role-pro" style={{ color: '#20b2aa', fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{member.role}</span>
+                  <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: '#666', margin: 0 }}>{member.bio}</p>
                 </div>
               </div>
             ))}
@@ -281,14 +281,15 @@ function About() {
       </section>
 
       {/* Partners Section */}
-      <section className="about-partners">
-        <div className="partners-container">
-          <span className="section-label">Trusted Partners</span>
-          <h2>Organizations We Work With</h2>
-          <div className="partners-logos">
+      <section style={{ padding: '100px 20px', background: 'linear-gradient(to bottom, white, #f8f9fa)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+          <span className="section-label" style={{ color: '#20b2aa', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Trusted Partners</span>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a1a', marginTop: '12px', marginBottom: '60px', lineHeight: 1.2 }}>Organizations We Work With</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', alignItems: 'center' }}>
             {partners.map((partner, index) => (
-              <div key={index} className="partner-logo">
-                <img src={partner.logo} alt={partner.name} />
+              <div key={index} style={{ background: 'white', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'all 0.3s', border: '1px solid #f0f0f0' }}>
+                <img src={partner.logo} alt={partner.name} style={{ width: '100%', height: 'auto', maxHeight: '60px', objectFit: 'contain' }} />
+                <div style={{ marginTop: '12px', fontSize: '0.85rem', fontWeight: 600, color: '#666' }}>{partner.name}</div>
               </div>
             ))}
           </div>
@@ -296,26 +297,27 @@ function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="about-cta-pro">
-        <div className="about-cta-bg">
+      <section style={{ position: 'relative', height: '500px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
           <img 
             src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1920&h=600&fit=crop&q=80" 
             alt="Community volunteers"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
-          <div className="cta-overlay"></div>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(135deg, rgba(32, 178, 170, 0.7), rgba(22, 163, 154, 0.7))' }}></div>
         </div>
-        <div className="about-cta-content-pro">
-          <h2>Ready to Make a Difference?</h2>
-          <p>Join thousands of Australians who are building stronger communities together.</p>
-          <div className="about-cta-buttons-pro">
-            <button className="cta-btn-primary" onClick={() => navigate('/signup')}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', color: 'white', maxWidth: '600px' }}>
+          <h2 style={{ fontSize: '2.8rem', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>Ready to Make a Difference?</h2>
+          <p style={{ fontSize: '1.15rem', marginBottom: '32px', opacity: 0.95, lineHeight: 1.6 }}>Join thousands of Australians who are building stronger communities together.</p>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button style={{ background: 'white', color: '#20b2aa', border: 'none', borderRadius: '8px', padding: '14px 32px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/signup')}>
               Start Volunteering
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
             </button>
-            <button className="cta-btn-secondary" onClick={() => navigate('/contact')}>
+            <button style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: '2px solid white', borderRadius: '8px', padding: '12px 32px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', backdropFilter: 'blur(10px)' }} onClick={() => navigate('/contact')}>
               Contact Us
             </button>
           </div>
