@@ -94,10 +94,35 @@ function Header() {
 
   const getNotificationIcon = (type) => {
     switch(type) {
-      case 'match': return '🤝';
-      case 'status': return '✅';
-      case 'reminder': return '⏰';
-      default: return '🔔';
+      case 'match': 
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        );
+      case 'status': 
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        );
+      case 'reminder': 
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        );
+      default: 
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        );
     }
   };
 
@@ -206,7 +231,10 @@ function Header() {
               aria-expanded={showSearch}
               aria-haspopup="dialog"
             >
-              <span aria-hidden="true">🔍</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
             </button>
             {showSearch && (
               <div 
@@ -232,16 +260,36 @@ function Header() {
                 <div className="search-suggestions" role="menu" aria-label="Quick links">
                   <p className="search-label" id="quick-links-label">Quick Links</p>
                   <Link to="/events" onClick={closeAllDropdowns} role="menuitem">
-                    <span aria-hidden="true">🎯</span> Browse Events
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <circle cx="12" cy="12" r="10"/>
+                      <circle cx="12" cy="12" r="6"/>
+                      <circle cx="12" cy="12" r="2"/>
+                    </svg>
+                    <span>Browse Events</span>
                   </Link>
                   <Link to="/events?type=urgent" onClick={closeAllDropdowns} role="menuitem">
-                    <span aria-hidden="true">🚨</span> Urgent Requests
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                      <line x1="12" y1="9" x2="12" y2="13"/>
+                      <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <span>Urgent Requests</span>
                   </Link>
                   <Link to="/events?type=volunteer" onClick={closeAllDropdowns} role="menuitem">
-                    <span aria-hidden="true">🤝</span> Volunteer Opportunities
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span>Volunteer Opportunities</span>
                   </Link>
                   <Link to="/events?type=workshop" onClick={closeAllDropdowns} role="menuitem">
-                    <span aria-hidden="true">📚</span> Workshops & Training
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    <span>Workshops & Training</span>
                   </Link>
                 </div>
               </div>
@@ -262,7 +310,10 @@ function Header() {
                   aria-expanded={showNotifications}
                   aria-haspopup="true"
                 >
-                  <span aria-hidden="true">🔔</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                  </svg>
                   {unreadCount > 0 && (
                     <span className="notification-count" aria-hidden="true">{unreadCount}</span>
                   )}
@@ -328,7 +379,10 @@ function Header() {
                   aria-expanded={showDropdown}
                   aria-haspopup="menu"
                 >
-                  <span aria-hidden="true">👤</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
                 </button>
                 {showDropdown && (
                   <div 
@@ -342,7 +396,11 @@ function Header() {
                       onClick={closeAllDropdowns}
                       role="menuitem"
                     >
-                      <span aria-hidden="true">👤</span> Profile
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                      <span>Profile</span>
                     </Link>
                     <Link 
                       to="/dashboard" 
@@ -350,7 +408,12 @@ function Header() {
                       onClick={closeAllDropdowns}
                       role="menuitem"
                     >
-                      <span aria-hidden="true">📊</span> Dashboard
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="3" y1="9" x2="21" y2="9"/>
+                        <line x1="9" y1="21" x2="9" y2="9"/>
+                      </svg>
+                      <span>Dashboard</span>
                     </Link>
                     <div className="dropdown-divider" role="separator"></div>
                     <button 
@@ -358,7 +421,12 @@ function Header() {
                       onClick={handleLogout}
                       role="menuitem"
                     >
-                      <span aria-hidden="true">🚪</span> Logout
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                      </svg>
+                      <span>Logout</span>
                     </button>
                   </div>
                 )}

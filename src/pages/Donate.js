@@ -20,27 +20,27 @@ function Donate() {
   const impactItems = [
     {
       amount: 25,
-      impact: 'Provides transportation for one elderly person to medical appointments',
+      impact: 'Provides essential transportation services for elderly individuals to attend critical medical appointments',
       image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop'
     },
     {
       amount: 50,
-      impact: 'Supplies groceries for a family in need for one week',
+      impact: 'Supplies nutritious groceries and essential provisions for a family in need for one week',
       image: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=100&h=100&fit=crop'
     },
     {
       amount: 100,
-      impact: 'Funds technology training for 5 seniors',
+      impact: 'Funds comprehensive technology training programs for five seniors, improving digital literacy',
       image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=100&h=100&fit=crop'
     },
     {
       amount: 250,
-      impact: 'Supports community outreach in underserved neighborhoods',
+      impact: 'Supports targeted community outreach initiatives in underserved and vulnerable neighborhoods',
       image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=100&h=100&fit=crop'
     },
     {
       amount: 500,
-      impact: 'Enables expansion of volunteer programs to new areas',
+      impact: 'Enables strategic expansion of volunteer programs to reach new communities across Australia',
       image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=100&h=100&fit=crop'
     }
   ];
@@ -135,12 +135,12 @@ function Donate() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
-            Support Our Mission
+            Invest in Community Impact
           </span>
-          <h1>Your Donation<br/>Changes Lives</h1>
+          <h1>Your Contribution<br/>Transforms Lives</h1>
           <p>
-            Every dollar you give helps us connect more volunteers with people 
-            in need, creating lasting positive change across Australia.
+            Every contribution drives meaningful change by connecting dedicated volunteers with communities in need, 
+            fostering sustainable impact across Australia.
           </p>
           <div className="donate-hero-actions">
             <button className="donate-quick-btn" onClick={() => document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' })}>
@@ -306,9 +306,9 @@ function Donate() {
         <div className="campaigns-container-pro">
           <div className="campaigns-header-pro">
             <div className="campaigns-title">
-              <span className="section-label">Community Fundraisers</span>
-              <h2>Active Campaigns</h2>
-              <p>Support campaigns created by our community members</p>
+              <span className="section-label">Community Initiatives</span>
+              <h2>Featured Fundraising Campaigns</h2>
+              <p>Join our community in supporting meaningful initiatives that create lasting impact across Australia</p>
             </div>
             <button className="create-campaign-btn-pro" onClick={() => setShowCreateCampaign(true)}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
@@ -510,8 +510,8 @@ function Donate() {
           {/* Impact Section */}
           <div className="donate-impact-section-pro">
             <div className="impact-card-pro">
-              <h3>Your Impact</h3>
-              <p className="impact-intro-pro">See how your donation makes a difference:</p>
+              <h3>Measurable Impact</h3>
+              <p className="impact-intro-pro">Every contribution creates tangible, lasting change in our communities:</p>
               <div className="impact-list-pro">
                 {impactItems.map((item, index) => (
                   <div key={index} className="impact-item-pro">
@@ -528,39 +528,39 @@ function Donate() {
             {/* Trust Badges */}
             <div className="trust-badges-pro">
               <div className="trust-badge-pro">
-                <div className="trust-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <div className="trust-icon-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M3 21h18"/>
                     <path d="M5 21V7l8-4 8 4v14"/>
                     <path d="M9 21v-8h6v8"/>
                   </svg>
                 </div>
-                <div>
+                <div className="trust-text">
                   <strong>Registered Charity</strong>
                   <span>ABN: 12 345 678 901</span>
                 </div>
               </div>
               <div className="trust-badge-pro">
-                <div className="trust-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <div className="trust-icon-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                     <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
                 </div>
-                <div>
+                <div className="trust-text">
                   <strong>Tax Deductible</strong>
                   <span>All donations over $2</span>
                 </div>
               </div>
               <div className="trust-badge-pro">
-                <div className="trust-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <div className="trust-icon-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="18" y1="20" x2="18" y2="10"/>
                     <line x1="12" y1="20" x2="12" y2="4"/>
                     <line x1="6" y1="20" x2="6" y2="14"/>
                   </svg>
                 </div>
-                <div>
+                <div className="trust-text">
                   <strong>95% to Programs</strong>
                   <span>Minimal overhead costs</span>
                 </div>
@@ -586,7 +586,7 @@ function Donate() {
                 </svg>
               </div>
               <h3>Volunteer Your Time</h3>
-              <p>Join our community of volunteers and make a direct impact in your neighborhood.</p>
+              <p>Join our dedicated network of volunteers and make a meaningful, direct impact in communities across Australia.</p>
               <button className="way-btn-pro" onClick={() => navigate('/signup')}>
                 Get Started
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -604,7 +604,7 @@ function Donate() {
                 </svg>
               </div>
               <h3>Corporate Partnership</h3>
-              <p>Partner with us for employee volunteer programs and CSR initiatives.</p>
+              <p>Partner with us to develop comprehensive employee volunteer programs and strategic Corporate Social Responsibility initiatives.</p>
               <button className="way-btn-pro" onClick={() => navigate('/contact')}>
                 Learn More
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -623,8 +623,8 @@ function Donate() {
                   <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
                 </svg>
               </div>
-              <h3>Spread the Word</h3>
-              <p>Share our mission with friends and family on social media.</p>
+              <h3>Amplify Our Mission</h3>
+              <p>Help expand our reach by sharing our mission with your network and inspiring others to make a difference.</p>
               <button className="way-btn-pro">
                 Share Now
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
