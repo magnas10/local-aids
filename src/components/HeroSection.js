@@ -104,7 +104,6 @@ function HeroSection() {
             )}
             <button className="hero-btn-secondary" onClick={() => setIsModalOpen(true)}>
               Request Help
-              <span className="btn-icon">🤝</span>
             </button>
           </div>
 

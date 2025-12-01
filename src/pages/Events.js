@@ -11,55 +11,63 @@ function Events() {
   const allEvents = [
     {
       id: 1,
-      title: 'Community Health Workshop',
-      date: 'December 5, 2025',
-      time: '10:00 AM - 2:00 PM',
-      location: 'Melbourne Community Center, Victoria',
-      description: 'Join us for a comprehensive health awareness workshop focusing on HIV prevention, testing awareness, and care strategies for the Australian community.',
-      attendees: 45,
-      type: 'workshop',
+      title: 'Transport to Medical Appointment',
+      date: 'Tomorrow, 9:00 AM',
+      time: '2 hours',
+      location: 'Carlton, VIC',
+      description: 'Need a volunteer driver to take me to my medical appointment at Royal Melbourne Hospital and wait to bring me back home.',
+      attendees: 1,
+      type: 'transport',
       urgency: 'normal',
-      distance: 5,
-      image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=250&fit=crop'
+      distance: 2.3,
+      timeAgo: '2 hours ago',
+      requester: 'Mary Johnson',
+      image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=250&fit=crop'
     },
     {
       id: 2,
-      title: 'Volunteer Training Session',
-      date: 'December 12, 2025',
-      time: '9:00 AM - 12:00 PM',
-      location: 'AIDS Council of NSW, Sydney',
-      description: 'Training session for new volunteers. Learn how you can make a difference supporting people living with HIV/AIDS across Australia.',
-      attendees: 28,
-      type: 'training',
+      title: 'Grocery Shopping Assistance',
+      date: 'Saturday, 10:00 AM',
+      time: '1.5 hours',
+      location: 'Fitzroy, VIC',
+      description: 'Looking for someone to help with weekly grocery shopping. I have mobility issues and need help carrying bags.',
+      attendees: 1,
+      type: 'groceries',
       urgency: 'normal',
-      distance: 10,
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop'
+      distance: 1.8,
+      timeAgo: '4 hours ago',
+      requester: 'Tom Smith',
+      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=400&h=250&fit=crop'
     },
     {
       id: 3,
-      title: 'Fundraising Gala - Red Ribbon Night',
-      date: 'December 20, 2025',
-      time: '6:00 PM - 10:00 PM',
-      location: 'Crown Melbourne, Southbank VIC',
-      description: 'Annual fundraising gala to support HIV/AIDS programs and initiatives across Australia. Formal attire required.',
-      attendees: 150,
-      type: 'fundraising',
+      title: 'Companion for Elderly',
+      date: 'Flexible',
+      time: '3 hours',
+      location: 'Richmond, VIC',
+      description: 'Seeking a friendly companion for my mother who lives alone. Just someone to chat, play cards, or go for a short walk.',
+      attendees: 1,
+      type: 'companionship',
       urgency: 'normal',
-      distance: 8,
-      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=250&fit=crop'
+      distance: 3.1,
+      timeAgo: '1 day ago',
+      requester: 'Helen Kim',
+      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=250&fit=crop'
     },
     {
       id: 4,
-      title: 'Weekly Support Group Meeting',
-      date: 'Every Wednesday',
-      time: '5:00 PM - 7:00 PM',
-      location: 'Positive Life NSW, Surry Hills',
-      description: 'Weekly peer support group for individuals and families affected by HIV/AIDS. Safe space for sharing and connection.',
-      attendees: 20,
-      type: 'support',
+      title: 'Help with Technology Setup',
+      date: 'This Weekend',
+      time: '1 hour',
+      location: 'Collingwood, VIC',
+      description: 'Need help setting up a new laptop and teaching basic email and video calling to stay connected with family overseas.',
+      attendees: 1,
+      type: 'tech',
       urgency: 'normal',
-      distance: 3,
-      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=250&fit=crop'
+      distance: 4.2,
+      timeAgo: '5 hours ago',
+      requester: 'George Miller',
+      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=250&fit=crop'
     },
     {
       id: 5,
@@ -72,6 +80,8 @@ function Events() {
       type: 'volunteer',
       urgency: 'urgent',
       distance: 15,
+      timeAgo: '1 hour ago',
+      requester: 'OzHarvest Brisbane',
       image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=400&h=250&fit=crop'
     },
     {
@@ -83,8 +93,10 @@ function Events() {
       description: 'Volunteers needed to provide home care assistance including grocery shopping, meal preparation, and companionship for those living with HIV/AIDS.',
       attendees: 8,
       type: 'care',
-      urgency: 'high',
+      urgency: 'normal',
       distance: 20,
+      timeAgo: '3 hours ago',
+      requester: 'Perth Care Services',
       image: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=400&h=250&fit=crop'
     },
     {
@@ -98,6 +110,8 @@ function Events() {
       type: 'outreach',
       urgency: 'normal',
       distance: 6,
+      timeAgo: '2 days ago',
+      requester: 'Melbourne Health Network',
       image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=250&fit=crop'
     },
     {
@@ -111,33 +125,9 @@ function Events() {
       type: 'care',
       urgency: 'urgent',
       distance: 12,
+      timeAgo: '30 minutes ago',
+      requester: 'RPA Hospital Volunteer Coordinator',
       image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=250&fit=crop'
-    },
-    {
-      id: 9,
-      title: 'Free HIV Testing & Counselling Day',
-      date: 'December 16, 2025',
-      time: '9:00 AM - 6:00 PM',
-      location: 'Adelaide Health Centre, SA',
-      description: 'Community testing day offering free, confidential HIV testing with professional counselling support. Volunteers needed for registration and support roles.',
-      attendees: 60,
-      type: 'health',
-      urgency: 'high',
-      distance: 25,
-      image: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=400&h=250&fit=crop'
-    },
-    {
-      id: 10,
-      title: 'Christmas Hamper Packing',
-      date: 'December 18, 2025',
-      time: '10:00 AM - 4:00 PM',
-      location: 'Salvation Army Warehouse, Gold Coast QLD',
-      description: 'Help pack Christmas hampers for families affected by HIV/AIDS. Spread holiday cheer to those who need it most this festive season.',
-      attendees: 40,
-      type: 'volunteer',
-      urgency: 'normal',
-      distance: 18,
-      image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=400&h=250&fit=crop'
     }
   ];
 
@@ -159,17 +149,17 @@ function Events() {
   });
 
   const getUrgencyBadge = (urgency) => {
+    // Only show badges for urgent requests - don't show medium/low/normal priority
     if (urgency === 'urgent') return <span className="urgency-badge urgent">Urgent</span>;
-    if (urgency === 'high') return <span className="urgency-badge high">High Priority</span>;
     return null;
   };
 
   const getTypeBadge = (type) => {
     const typeLabels = {
-      workshop: '📚 Workshop',
-      training: '🎓 Training',
-      fundraising: '💰 Fundraising',
-      support: '💬 Support Group',
+      transport: '🚗 Transport',
+      groceries: '🛒 Groceries', 
+      companionship: '👥 Companionship',
+      tech: '💻 Tech Support',
       volunteer: '🤝 Volunteer',
       care: '❤️ Care',
       outreach: '📢 Outreach',
@@ -181,8 +171,9 @@ function Events() {
   return (
     <div className="page-container">
       <div className="page-header">
-        <h1>Volunteer Opportunities & Events</h1>
-        <p>Browse available requests and find opportunities to make a difference across Australia</p>
+        <h1>Volunteer Opportunities</h1>
+        <p>Make a Difference Today</p>
+        <p>These are the most recent requests for help in your community. Each opportunity is a chance to positively impact someone's life.</p>
       </div>
 
       <section className="filters-container" aria-label="Filter events">
@@ -211,14 +202,14 @@ function Events() {
             aria-describedby="results-count"
           >
             <option value="all">All Types</option>
-            <option value="workshop">Workshop</option>
-            <option value="training">Training</option>
+            <option value="transport">Transport</option>
+            <option value="groceries">Groceries</option>
+            <option value="companionship">Companionship</option>
+            <option value="tech">Tech Support</option>
             <option value="volunteer">Volunteer</option>
             <option value="care">Care & Support</option>
             <option value="outreach">Outreach</option>
             <option value="health">Health Services</option>
-            <option value="fundraising">Fundraising</option>
-            <option value="support">Support Group</option>
           </select>
         </div>
 

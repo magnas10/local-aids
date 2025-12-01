@@ -134,6 +134,13 @@ const Gallery = () => {
     <div className="gallery-page">
       {/* Hero Section */}
       <section className="gallery-hero">
+        <div className="gallery-hero-bg">
+          <img 
+            src="https://images.unsplash.com/photo-1543269664-7eef42226a21?w=1920&h=800&fit=crop&q=80" 
+            alt="Diverse community group holding hands in circle, including person in wheelchair"
+          />
+          <div className="gallery-hero-overlay"></div>
+        </div>
         <div className="gallery-hero-content">
           <div className="hero-badge">Volunteers making impact</div>
           <div className="hero-subtitle">OUR IMPACT IN ACTION</div>

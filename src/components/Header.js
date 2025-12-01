@@ -157,7 +157,6 @@ function Header() {
       <nav className="nav" role="navigation" aria-label="Main navigation">
         {/* Logo */}
         <Link to="/" className="logo" aria-label="Local AIDS Home">
-          <div className="logo-icon">🤝</div>
           <span>Local AIDS</span>
         </Link>
 
@@ -210,10 +209,9 @@ function Header() {
             to="/messages" 
             className={`nav-link ${location.pathname === '/messages' ? 'active' : ''}`}
             aria-current={location.pathname === '/messages' ? 'page' : undefined}
-            aria-label="Messages, 3 unread"
+            aria-label="Messages"
           >
             <span>Messages</span>
-            <span className="notification-badge" aria-hidden="true">3</span>
           </Link>
         )}
 
