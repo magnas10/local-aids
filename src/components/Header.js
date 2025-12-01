@@ -157,6 +157,20 @@ function Header() {
       <nav className="nav" role="navigation" aria-label="Main navigation">
         {/* Logo */}
         <Link to="/" className="logo" aria-label="Local AIDS Home">
+          <div style={{
+            width: '45px',
+            height: '45px',
+            background: 'linear-gradient(135deg, #D4AF37, #B8860B)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '16px',
+            fontWeight: '800',
+            color: '#2C1810',
+            letterSpacing: '-1px',
+            boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+          }}>LA</div>
           <span>Local AIDS</span>
         </Link>
 
