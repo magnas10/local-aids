@@ -657,3 +657,74 @@
 .search-suggestions a:hover svg {
   color: #20b2aa;
 }
+
+/* Admin Indicator on Profile Icon */
+.admin-indicator {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.profile-icon-btn {
+  position: relative;
+}
+
+/* Dropdown User Info */
+.dropdown-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+}
+
+.dropdown-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #20b2aa, #1a8f88);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.dropdown-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-user-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.dropdown-user-role {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Admin Menu Item */
+.dropdown-item.admin-item {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.05));
+  color: #dc2626;
+  margin: 0 8px;
+  border-radius: 8px;
+}
+
+.dropdown-item.admin-item:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+}
+
+.dropdown-item.admin-item svg {
+  color: #dc2626;
+}

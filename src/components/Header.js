@@ -6,7 +6,7 @@ import './Header.css';
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, isAdmin, user } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
@@ -395,6 +395,7 @@ function Header() {
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                   </svg>
+                  {isAdmin() && <span className="admin-indicator"></span>}
                 </button>
                 {showDropdown && (
                   <div 
@@ -402,6 +403,40 @@ function Header() {
                     role="menu" 
                     aria-label="User menu"
                   >
+                    {/* User Info Header */}
+                    <div className="dropdown-user-info">
+                      <div className="dropdown-avatar">
+                        {user?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div className="dropdown-user-details">
+                        <span className="dropdown-user-name">{user?.name || 'User'}</span>
+                        <span className="dropdown-user-role">
+                          {isAdmin() ? '🛡️ Administrator' : user?.role || 'Member'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="dropdown-divider" role="separator"></div>
+
+                    {/* Admin Section - Only visible to admins */}
+                    {isAdmin() && (
+                      <>
+                        <Link 
+                          to="/admin" 
+                          className="dropdown-item admin-item"
+                          onClick={closeAllDropdowns}
+                          role="menuitem"
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                          </svg>
+                          <span>Admin Dashboard</span>
+                        </Link>
+                        <div className="dropdown-divider" role="separator"></div>
+                      </>
+                    )}
+
                     <Link 
                       to="/profile" 
                       className="dropdown-item"

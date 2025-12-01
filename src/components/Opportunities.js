@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import './Opportunities.css';
 
 function Opportunities() {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   
+  // eslint-disable-next-line no-unused-vars
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
   const [showMapModal, setShowMapModal] = useState(false);
   const [mapLocation, setMapLocation] = useState(null);
@@ -119,13 +120,6 @@ function Opportunities() {
     setShowDirections(!showDirections);
   };
 
-  const getDirectionsUrl = (opportunity) => {
-    if (!opportunity) return '';
-    const { lat, lng } = opportunity.coordinates;
-    // Melbourne CBD as starting point for demo
-    return `https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d25215!2d144.96!3d-37.81!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20VIC!3m2!1d-37.8136276!2d144.9630576!4m5!1s0x0%3A0x0!2zM${Math.abs(lat).toFixed(4)}!3m2!1d${lat}!2d${lng}!5e0!3m2!1sen!2sau!4v1635000000000!5m2!1sen!2sau`;
-  };
-
   // Volunteer Now Handler
   const handleVolunteerNow = (opportunity, e) => {
     if (e) e.stopPropagation();
@@ -181,12 +175,6 @@ function Opportunities() {
 
   const closeNotification = () => {
     setNotification({ show: false, type: '', message: '' });
-  };
-
-  const getMapEmbedUrl = (opportunity) => {
-    if (!opportunity) return '';
-    const { lat, lng } = opportunity.coordinates;
-    return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509374!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM37CsDA4JzA2LjQiUyAxNDTCsDU1JzU5LjciRQ!5e0!3m2!1sen!2sau!4v1635000000000!5m2!1sen!2sau`;
   };
 
   const getCategoryIcon = (category) => {

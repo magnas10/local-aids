@@ -1,19 +1,35 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 function Footer() {
   const footerColumns = {
     platform: {
       title: 'Platform',
-      links: ['How It Works', 'Find Opportunities', 'Post a Request', 'Success Stories']
+      links: [
+        { name: 'How It Works', path: '/how-it-works' },
+        { name: 'Find Opportunities', path: '/events' },
+        { name: 'Post a Request', path: '/dashboard' },
+        { name: 'Success Stories', path: '/success-stories' }
+      ]
     },
     resources: {
       title: 'Resources',
-      links: ['Help Center', 'Blog', 'Community Guidelines', 'Safety Tips']
+      links: [
+        { name: 'Help Center', path: '/help' },
+        { name: 'Blog', path: '/blog' },
+        { name: 'Community Guidelines', path: '/guidelines' },
+        { name: 'Safety Tips', path: '/safety' }
+      ]
     },
     company: {
       title: 'Company',
-      links: ['About Us', 'Careers', 'Press', 'Partners']
+      links: [
+        { name: 'About Us', path: '/about' },
+        { name: 'Careers', path: '/careers' },
+        { name: 'Press', path: '/press' },
+        { name: 'Partners', path: '/partners' }
+      ]
     }
   };
 
@@ -67,7 +83,7 @@ function Footer() {
               <ul>
                 {column.links.map((link, i) => (
                   <li key={i}>
-                    <a href="#" className="footer-link">{link}</a>
+                    <Link to={link.path} className="footer-link">{link.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -81,9 +97,8 @@ function Footer() {
             © 2025 Local AIDS. Connecting Communities Through Kindness. All rights reserved.
           </p>
           <div className="footer-legal">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cookie Policy</a>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/privacy">Privacy Policy</Link>
           </div>
         </div>
       </div>
