@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import AdminRoute from './components/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -53,6 +54,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <div className="App">
           <Routes>
             {/* Admin Routes - No Header/Footer */}
