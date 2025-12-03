@@ -110,10 +110,26 @@ function HeroSection() {
           <div className="hero-trust">
             <span>Trusted by</span>
             <div className="trust-logos">
-              <span className="trust-item">Red Cross</span>
-              <span className="trust-item">Salvation Army</span>
-              <span className="trust-item">OzHarvest</span>
-              <span className="trust-item">St Vincent de Paul</span>
+              <a href="https://www.redcross.org.au" target="_blank" rel="noopener noreferrer" className="trust-item">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="trust-icon">
+                  <path d="M19 9h-4V5c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v4H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h4v4c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-4h4c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1z"/>
+                </svg>
+              </a>
+              <a href="https://www.salvationarmy.org.au" target="_blank" rel="noopener noreferrer" className="trust-item">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="trust-icon">
+                  <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm-1.06 13.54L7.4 12l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41-5.64 5.66z"/>
+                </svg>
+              </a>
+              <a href="https://www.ozharvest.org" target="_blank" rel="noopener noreferrer" className="trust-item">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="trust-icon">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </a>
+              <a href="https://www.vinnies.org.au" target="_blank" rel="noopener noreferrer" className="trust-item">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="trust-icon">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </a>
             </div>
           </div>
         </div>
