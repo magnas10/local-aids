@@ -8,7 +8,6 @@ function Donate() {
   const [customAmount, setCustomAmount] = useState('');
   const [donationType, setDonationType] = useState('one-time');
   const [showCreateCampaign, setShowCreateCampaign] = useState(false);
-  const [showDonationForm, setShowDonationForm] = useState(false);
   const [campaignData, setCampaignData] = useState({
     title: '',
     category: '',
@@ -136,7 +135,7 @@ function Donate() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
-            INVEST IN COMMUNITY IMPACT
+            Invest in Community Impact
           </span>
           <h1>Your Contribution<br/>Transforms Lives</h1>
           <p>
@@ -144,17 +143,15 @@ function Donate() {
             fostering sustainable impact across Australia.
           </p>
           <div className="donate-hero-actions">
-            <button className="donate-quick-btn" onClick={() => setShowDonationForm(true)}>
+            <button className="donate-quick-btn" onClick={() => document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' })}>
               Donate Now
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <polyline points="19 12 12 19 5 12"/>
               </svg>
             </button>
             <button className="start-fundraiser-btn" onClick={() => setShowCreateCampaign(true)}>
               Start a Fundraiser
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
             </button>
           </div>
         </div>
@@ -639,134 +636,6 @@ function Donate() {
           </div>
         </div>
       </section>
-
-      {/* Donation Form Modal */}
-      {showDonationForm && (
-        <div className="donation-modal-overlay" onClick={() => setShowDonationForm(false)}>
-          <div className="donation-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-pro" onClick={() => setShowDonationForm(false)}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-            
-            <div className="donation-modal-header">
-              <div className="modal-icon-donation">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="32" height="32">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-              </div>
-              <h2>Make Your Donation</h2>
-              <p>Your generosity transforms lives and builds stronger communities</p>
-            </div>
-
-            <form className="donation-form-modal">
-              <div className="donation-type-selector">
-                <button 
-                  type="button"
-                  className={`type-btn ${donationType === 'one-time' ? 'active' : ''}`}
-                  onClick={() => setDonationType('one-time')}
-                >
-                  One-Time
-                </button>
-                <button 
-                  type="button"
-                  className={`type-btn ${donationType === 'monthly' ? 'active' : ''}`}
-                  onClick={() => setDonationType('monthly')}
-                >
-                  Monthly
-                </button>
-              </div>
-
-              <div className="amount-selection">
-                <label>Select Amount</label>
-                <div className="amount-grid">
-                  {[25, 50, 100, 250, 500].map(amount => (
-                    <button
-                      key={amount}
-                      type="button"
-                      className={`amount-btn ${selectedAmount === amount ? 'active' : ''}`}
-                      onClick={() => handleAmountSelect(amount)}
-                    >
-                      ${amount}
-                    </button>
-                  ))}
-                </div>
-                <div className="custom-amount-input">
-                  <span className="currency-symbol">$</span>
-                  <input
-                    type="number"
-                    placeholder="Custom amount"
-                    value={customAmount}
-                    onChange={(e) => {
-                      setCustomAmount(e.target.value);
-                      setSelectedAmount(null);
-                    }}
-                    min="1"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group-pro">
-                <label>Full Name</label>
-                <input type="text" placeholder="John Smith" required />
-              </div>
-
-              <div className="form-group-pro">
-                <label>Email Address</label>
-                <input type="email" placeholder="john.smith@example.com" required />
-              </div>
-
-              <div className="form-group-pro">
-                <label>Card Number</label>
-                <input type="text" placeholder="1234 5678 9012 3456" required />
-              </div>
-
-              <div className="form-row-pro">
-                <div className="form-group-pro">
-                  <label>Expiry Date</label>
-                  <input type="text" placeholder="MM/YY" required />
-                </div>
-                <div className="form-group-pro">
-                  <label>CVV</label>
-                  <input type="text" placeholder="123" required />
-                </div>
-              </div>
-
-              <div className="donation-summary">
-                <div className="summary-row">
-                  <span>Donation Amount:</span>
-                  <strong>${customAmount || selectedAmount || 0}</strong>
-                </div>
-                <div className="summary-row">
-                  <span>Processing Fee:</span>
-                  <span>$0 (We cover it!)</span>
-                </div>
-                <div className="summary-row total">
-                  <span>Total:</span>
-                  <strong>${customAmount || selectedAmount || 0}</strong>
-                </div>
-              </div>
-
-              <button type="submit" className="submit-donation-btn">
-                Complete Donation
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                </svg>
-              </button>
-
-              <p className="secure-notice">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                Your donation is secure and encrypted
-              </p>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
