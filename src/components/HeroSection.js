@@ -110,10 +110,22 @@ function HeroSection() {
           <div className="hero-trust">
             <span>Trusted by</span>
             <div className="trust-logos">
-              <span className="trust-item">Red Cross</span>
-              <span className="trust-item">Salvation Army</span>
-              <span className="trust-item">OzHarvest</span>
-              <span className="trust-item">St Vincent de Paul</span>
+              <div className="trust-item">
+                <img src="/logos/redcross.svg" alt="Red Cross" />
+                <span className="trust-name">Red Cross</span>
+              </div>
+              <div className="trust-item">
+                <img src="/logos/salvationarmy.svg" alt="Salvation Army" />
+                <span className="trust-name">Salvation Army</span>
+              </div>
+              <div className="trust-item">
+                <img src="/logos/ozharvest.svg" alt="OzHarvest" />
+                <span className="trust-name">OzHarvest</span>
+              </div>
+              <div className="trust-item">
+                <img src="/logos/svdp.svg" alt="St Vincent de Paul" />
+                <span className="trust-name">St Vincent de Paul</span>
+              </div>
             </div>
           </div>
         </div>

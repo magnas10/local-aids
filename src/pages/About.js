@@ -7,36 +7,36 @@ function About() {
 
   const team = [
     {
-      name: 'Sarah Chen',
+      name: 'Sarah Mitchell',
       role: 'Founder & CEO',
-      initials: 'SC',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&q=80',
-      bio: 'Former social worker with 15 years of community service experience. Founded the platform after seeing the gap between those who need help and those willing to give it.',
-      location: 'Melbourne, VIC'
-    },
-    {
-      name: 'Michael Torres',
-      role: 'Head of Community',
-      initials: 'MT',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80',
-      bio: 'Community organizer and volunteer coordinator. Ensures our platform maintains safety standards while fostering genuine connections.',
-      location: 'Sydney, NSW'
-    },
-    {
-      name: 'Emma Watson',
-      role: 'Product Director',
-      initials: 'EW',
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&q=80',
-      bio: 'UX specialist focused on accessibility. Designs experiences that work for users of all ages and technical abilities.',
-      location: 'Brisbane, QLD'
+      bio: 'Former social worker with 15 years of experience in community development.',
+      linkedin: '#',
+      twitter: '#'
     },
     {
-      name: 'David Kim',
-      role: 'Safety & Verification',
-      initials: 'DK',
+      name: 'James Chen',
+      role: 'Head of Operations',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80',
+      bio: 'Expert in nonprofit management and volunteer coordination.',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'Emily Rodriguez',
+      role: 'Community Director',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&q=80',
+      bio: 'Passionate about building inclusive communities across Australia.',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'Michael Thompson',
+      role: 'Technology Lead',
       image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&q=80',
-      bio: 'Former police officer specializing in community safety. Develops and maintains our verification and safety protocols.',
-      location: 'Perth, WA'
+      bio: 'Tech innovator focused on creating accessible digital platforms.',
+      linkedin: '#',
+      twitter: '#'
     }
   ];
 
@@ -48,17 +48,8 @@ function About() {
         </svg>
       ),
       title: 'Compassion',
-      description: 'We believe in the power of human kindness to transform communities and individual lives.'
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 2L2 7v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7L12 2z"/>
-          <polyline points="8,11 12,15 16,11"/>
-        </svg>
-      ),
-      title: 'Purpose',
-      description: 'Every interaction on our platform has the potential to create lasting positive change.'
+      description: 'We believe in treating every individual with kindness and understanding.',
+      color: '#ef4444'
     },
     {
       icon: (
@@ -70,135 +61,156 @@ function About() {
         </svg>
       ),
       title: 'Community',
-      description: 'Together we are stronger. Building connections that last beyond a single act of service.'
+      description: 'Building stronger neighborhoods through meaningful connections.',
+      color: '#3b82f6'
     },
     {
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M9 12l2 2 4-4"/>
-          <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
-          <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
-          <path d="M13 5.5V7"/>
-          <path d="M11 18.5V17"/>
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
         </svg>
       ),
-      title: 'Accessibility',
-      description: 'Making help available to everyone, regardless of age, background, or circumstance.'
+      title: 'Inclusivity',
+      description: 'Everyone deserves access to help and the opportunity to give back.',
+      color: '#10b981'
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12,6 12,12 16,14"/>
+        </svg>
+      ),
+      title: 'Impact',
+      description: 'Focused on creating real, measurable change in people\'s lives.',
+      color: '#8b5cf6'
     }
   ];
 
-  const awards = [
-    {
-      year: '2024',
-      title: 'Social Impact Award',
-      organization: 'Australian Community Service Foundation'
-    },
-    {
-      year: '2024',
-      title: 'Best Digital Platform',
-      organization: 'National Volunteering Awards'
-    },
-    {
-      year: '2024',
-      title: 'Community Choice Award',
-      organization: 'Tech for Good Australia'
-    }
+  const milestones = [
+    { year: '2020', event: 'Local AIDS founded in Melbourne', icon: 'launch' },
+    { year: '2021', event: 'Expanded to Sydney and Brisbane', icon: 'expand' },
+    { year: '2022', event: 'Reached 10,000 volunteer matches', icon: 'milestone' },
+    { year: '2023', event: 'Launched mobile app for iOS and Android', icon: 'app' },
+    { year: '2024', event: 'Partnered with 500+ community organizations', icon: 'partner' },
+    { year: '2025', event: 'Serving all major cities across Australia', icon: 'national' }
+  ];
+
+  const partners = [
+    { name: 'Red Cross Australia', logo: 'https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop' },
+    { name: 'Salvation Army', logo: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=100&fit=crop' },
+    { name: 'Beyond Blue', logo: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=200&h=100&fit=crop' },
+    { name: 'Foodbank Australia', logo: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=100&fit=crop' }
   ];
 
   return (
-    <div className="about-page-modern">
-      <div className="container">
-        {/* Hero Section */}
-        <section className="about-hero-modern">
-          <div className="hero-content-with-image">
-            <div className="hero-text-content">
-              <span className="hero-badge">About Us</span>
-              <h1>Australia's Kindest Community</h1>
-              <p>
-                Creating Australia's most trusted community platform where anyone can find help when they need it 
-                and anyone can make a difference in someone else's life.
-              </p>
+    <div className="about-page">
+      {/* Hero Section */}
+      <section className="about-hero-pro">
+        <div className="about-hero-bg">
+          <img 
+            src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=800&fit=crop&q=80" 
+            alt="Volunteers working together"
+          />
+          <div className="about-hero-overlay"></div>
+        </div>
+        <div className="about-hero-content-pro">
+          <span className="about-badge-pro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            Our Story
+          </span>
+          <h1>Connecting Communities<br/>Through Kindness</h1>
+          <p>
+            Local AIDS was born from a simple belief: that everyone has something 
+            valuable to offer, and everyone deserves a helping hand when they need it.
+          </p>
+          <div className="about-hero-stats">
+            <div className="hero-stat">
+              <span className="hero-stat-num">50K+</span>
+              <span className="hero-stat-label">Volunteers</span>
             </div>
-            <div className="hero-image-content">
-              <img 
-                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" 
-                alt="Diverse group of volunteers helping in community - people of all ages working together" 
-                className="about-hero-image"
-              />
+            <div className="hero-stat">
+              <span className="hero-stat-num">120K+</span>
+              <span className="hero-stat-label">Lives Changed</span>
             </div>
-          </div>
-        </section>
-
-        {/* Mission Section */}
-        <section className="about-mission-section">
-          <div className="mission-content">
-            <div className="mission-text">
-              <span className="section-tag">Our Mission</span>
-              <h2>Building Stronger Communities</h2>
-              <p>
-                To create Australia's most trusted community platform where anyone can find help when they need it 
-                and anyone can make a difference in someone else's life. We believe that by connecting people through 
-                acts of service, we build stronger, more resilient communities where everyone belongs.
-              </p>
-            </div>
-            <div className="mission-image">
-              <img 
-                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=600&h=400&fit=crop&q=80" 
-                alt="Community volunteers helping together"
-              />
+            <div className="hero-stat">
+              <span className="hero-stat-num">500+</span>
+              <span className="hero-stat-label">Partners</span>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Story Section */}
-        <section className="about-story-section">
-          <div className="story-content">
-            <div className="story-text">
-              <span className="section-tag">Our Story</span>
-              <h2>How It All Started</h2>
-              <p>
-                Australia's Kindest Community was born from a simple observation: there are countless people who want 
-                to help others, and just as many who could use a helping hand, but they struggle to find each other.
-              </p>
-              <p>
-                In 2023, our founder Sarah Chen was caring for her elderly neighbor when she realized how many others 
-                in similar situations had no one to turn to. At the same time, she knew dozens of people in her community 
-                who wanted to volunteer but didn't know how to start.
-              </p>
-              <p>
-                What started as an informal neighborhood network has grown into Australia's largest community volunteering 
-                platform, connecting thousands of volunteers with people who need assistance across the country.
-              </p>
-              
-              <div className="founder-quote">
-                <blockquote>
-                  "I never imagined that helping one neighbor would lead to building something that touches thousands of lives. 
-                  Every day I'm amazed by the kindness of our volunteers."
-                </blockquote>
-                <cite>— Sarah Chen, Founder</cite>
+      {/* Mission Section */}
+      <section className="about-mission-pro">
+        <div className="mission-container-pro">
+          <div className="mission-image-pro">
+            <img 
+              src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=700&h=500&fit=crop&q=80" 
+              alt="Volunteers helping community" 
+            />
+            <div className="mission-image-badge">
+              <span className="badge-number">5+</span>
+              <span className="badge-text">Years of Impact</span>
+            </div>
+          </div>
+          <div className="mission-content-pro">
+            <span className="section-label">Our Mission</span>
+            <h2>Creating a More Connected & Compassionate Australia</h2>
+            <p>
+              We're on a mission to build stronger communities by making it easy for 
+              volunteers to find meaningful opportunities and for those in need to 
+              access help. Every connection we facilitate creates ripples of positive 
+              change across the nation.
+            </p>
+            <div className="mission-features">
+              <div className="mission-feature">
+                <div className="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
+                <span>Verified Volunteers</span>
+              </div>
+              <div className="mission-feature">
+                <div className="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                </div>
+                <span>24/7 Support</span>
+              </div>
+              <div className="mission-feature">
+                <div className="feature-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                </div>
+                <span>Nationwide Coverage</span>
               </div>
             </div>
-            <div className="story-image">
-              <img 
-                src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=600&h=500&fit=crop&q=80" 
-                alt="Sarah Chen helping her elderly neighbor"
-              />
-            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Values Section */}
-        <section className="about-values-modern">
-          <div className="section-header">
-            <span className="section-tag">Our Values</span>
-            <h2>What Drives Us</h2>
-            <p>The principles that guide everything we do in building Australia's kindest community.</p>
+      {/* Values Section */}
+      <section className="about-values-pro">
+        <div className="values-container-pro">
+          <div className="values-header">
+            <span className="section-label">Our Values</span>
+            <h2>The Principles That Guide Everything We Do</h2>
           </div>
-          
-          <div className="values-grid">
+          <div className="values-grid-pro">
             {values.map((value, index) => (
-              <div key={index} className="value-card-modern">
-                <div className="value-icon">
+              <div key={index} className="value-card-pro" style={{'--value-color': value.color}}>
+                <div className="value-icon-pro">
                   {value.icon}
                 </div>
                 <h3>{value.title}</h3>
@@ -206,78 +218,111 @@ function About() {
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Team Section */}
-        <section className="about-team-modern">
-          <div className="section-header">
-            <span className="section-tag">Our Team</span>
-            <h2>Meet Our Team</h2>
-            <p>The passionate people working every day to connect communities across Australia.</p>
+      {/* Timeline Section */}
+      <section className="about-timeline-pro">
+        <div className="timeline-container-pro">
+          <div className="timeline-header">
+            <span className="section-label">Our Journey</span>
+            <h2>Milestones That Define Us</h2>
           </div>
-          
-          <div className="team-grid">
-            {team.map((member, index) => (
-              <div key={index} className="team-card-modern">
-                <div className="team-image">
-                  <img src={member.image} alt={member.name} />
-                  <div className="team-initials">{member.initials}</div>
+          <div className="timeline-pro">
+            {milestones.map((milestone, index) => (
+              <div key={index} className="timeline-item-pro">
+                <div className="timeline-marker-pro">
+                  <span>{milestone.year}</span>
                 </div>
-                <div className="team-info">
-                  <h3>{member.name}</h3>
-                  <span className="team-role">{member.role}</span>
-                  <p>{member.bio}</p>
-                  <div className="team-location">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                      <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                    {member.location}
+                <div className="timeline-content-pro">
+                  <p>{milestone.event}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="about-team-pro" style={{ padding: '100px 20px', background: 'white' }}>
+        <div className="team-container-pro" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="team-header" style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <span className="section-label" style={{ color: '#20b2aa', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Our Team</span>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a1a', marginTop: '12px', marginBottom: '12px', lineHeight: 1.2 }}>Meet the People Behind Local AIDS</h2>
+            <p style={{ fontSize: '1.1rem', color: '#666', maxWidth: '600px', margin: '0 auto' }}>Passionate individuals dedicated to making a difference</p>
+          </div>
+          <div className="team-grid-pro" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
+            {team.map((member, index) => (
+              <div key={index} className="team-card-pro" style={{ background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'all 0.3s ease', border: '1px solid #f0f0f0' }}>
+                <div className="team-image-wrapper" style={{ position: 'relative', height: '280px', overflow: 'hidden', background: 'linear-gradient(135deg, #f0f0f0, #e8e8e8)' }}>
+                  <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div className="team-social" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)', padding: '20px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                    <a href={member.linkedin} aria-label="LinkedIn" style={{ width: '40px', height: '40px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0A66C2' }}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                    </a>
+                    <a href={member.twitter} aria-label="Twitter" style={{ width: '40px', height: '40px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1DA1F2' }}>
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                      </svg>
+                    </a>
                   </div>
                 </div>
+                <div className="team-info" style={{ padding: '24px' }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1a1a1a', marginBottom: '4px' }}>{member.name}</h3>
+                  <span className="team-role-pro" style={{ color: '#20b2aa', fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{member.role}</span>
+                  <p style={{ fontSize: '0.95rem', lineHeight: 1.6, color: '#666', margin: 0 }}>{member.bio}</p>
+                </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Awards Section */}
-        <section className="about-awards-section">
-          <div className="section-header">
-            <span className="section-tag">Recognition</span>
-            <h2>Recognition & Awards</h2>
-            <p>We're honored to be recognized for our impact on Australian communities.</p>
-          </div>
-          
-          <div className="awards-grid">
-            {awards.map((award, index) => (
-              <div key={index} className="award-card">
-                <div className="award-year">{award.year}</div>
-                <h4>{award.title}</h4>
-                <p>{award.organization}</p>
+      {/* Partners Section */}
+      <section style={{ padding: '100px 20px', background: 'linear-gradient(to bottom, white, #f8f9fa)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+          <span className="section-label" style={{ color: '#20b2aa', fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>Trusted Partners</span>
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a1a', marginTop: '12px', marginBottom: '60px', lineHeight: 1.2 }}>Organizations We Work With</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', alignItems: 'center' }}>
+            {partners.map((partner, index) => (
+              <div key={index} style={{ background: 'white', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.08)', transition: 'all 0.3s', border: '1px solid #f0f0f0' }}>
+                <img src={partner.logo} alt={partner.name} style={{ width: '100%', height: 'auto', maxHeight: '60px', objectFit: 'contain' }} />
+                <div style={{ marginTop: '12px', fontSize: '0.85rem', fontWeight: 600, color: '#666' }}>{partner.name}</div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="about-cta-modern">
-          <div className="cta-content">
-            <h2>Join Australia's Kindest Community</h2>
-            <p>
-              Whether you need help or want to help others, you belong here. Together, we're building 
-              stronger communities one act of kindness at a time.
-            </p>
-            <div className="cta-buttons">
-              <button className="btn-primary-modern" onClick={() => navigate('/signup')}>
-                Get Started
-              </button>
-              <button className="btn-secondary-modern" onClick={() => navigate('/contact')}>
-                Contact Us
-              </button>
-            </div>
+      {/* CTA Section */}
+      <section style={{ position: 'relative', height: '500px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          <img 
+            src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1920&h=600&fit=crop&q=80" 
+            alt="Community volunteers"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(135deg, rgba(32, 178, 170, 0.7), rgba(22, 163, 154, 0.7))' }}></div>
+        </div>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', color: 'white', maxWidth: '600px' }}>
+          <h2 style={{ fontSize: '2.8rem', fontWeight: 800, marginBottom: '16px', lineHeight: 1.2 }}>Ready to Make a Difference?</h2>
+          <p style={{ fontSize: '1.15rem', marginBottom: '32px', opacity: 0.95, lineHeight: 1.6 }}>Join thousands of Australians who are building stronger communities together.</p>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button style={{ background: 'white', color: '#20b2aa', border: 'none', borderRadius: '8px', padding: '14px 32px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => navigate('/signup')}>
+              Start Volunteering
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+            <button style={{ background: 'rgba(255,255,255,0.2)', color: 'white', border: '2px solid white', borderRadius: '8px', padding: '12px 32px', fontSize: '1rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.3s', backdropFilter: 'blur(10px)' }} onClick={() => navigate('/contact')}>
+              Contact Us
+            </button>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

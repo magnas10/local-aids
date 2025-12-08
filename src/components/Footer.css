@@ -158,11 +158,6 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: inherit;
 }
 
 .footer-link:hover {
@@ -190,21 +185,14 @@
   gap: 30px;
 }
 
-.footer-legal a,
-.footer-legal button {
+.footer-legal a {
   color: #8b9cb5;
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: inherit;
 }
 
-.footer-legal a:hover,
-.footer-legal button:hover {
+.footer-legal a:hover {
   color: #20b2aa;
 }
 
