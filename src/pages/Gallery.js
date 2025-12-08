@@ -1,291 +1,653 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
-const Gallery = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
+function Gallery() {
+  const [activeFilter, setActiveFilter] = useState('all');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [uploadData, setUploadData] = useState({
+    title: '',
+    category: 'community',
+    location: '',
+    description: '',
+    image: null
+  });
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isLoggedIn] = useState(false); // This should come from your auth context
+  const navigate = useNavigate();
 
   const categories = [
     { id: 'all', label: 'All Photos' },
-    { id: 'food', label: 'Food Drives' },
-    { id: 'elderly', label: 'Elderly Care' },
+    { id: 'food-drive', label: 'Food Drives' },
+    { id: 'elderly-care', label: 'Elderly Care' },
     { id: 'education', label: 'Education' },
     { id: 'environment', label: 'Environment' },
-    { id: 'disaster', label: 'Disaster Relief' },
+    { id: 'disaster-relief', label: 'Disaster Relief' },
     { id: 'community', label: 'Community Events' }
   ];
 
-  const galleryItems = [
+  const galleryImages = [
     {
       id: 1,
+      src: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&h=600&fit=crop&q=80',
       title: 'Melbourne Food Bank Distribution',
+      category: 'food-drive',
       location: 'Melbourne, VIC',
-      volunteers: 45,
       date: 'November 2025',
-      category: 'food',
-      image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop'
+      volunteers: 45
     },
     {
       id: 2,
+      src: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&h=600&fit=crop&q=80',
       title: 'Sydney Beach Cleanup',
-      location: 'Bondi Beach, Sydney',
-      volunteers: 120,
-      date: 'October 2025',
       category: 'environment',
-      image: 'https://images.unsplash.com/photo-1618477461853-cf6ed80faba5?w=800&h=600&fit=crop'
+      location: 'Bondi Beach, Sydney',
+      date: 'October 2025',
+      volunteers: 120,
+      description: 'Community members came together to clean up Bondi Beach, collecting over 500kg of waste.'
     },
     {
       id: 3,
+      src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80',
       title: 'After School Tutoring Program',
-      location: 'Brisbane, QLD',
-      volunteers: 28,
-      date: 'November 2025',
       category: 'education',
-      image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop'
+      location: 'Brisbane, QLD',
+      date: 'November 2025',
+      volunteers: 28,
+      description: 'Volunteer tutors helping underprivileged students with their homework and exam preparation.'
     },
     {
       id: 4,
+      src: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=800&h=600&fit=crop&q=80',
       title: 'Senior Tech Workshop',
+      category: 'elderly-care',
       location: 'Perth, WA',
-      volunteers: 15,
       date: 'October 2025',
-      category: 'elderly',
-      image: 'https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=800&h=600&fit=crop'
+      volunteers: 15,
+      description: 'Teaching seniors how to use smartphones and tablets to stay connected with their families.'
     },
     {
       id: 5,
+      src: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&h=600&fit=crop&q=80',
       title: 'Flood Relief Operations',
+      category: 'disaster-relief',
       location: 'Lismore, NSW',
-      volunteers: 200,
       date: 'September 2025',
-      category: 'disaster',
-      image: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&h=600&fit=crop'
+      volunteers: 200,
+      description: 'Emergency response team providing essential supplies and support to flood-affected communities.'
     },
     {
       id: 6,
+      src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80',
       title: 'Community Garden Project',
+      category: 'community',
       location: 'Adelaide, SA',
-      volunteers: 35,
       date: 'November 2025',
-      category: 'environment',
-      image: 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop'
+      volunteers: 35,
+      description: 'Local residents working together to create a beautiful community garden in the neighborhood.'
     },
     {
       id: 7,
+      src: 'https://images.unsplash.com/photo-1609234656388-0ff363383899?w=800&h=600&fit=crop&q=80',
       title: 'Meals on Wheels Program',
+      category: 'elderly-care',
       location: 'Hobart, TAS',
-      volunteers: 22,
       date: 'October 2025',
-      category: 'elderly',
-      image: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&h=600&fit=crop'
+      volunteers: 22,
+      description: 'Volunteers delivering hot meals to elderly residents who are unable to cook for themselves.'
     },
     {
       id: 8,
+      src: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&h=600&fit=crop&q=80',
       title: 'Christmas Toy Drive',
-      location: 'Darwin, NT',
-      volunteers: 50,
-      date: 'December 2024',
       category: 'community',
-      image: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=800&h=600&fit=crop'
+      location: 'Darwin, NT',
+      date: 'December 2024',
+      volunteers: 50,
+      description: 'Collecting and distributing toys to ensure every child has a gift this Christmas.'
     },
     {
       id: 9,
+      src: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&h=600&fit=crop&q=80',
       title: 'School Library Renovation',
-      location: 'Cairns, QLD',
-      volunteers: 40,
-      date: 'August 2025',
       category: 'education',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=600&fit=crop'
+      location: 'Cairns, QLD',
+      date: 'August 2025',
+      volunteers: 40,
+      description: 'Volunteers renovated and restocked a school library in a rural community.'
     },
     {
       id: 10,
+      src: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=600&fit=crop&q=80',
       title: 'Tree Planting Initiative',
-      location: 'Canberra, ACT',
-      volunteers: 85,
-      date: 'September 2025',
       category: 'environment',
-      image: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=600&fit=crop'
+      location: 'Canberra, ACT',
+      date: 'September 2025',
+      volunteers: 85,
+      description: 'Planting 1,000 native trees to restore bushfire-affected areas around Canberra.'
     },
     {
       id: 11,
+      src: 'https://images.unsplash.com/photo-1578357078586-491adf1aa5ba?w=800&h=600&fit=crop&q=80',
       title: 'Emergency Supply Packs',
+      category: 'disaster-relief',
       location: 'Townsville, QLD',
-      volunteers: 60,
       date: 'July 2025',
-      category: 'disaster',
-      image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&h=600&fit=crop'
+      volunteers: 60,
+      description: 'Assembling emergency supply packs for families affected by cyclone season.'
     },
     {
       id: 12,
+      src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&h=600&fit=crop&q=80',
       title: 'Community Breakfast Program',
+      category: 'food-drive',
       location: 'Newcastle, NSW',
-      volunteers: 18,
       date: 'November 2025',
-      category: 'food',
-      image: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=800&h=600&fit=crop'
+      volunteers: 18,
+      description: 'Serving free nutritious breakfasts to homeless individuals every Sunday morning.'
     }
   ];
 
-  const filteredItems = activeCategory === 'all' 
-    ? galleryItems 
-    : galleryItems.filter(item => item.category === activeCategory);
+  const stats = [
+    { number: '2,500+', label: 'Events Completed' },
+    { number: '50,000+', label: 'Volunteers Engaged' },
+    { number: '120,000+', label: 'Lives Impacted' },
+    { number: '500+', label: 'Partner Organizations' }
+  ];
+
+  const filteredImages = activeFilter === 'all' 
+    ? galleryImages 
+    : galleryImages.filter(img => img.category === activeFilter);
+
+  const openLightbox = (image) => {
+    setSelectedImage(image);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setSelectedImage(null);
+    document.body.style.overflow = 'auto';
+  };
+
+  const navigateImage = (direction) => {
+    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    let newIndex;
+    if (direction === 'next') {
+      newIndex = currentIndex === filteredImages.length - 1 ? 0 : currentIndex + 1;
+    } else {
+      newIndex = currentIndex === 0 ? filteredImages.length - 1 : currentIndex - 1;
+    }
+    setSelectedImage(filteredImages[newIndex]);
+  };
+
+  const handleUploadChange = (e) => {
+    const { name, value } = e.target;
+    setUploadData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadData(prev => ({
+          ...prev,
+          image: file,
+          imagePreview: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadSubmit = (e) => {
+    e.preventDefault();
+    // Here you would normally send to backend
+    setUploadSuccess(true);
+    setTimeout(() => {
+      setShowUploadModal(false);
+      setUploadSuccess(false);
+      setUploadData({
+        title: '',
+        category: '',
+        location: '',
+        description: '',
+        volunteers: '',
+        image: null,
+        imagePreview: null
+      });
+    }, 2000);
+  };
+
+  const openUploadModal = () => {
+    setShowUploadModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeUploadModal = () => {
+    setShowUploadModal(false);
+    document.body.style.overflow = 'auto';
+    setUploadData({
+      title: '',
+      category: '',
+      location: '',
+      description: '',
+      volunteers: '',
+      image: null,
+      imagePreview: null
+    });
+  };
 
   return (
-    <div className="gallery-page">
+    <div className="gallery-page-pro">
       {/* Hero Section */}
-      <section className="gallery-hero">
+      <section className="gallery-hero-pro">
         <div className="gallery-hero-bg">
           <img 
-            src="https://images.unsplash.com/photo-1543269664-7eef42226a21?w=1920&h=800&fit=crop&q=80" 
-            alt="Diverse community group holding hands in circle, including person in wheelchair"
+            src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=800&fit=crop&q=80" 
+            alt="Volunteers making impact"
           />
           <div className="gallery-hero-overlay"></div>
         </div>
-        <div className="gallery-hero-content">
-          <div className="hero-badge">Volunteers making impact</div>
-          <div className="hero-subtitle">OUR IMPACT IN ACTION</div>
-          <h1 className="gallery-hero-title">Community Gallery</h1>
-          <p className="gallery-hero-description">
-            Witness the incredible work done by our volunteers and community members across Australia. 
-            Every photo tells a story of compassion and change.
+        <div className="gallery-hero-content-pro">
+          <span className="gallery-badge-pro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            Our Impact in Action
+          </span>
+          <h1>Community Gallery</h1>
+          <p>
+            Witness the incredible work done by our volunteers and community members 
+            across Australia. Every photo tells a story of compassion and change.
           </p>
+          {isLoggedIn && (
+            <button className="upload-hero-btn-pro" onClick={openUploadModal}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+              Share Your Story
+            </button>
+          )}
         </div>
       </section>
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="upload-modal-overlay-pro" onClick={closeUploadModal}>
+          <div className="upload-modal-pro" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-pro" onClick={closeUploadModal}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            
+            {uploadSuccess ? (
+              <div className="upload-success-pro">
+                <div className="success-icon-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
+                <h2>Photo Uploaded Successfully!</h2>
+                <p>Your photo will be reviewed and added to the gallery shortly.</p>
+              </div>
+            ) : (
+              <>
+                <div className="upload-modal-header-pro">
+                  <div className="modal-icon-pro">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                  </div>
+                  <h2>Share Your Impact</h2>
+                  <p>Upload a photo from your volunteer experience</p>
+                </div>
+
+                <form onSubmit={handleUploadSubmit} className="upload-form-pro">
+                  {/* Image Upload Area */}
+                  <div className="image-upload-area-pro">
+                    {uploadData.imagePreview ? (
+                      <div className="image-preview-pro">
+                        <img src={uploadData.imagePreview} alt="Preview" />
+                        <button 
+                          type="button" 
+                          className="remove-image-btn-pro"
+                          onClick={() => setUploadData(prev => ({...prev, image: null, imagePreview: null}))}
+                        >
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                          </svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="upload-dropzone-pro">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          required
+                        />
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                          <polyline points="17 8 12 3 7 8"/>
+                          <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <span className="dropzone-text-pro">Click to upload or drag and drop</span>
+                        <span className="dropzone-hint-pro">PNG, JPG, GIF up to 10MB</span>
+                      </label>
+                    )}
+                  </div>
+
+                  <div className="form-group-pro">
+                    <label htmlFor="upload-title">Photo Title</label>
+                    <input
+                      type="text"
+                      id="upload-title"
+                      name="title"
+                      value={uploadData.title}
+                      onChange={handleUploadChange}
+                      placeholder="e.g., Beach Cleanup at Bondi"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row-pro">
+                    <div className="form-group-pro">
+                      <label htmlFor="upload-category">Category</label>
+                      <select
+                        id="upload-category"
+                        name="category"
+                        value={uploadData.category}
+                        onChange={handleUploadChange}
+                        required
+                      >
+                        <option value="">Select category</option>
+                        <option value="food-drive">Food Drives</option>
+                        <option value="elderly-care">Elderly Care</option>
+                        <option value="education">Education</option>
+                        <option value="environment">Environment</option>
+                        <option value="disaster-relief">Disaster Relief</option>
+                        <option value="community">Community Events</option>
+                      </select>
+                    </div>
+                    <div className="form-group-pro">
+                      <label htmlFor="upload-location">Location</label>
+                      <input
+                        type="text"
+                        id="upload-location"
+                        name="location"
+                        value={uploadData.location}
+                        onChange={handleUploadChange}
+                        placeholder="e.g., Sydney, NSW"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group-pro">
+                    <label htmlFor="upload-volunteers">Number of Volunteers</label>
+                    <input
+                      type="number"
+                      id="upload-volunteers"
+                      name="volunteers"
+                      value={uploadData.volunteers}
+                      onChange={handleUploadChange}
+                      placeholder="e.g., 25"
+                      min="1"
+                    />
+                  </div>
+
+                  <div className="form-group-pro">
+                    <label htmlFor="upload-description">Description</label>
+                    <textarea
+                      id="upload-description"
+                      name="description"
+                      value={uploadData.description}
+                      onChange={handleUploadChange}
+                      placeholder="Tell us about this volunteer activity..."
+                      rows="3"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="upload-form-footer-pro">
+                    <div className="form-note-pro">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                      </svg>
+                      <p>Photos will be reviewed before appearing in the gallery.</p>
+                    </div>
+                    <button 
+                      type="submit" 
+                      className="submit-upload-btn-pro"
+                      disabled={!uploadData.image}
+                    >
+                      Upload Photo
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Stats Section */}
-      <section className="gallery-stats-section">
-        <div className="container">
-          <div className="gallery-stats-grid">
-            <div className="gallery-stat-card">
-              <div className="gallery-stat-number">2,500+</div>
-              <div className="gallery-stat-label">Events Completed</div>
+      <section className="gallery-stats-pro">
+        <div className="gallery-stats-container-pro">
+          {stats.map((stat, index) => (
+            <div key={index} className="gallery-stat-item-pro">
+              <span className="stat-number-pro">{stat.number}</span>
+              <span className="stat-label-pro">{stat.label}</span>
             </div>
-            <div className="gallery-stat-card">
-              <div className="gallery-stat-number">50,000+</div>
-              <div className="gallery-stat-label">Volunteers Engaged</div>
-            </div>
-            <div className="gallery-stat-card">
-              <div className="gallery-stat-number">120,000+</div>
-              <div className="gallery-stat-label">Lives Impacted</div>
-            </div>
-            <div className="gallery-stat-card">
-              <div className="gallery-stat-number">500+</div>
-              <div className="gallery-stat-label">Partner Organizations</div>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Browse Collection */}
-      <section className="gallery-browse-section">
-        <div className="container">
-          <div className="browse-header">
-            <h2 className="browse-title">BROWSE COLLECTION</h2>
-            <h3 className="browse-subtitle">Explore by Category</h3>
+      {/* Filter Section */}
+      <section className="gallery-filters-pro">
+        <div className="filters-container-gallery-pro">
+          <div className="filters-header-pro">
+            <div>
+              <span className="section-label">Browse Collection</span>
+              <h2>Explore by Category</h2>
+            </div>
+            {isLoggedIn && (
+              <button className="add-photo-btn-pro" onClick={openUploadModal}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Add Photo
+              </button>
+            )}
           </div>
-
-          {/* Category Filter */}
-          <div className="category-filter">
-            {categories.map(category => (
+          <div className="filter-buttons-pro">
+            {categories.map((cat) => (
               <button
-                key={category.id}
-                className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(category.id)}
+                key={cat.id}
+                className={`filter-btn-pro ${activeFilter === cat.id ? 'active' : ''}`}
+                onClick={() => setActiveFilter(cat.id)}
               >
-                {category.label}
+                <span>{cat.label}</span>
               </button>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Gallery Grid */}
-          <div className="gallery-grid">
-            {filteredItems.map(item => (
+      {/* Gallery Grid */}
+      <section className="gallery-grid-section-pro">
+        <div className="gallery-grid-container-pro">
+          <div className="gallery-grid-pro">
+            {filteredImages.map((image) => (
               <div 
-                key={item.id} 
-                className="gallery-item"
-                onClick={() => setSelectedImage(item)}
+                key={image.id} 
+                className="gallery-item-pro"
+                onClick={() => openLightbox(image)}
               >
-                <div className="gallery-item-image">
-                  <img src={item.image} alt={item.title} />
-                  <div className="gallery-item-overlay">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M10 7v6m-3-3h6" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                    </svg>
-                  </div>
-                </div>
-                <div className="gallery-item-content">
-                  <h4 className="gallery-item-title">{item.title}</h4>
-                  <div className="gallery-item-location">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#616161"/>
-                    </svg>
-                    <span>{item.location}</span>
-                  </div>
-                  <div className="gallery-item-meta">
-                    <div className="meta-item">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="#2563eb"/>
+                <img src={image.src} alt={image.title} />
+                <div className="gallery-item-overlay-pro">
+                  <div className="overlay-content-pro">
+                    <h3>{image.title}</h3>
+                    <div className="gallery-location-pro">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
                       </svg>
-                      <span>{item.volunteers} volunteers</span>
+                      {image.location}
                     </div>
-                    <div className="meta-item">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="#616161"/>
-                      </svg>
-                      <span>{item.date}</span>
+                    <div className="gallery-meta-pro">
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                          <circle cx="9" cy="7" r="4"/>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        {image.volunteers} volunteers
+                      </span>
+                      <span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        {image.date}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="gallery-cta-section">
-        <div className="gallery-cta-image">
-          <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1200&h=600&fit=crop" alt="Community volunteers" />
-        </div>
-        <div className="gallery-cta-content">
-          <h2 className="gallery-cta-title">Be Part of the Next Story</h2>
-          <p className="gallery-cta-description">
-            Join our community of volunteers and help create more moments of impact. 
-            Your contribution can make a real difference in someone's life.
-          </p>
-          <div className="gallery-cta-buttons">
-            <button className="btn btn-primary btn-large">Start Volunteering</button>
-            <button className="btn btn-outline-blue btn-large">View Opportunities</button>
-          </div>
+          {filteredImages.length === 0 && (
+            <div className="no-results-pro">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <h3>No photos found</h3>
+              <p>Try selecting a different category</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Lightbox Modal */}
       {selectedImage && (
-        <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6l12 12" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+        <div className="lightbox-overlay-pro" onClick={closeLightbox}>
+          <div className="lightbox-content-pro" onClick={(e) => e.stopPropagation()}>
+            <button className="lightbox-close-pro" onClick={closeLightbox}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <img src={selectedImage.image} alt={selectedImage.title} className="lightbox-image" />
-            <div className="lightbox-info">
-              <h3>{selectedImage.title}</h3>
-              <div className="lightbox-details">
-                <span>{selectedImage.location}</span>
-                <span>•</span>
-                <span>{selectedImage.volunteers} volunteers</span>
-                <span>•</span>
-                <span>{selectedImage.date}</span>
+            <button className="lightbox-nav-pro prev" onClick={() => navigateImage('prev')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+            <button className="lightbox-nav-pro next" onClick={() => navigateImage('next')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            
+            <div className="lightbox-image-container-pro">
+              <img src={selectedImage.src} alt={selectedImage.title} />
+            </div>
+            
+            <div className="lightbox-info-pro">
+              <h2>{selectedImage.title}</h2>
+              <div className="lightbox-meta-pro">
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  {selectedImage.location}
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  {selectedImage.date}
+                </span>
+                <span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                  {selectedImage.volunteers} volunteers
+                </span>
               </div>
+              <p>{selectedImage.description}</p>
             </div>
           </div>
         </div>
       )}
+
+      {/* CTA Section */}
+      <section className="gallery-cta-pro">
+        <div className="gallery-cta-bg">
+          <img 
+            src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=1920&h=600&fit=crop&q=80" 
+            alt="Community volunteers"
+          />
+          <div className="cta-overlay"></div>
+        </div>
+        <div className="gallery-cta-content-pro">
+          <h2>Be Part of the Next Story</h2>
+          <p>
+            Join our community of volunteers and help create more moments of impact. 
+            Your contribution can make a real difference in someone's life.
+          </p>
+          <div className="gallery-cta-buttons-pro">
+            <button className="cta-btn-primary" onClick={() => navigate('/signup')}>
+              Start Volunteering
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+            <button className="cta-btn-secondary" onClick={() => navigate('/events')}>
+              View Events
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
-};
+}
 
 export default Gallery;

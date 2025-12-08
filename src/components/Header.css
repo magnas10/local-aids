@@ -60,35 +60,19 @@
 
 /* Logo */
 .logo {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 800;
-  color: #1D4ED8;
+  color: #333;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   margin-right: 20px;
-  text-decoration: none;
-}
-
-.logo-circle {
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(135deg, #D4AF37, #B8860B);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 800;
-  color: #2C1810;
-  letter-spacing: -1px;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
 
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--primary, #2563eb), var(--primary-dark, #1d4ed8));
+  background: linear-gradient(135deg, #20B2AA, #0D6B66);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -257,14 +241,14 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #20B2AA, #0D6B66);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 2px 8px rgba(32, 178, 170, 0.3);
   color: white;
 }
 
@@ -276,7 +260,7 @@
 
 .profile-icon-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.4);
 }
 
 .profile-dropdown {
@@ -656,75 +640,4 @@
 
 .search-suggestions a:hover svg {
   color: #20b2aa;
-}
-
-/* Admin Indicator on Profile Icon */
-.admin-indicator {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 12px;
-  height: 12px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  border: 2px solid white;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.profile-icon-btn {
-  position: relative;
-}
-
-/* Dropdown User Info */
-.dropdown-user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 15px;
-}
-
-.dropdown-avatar {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #20b2aa, #1a8f88);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.dropdown-user-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dropdown-user-name {
-  font-weight: 600;
-  color: #1f2937;
-  font-size: 0.95rem;
-}
-
-.dropdown-user-role {
-  font-size: 0.8rem;
-  color: #64748b;
-}
-
-/* Admin Menu Item */
-.dropdown-item.admin-item {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.05));
-  color: #dc2626;
-  margin: 0 8px;
-  border-radius: 8px;
-}
-
-.dropdown-item.admin-item:hover {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
-}
-
-.dropdown-item.admin-item svg {
-  color: #dc2626;
 }

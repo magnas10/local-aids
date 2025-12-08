@@ -6,44 +6,44 @@ function Partners() {
     {
       id: 1,
       name: 'Australian Red Cross',
-      logo: '🏥',
+      logo: '/logos/redcross.svg',
       type: 'Community Partner',
       description: 'Together, we mobilize volunteers during emergencies and natural disasters across Australia.'
     },
     {
       id: 2,
       name: 'Meals on Wheels',
-      logo: '🍽️',
+      logo: '/logos/mealsonwheels.svg',
       type: 'Service Partner',
       description: 'Connecting volunteers with seniors who need meal delivery and companionship services.'
     },
     {
       id: 3,
       name: 'Salvation Army',
-      logo: '⭐',
+      logo: '/logos/salvationarmy.svg',
       type: 'Community Partner',
       description: 'Working together to support vulnerable Australians with essential services and support.'
     },
     {
       id: 4,
-      name: 'Lions Clubs Australia',
-      logo: '🦁',
+      name: 'OzHarvest',
+      logo: '/logos/ozharvest.svg',
       type: 'Community Partner',
-      description: 'Expanding volunteer reach in local communities through shared resources and networks.'
+      description: 'Partnering to reduce food waste and support communities in need across Australia.'
     },
     {
       id: 5,
-      name: 'Volunteering Australia',
-      logo: '🤝',
-      type: 'Industry Partner',
-      description: 'Collaborating to promote and support volunteering across the nation.'
+      name: 'St Vincent de Paul',
+      logo: '/logos/svdp.svg',
+      type: 'Community Partner',
+      description: 'Working together to help people in need and combat poverty and disadvantage.'
     },
     {
       id: 6,
-      name: 'Council on the Ageing',
-      logo: '👴',
-      type: 'Advocacy Partner',
-      description: 'Working to improve support services for older Australians in their communities.'
+      name: 'Lions Clubs Australia',
+      logo: '/logos/lions.svg',
+      type: 'Community Partner',
+      description: 'Expanding volunteer reach in local communities through shared resources and networks.'
     }
   ];
 
@@ -121,7 +121,9 @@ function Partners() {
           <div className="partners-grid">
             {partners.map((partner) => (
               <div key={partner.id} className="partner-card">
-                <div className="partner-logo">{partner.logo}</div>
+                <div className="partner-logo">
+                  <img src={partner.logo} alt={partner.name} />
+                </div>
                 <span className="partner-type">{partner.type}</span>
                 <h3>{partner.name}</h3>
                 <p>{partner.description}</p>

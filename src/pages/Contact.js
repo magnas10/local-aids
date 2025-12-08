@@ -230,15 +230,15 @@ function Contact() {
       <section className="contact-map-pro">
         <div className="map-container-pro">
           <img 
-            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=400&fit=crop&q=80" 
-            alt="Australia map view with Melbourne location"
+            src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&h=400&fit=crop&q=80" 
+            alt="Melbourne city map view"
             className="map-image"
           />
           <div className="map-overlay-pro">
             <div className="map-info-card">
               <h3>Local AIDS Headquarters</h3>
-              <p>123 Community Street, Melbourne VIC 3000, Australia</p>
-              <a href="https://www.google.com/maps/place/Melbourne+VIC,+Australia" target="_blank" rel="noopener noreferrer" className="directions-btn">
+              <p>123 Community Street, Melbourne VIC 3000</p>
+              <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="directions-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                   <polygon points="3 11 22 2 13 21 11 13 3 11"/>
                 </svg>

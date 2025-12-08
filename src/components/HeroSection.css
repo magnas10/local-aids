@@ -196,28 +196,54 @@
 .hero-trust {
   display: flex;
   align-items: center;
-  gap: 20px;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.85rem;
+  gap: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
 }
 
-.hero-trust span {
+.hero-trust > span {
   white-space: nowrap;
+  font-weight: 500;
 }
 
 .trust-logos {
   display: flex;
-  gap: 25px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap;
+  align-items: center;
 }
 
 .trust-item {
-  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.95);
   padding: 8px 16px;
   border-radius: 6px;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  height: 50px;
+}
+
+.trust-item img {
+  height: 24px;
+  width: auto;
+  max-width: 80px;
+  object-fit: contain;
+}
+
+.trust-name {
+  font-size: 0.75rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.8rem;
+  color: #333;
+  white-space: nowrap;
+}
+
+.trust-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Carousel Indicators */
@@ -306,11 +332,21 @@
   .hero-trust {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
   }
 
   .trust-logos {
     gap: 10px;
+  }
+
+  .trust-item {
+    width: 48px;
+    height: 48px;
+  }
+
+  .trust-icon {
+    width: 22px;
+    height: 22px;
   }
 
   .carousel-indicators {
@@ -335,7 +371,13 @@
   }
 
   .trust-item {
-    padding: 6px 12px;
-    font-size: 0.75rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+
+  .trust-icon {
+    width: 20px;
+    height: 20px;
   }
 }
