@@ -1,7 +1,7 @@
 /* Professional Community Stories Section */
 .community-stories-section {
   padding: 100px 20px;
-  background: #ffffff;
+  background: #f8fafc;
 }
 
 .stories-wrapper {
@@ -16,11 +16,11 @@
 
 .stories-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #fef3e7, #fde8d3);
-  color: #e67e22;
-  padding: 10px 22px;
+  background: linear-gradient(135deg, #fff0f5, #ffe4ec);
+  color: #e91e63;
+  padding: 12px 24px;
   border-radius: 30px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 20px;
 }
@@ -30,6 +30,7 @@
   font-weight: 800;
   color: #1a1a1a;
   margin: 0 0 15px;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 .stories-header p {
@@ -50,22 +51,24 @@
 /* Story Card */
 .story-card {
   background: white;
-  border-radius: 24px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid #f0f0f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
 }
 
 .story-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Story Image */
 .story-image {
   position: relative;
-  height: 220px;
+  height: 200px;
   overflow: hidden;
 }
 
@@ -77,36 +80,40 @@
 }
 
 .story-card:hover .story-image img {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .story-category {
   position: absolute;
   top: 15px;
   left: 15px;
-  background: white;
-  padding: 6px 14px;
+  background: #20b2aa;
+  color: white;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #333;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(32, 178, 170, 0.3);
 }
 
 /* Story Content */
 .story-content {
-  padding: 28px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .story-location {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #888;
+  color: #e74c3c;
   font-size: 0.85rem;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .location-icon {
@@ -114,11 +121,12 @@
 }
 
 .story-content h3 {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 12px;
-  line-height: 1.3;
+  line-height: 1.4;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 .story-description {
@@ -126,27 +134,30 @@
   font-size: 0.95rem;
   line-height: 1.7;
   margin-bottom: 20px;
+  flex: 1;
 }
 
 /* Story Meta */
 .story-meta {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
   border-bottom: 1px solid #f0f0f0;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 0.85rem;
   color: #666;
 }
 
 .meta-icon {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
 }
 
 /* Story Footer */
@@ -154,22 +165,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .impact-badge {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: linear-gradient(135deg, #e8f8f0, #d4f1e4);
   color: #27ae60;
-  padding: 8px 16px;
-  border-radius: 25px;
-  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
 .impact-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .read-story-btn {
@@ -180,18 +193,18 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 0;
+  padding: 8px 0;
 }
 
 .read-story-btn:hover {
   color: #1a8f88;
-  letter-spacing: 0.5px;
 }
 
 /* Responsive */
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .stories-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
   }
 }
 
@@ -206,11 +219,13 @@
 
   .stories-grid {
     grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 24px;
+    max-width: 450px;
+    margin: 0 auto;
   }
 
   .story-image {
-    height: 200px;
+    height: 220px;
   }
 }
 
@@ -220,12 +235,15 @@
   }
 
   .story-content {
-    padding: 22px;
+    padding: 20px;
+  }
+
+  .story-content h3 {
+    font-size: 1.15rem;
   }
 
   .story-footer {
     flex-direction: column;
-    gap: 15px;
     align-items: flex-start;
   }
 }
