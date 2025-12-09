@@ -3,10 +3,10 @@ import './StatsSection.css';
 
 function StatsSection() {
   const stats = [
-    { icon: '🎯', number: '247', label: 'Projects' },
-    { icon: '👥', number: '1,842', label: 'Volunteers' },
-    { icon: '💚', number: '$52,340', label: 'Donations' },
-    { icon: '📈', number: '8,950', label: 'Reach' }
+    { icon: '', number: '247', label: 'Projects' },
+    { icon: '', number: '1,842', label: 'Volunteers' },
+    { icon: '', number: '$52,340', label: 'Donations' },
+    { icon: '', number: '8,950', label: 'Reach' }
   ];
 
   return (

@@ -43,7 +43,7 @@ function DonationSection() {
       <div className="donation-wrapper">
         {/* Header */}
         <div className="donation-header">
-          <span className="donation-badge">❤️ Make a Difference</span>
+          <span className="donation-badge">Make a Difference</span>
           <h2>Support Our Community</h2>
           <p>Your generosity helps us connect volunteers with those in need, creating lasting positive change across Australia.</p>
         </div>
@@ -100,8 +100,8 @@ function DonationSection() {
             </button>
 
             <div className="payment-icons">
-              <span className="payment-icon">💳</span>
-              <span className="payment-icon">🅿️</span>
+              <span className="payment-icon">•</span>
+              <span className="payment-icon">•</span>
               <span className="payment-icon">🏦</span>
               <span className="secure-text">🔒 Secure payment</span>
             </div>
@@ -137,21 +137,21 @@ function DonationSection() {
         {/* Trust Section */}
         <div className="trust-section">
           <div className="trust-item">
-            <span className="trust-icon">🏛️</span>
+            <span className="trust-icon">•</span>
             <div>
               <strong>Registered Charity</strong>
               <span>ABN: 12 345 678 901</span>
             </div>
           </div>
           <div className="trust-item">
-            <span className="trust-icon">📊</span>
+            <span className="trust-icon">•</span>
             <div>
               <strong>Transparent</strong>
               <span>Full financial reports</span>
             </div>
           </div>
           <div className="trust-item">
-            <span className="trust-icon">💯</span>
+            <span className="trust-icon">✓</span>
             <div>
               <strong>Tax Deductible</strong>
               <span>All donations over $2</span>

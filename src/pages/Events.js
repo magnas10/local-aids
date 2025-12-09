@@ -351,7 +351,7 @@ function Events() {
               <p className="event-distance"><span aria-hidden="true">📏</span> <span className="sr-only">Distance:</span> {event.distance} km away</p>
               <p className="event-description">{event.description}</p>
               <div className="event-footer">
-                <span className="attendees"><span aria-hidden="true">👥</span> <span className="sr-only">Attendees:</span> {event.attendees} attending</span>
+                <span className="attendees"><span aria-hidden="true">•</span> <span className="sr-only">Attendees:</span> {event.attendees} attending</span>
                 <button className="event-btn" aria-label={`Register for ${event.title}`}>Register</button>
               </div>
             </div>
