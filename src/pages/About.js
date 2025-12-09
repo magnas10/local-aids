@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
 function About() {
   const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   const team = [
     {
@@ -109,11 +124,14 @@ function About() {
     <div className="about-page">
       {/* Hero Section */}
       <section className="about-hero-pro">
-        <div className="about-hero-bg">
-          <img 
-            src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=800&fit=crop&q=80" 
-            alt="Volunteers working together"
-          />
+        <div className="about-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`about-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
           <div className="about-hero-overlay"></div>
         </div>
         <div className="about-hero-content-pro">
@@ -123,25 +141,44 @@ function About() {
             </svg>
             Our Story
           </span>
-          <h1>Connecting Communities<br/>Through Kindness</h1>
+          <h1>Connecting Communities<br/><span className="highlight">Through Kindness</span></h1>
           <p>
             Local AIDS was born from a simple belief: that everyone has something 
             valuable to offer, and everyone deserves a helping hand when they need it.
           </p>
-          <div className="about-hero-stats">
-            <div className="hero-stat">
-              <span className="hero-stat-num">50K+</span>
-              <span className="hero-stat-label">Volunteers</span>
-            </div>
-            <div className="hero-stat">
-              <span className="hero-stat-num">120K+</span>
-              <span className="hero-stat-label">Lives Changed</span>
-            </div>
-            <div className="hero-stat">
-              <span className="hero-stat-num">500+</span>
-              <span className="hero-stat-label">Partners</span>
+          <div className="about-hero-cta-section">
+            <button className="about-hero-btn-primary" onClick={() => navigate('/signup')}>
+              Join Our Mission
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </button>
+            <div className="about-hero-stats">
+              <div className="hero-stat">
+                <span className="stat-number">50K+</span>
+                <span className="stat-label">Volunteers</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">120K+</span>
+                <span className="stat-label">Lives Changed</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">500+</span>
+                <span className="stat-label">Partners</span>
+              </div>
             </div>
           </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="about-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 

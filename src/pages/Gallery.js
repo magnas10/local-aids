@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
@@ -16,6 +16,21 @@ function Gallery() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isLoggedIn] = useState(false); // This should come from your auth context
   const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   const categories = [
     { id: 'all', label: 'All Photos' },
@@ -246,11 +261,14 @@ function Gallery() {
     <div className="gallery-page-pro">
       {/* Hero Section */}
       <section className="gallery-hero-pro">
-        <div className="gallery-hero-bg">
-          <img 
-            src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=800&fit=crop&q=80" 
-            alt="Volunteers making impact"
-          />
+        <div className="gallery-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`gallery-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
           <div className="gallery-hero-overlay"></div>
         </div>
         <div className="gallery-hero-content-pro">
@@ -262,21 +280,44 @@ function Gallery() {
             </svg>
             Our Impact in Action
           </span>
-          <h1>Community Gallery</h1>
+          <h1>Community<br/><span className="highlight">Gallery</span></h1>
           <p>
             Witness the incredible work done by our volunteers and community members 
             across Australia. Every photo tells a story of compassion and change.
           </p>
-          {isLoggedIn && (
-            <button className="upload-hero-btn-pro" onClick={openUploadModal}>
+          <div className="gallery-hero-cta-section">
+            <button className="gallery-hero-btn-primary" onClick={() => document.getElementById('gallery-grid').scrollIntoView({ behavior: 'smooth' })}>
+              Explore Gallery
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
               </svg>
-              Share Your Story
             </button>
-          )}
+            <div className="gallery-hero-stats">
+              <div className="hero-stat">
+                <span className="stat-number">2,500+</span>
+                <span className="stat-label">Events</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">50K+</span>
+                <span className="stat-label">Volunteers</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">120K+</span>
+                <span className="stat-label">Lives Impacted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="gallery-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 

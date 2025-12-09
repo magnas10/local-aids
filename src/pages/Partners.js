@@ -1,7 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pages.css';
 
 function Partners() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
   const partners = [
     {
       id: 1,
@@ -94,26 +110,72 @@ function Partners() {
   ];
 
   return (
-    <div className="page-container partners-page">
+    <div className="partners-page-pro">
       {/* Hero Section */}
-      <section className="page-hero">
-        <div className="page-hero-content">
-          <span className="page-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+      <section className="partners-hero-pro">
+        <div className="partners-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`partners-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
+          <div className="partners-hero-overlay"></div>
+        </div>
+        <div className="partners-hero-content-pro">
+          <span className="partners-badge-pro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
               <circle cx="9" cy="7" r="4"/>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
-            Our Partners
+            Stronger Together
           </span>
-          <h1>Partners</h1>
-          <p>Working together with leading organizations to strengthen communities across Australia.</p>
+          <h1>Our<br/><span className="highlight">Partners</span></h1>
+          <p>
+            Working together with leading organizations to strengthen 
+            communities across Australia.
+          </p>
+          <div className="partners-hero-cta-section">
+            <button className="partners-hero-btn-primary" onClick={() => document.getElementById('partners-section').scrollIntoView({ behavior: 'smooth' })}>
+              Meet Our Partners
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </button>
+            <div className="partners-hero-stats">
+              <div className="hero-stat">
+                <span className="stat-number">500+</span>
+                <span className="stat-label">Partners</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">50K+</span>
+                <span className="stat-label">Network</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">100+</span>
+                <span className="stat-label">Cities</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="partners-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 
       {/* Current Partners */}
-      <section className="partners-section">
+      <section id="partners-section" className="partners-section">
         <div className="section-container">
           <h2>Our Partners</h2>
           <p className="section-subtitle">We're proud to work with these amazing organizations.</p>

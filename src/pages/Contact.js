@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pages.css';
 
 function Contact() {
@@ -9,6 +9,21 @@ function Contact() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   const handleChange = (e) => {
     setFormData({
@@ -79,11 +94,14 @@ function Contact() {
     <div className="contact-page-pro">
       {/* Hero Section */}
       <section className="contact-hero-pro">
-        <div className="contact-hero-bg">
-          <img 
-            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=800&fit=crop&q=80" 
-            alt="Contact us"
-          />
+        <div className="contact-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`contact-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
           <div className="contact-hero-overlay"></div>
         </div>
         <div className="contact-hero-content-pro">
@@ -93,16 +111,49 @@ function Contact() {
             </svg>
             Get in Touch
           </span>
-          <h1>We'd Love to<br/>Hear From You</h1>
+          <h1>We'd Love to<br/><span className="highlight">Hear From You</span></h1>
           <p>
             Have questions, suggestions, or want to partner with us? 
             Our team is here to help.
           </p>
+          <div className="contact-hero-cta-section">
+            <button className="contact-hero-btn-primary" onClick={() => document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })}>
+              Send a Message
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </button>
+            <div className="contact-hero-stats">
+              <div className="hero-stat">
+                <span className="stat-number">24h</span>
+                <span className="stat-label">Response Time</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">10K+</span>
+                <span className="stat-label">Messages</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">98%</span>
+                <span className="stat-label">Satisfaction</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="contact-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 
       {/* Main Contact Section */}
-      <section className="contact-main-pro">
+      <section id="contact-form" className="contact-main-pro">
         <div className="contact-container-pro">
           {/* Contact Form */}
           <div className="contact-form-section-pro">

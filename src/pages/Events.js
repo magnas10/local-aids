@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pages.css';
 
 function Events() {
@@ -7,6 +7,22 @@ function Events() {
     type: 'all',
     urgency: 'all'
   });
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   const allEvents = [
     {
@@ -179,13 +195,74 @@ function Events() {
   };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1>Volunteer Opportunities & Events</h1>
-        <p>Browse available requests and find opportunities to make a difference across Australia</p>
-      </div>
+    <div className="events-page-pro">
+      {/* Hero Section */}
+      <section className="events-hero-pro">
+        <div className="events-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`events-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
+          <div className="events-hero-overlay"></div>
+        </div>
+        <div className="events-hero-content-pro">
+          <div className="events-hero-text">
+            <span className="events-hero-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              Join Our Community
+            </span>
+            <h1>Volunteer Opportunities<br/><span className="highlight">& Events</span></h1>
+            <p className="hero-tagline">
+              Browse available requests and find opportunities to make a difference across Australia. Your time and skills can transform lives.
+            </p>
+            <div className="events-hero-cta-section">
+              <button className="events-hero-btn-primary" onClick={() => document.getElementById('events-list').scrollIntoView({ behavior: 'smooth' })}>
+                Browse Opportunities
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                  <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                </svg>
+              </button>
+              <div className="events-hero-stats">
+                <div className="hero-stat">
+                  <span className="stat-number">{allEvents.length}+</span>
+                  <span className="stat-label">Active Events</span>
+                </div>
+                <div className="hero-stat">
+                  <span className="stat-number">{allEvents.filter(e => e.urgency === 'urgent').length}</span>
+                  <span className="stat-label">Urgent Needs</span>
+                </div>
+                <div className="hero-stat">
+                  <span className="stat-number">{allEvents.reduce((sum, e) => sum + e.attendees, 0)}+</span>
+                  <span className="stat-label">Volunteers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="events-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </section>
 
-      <section className="filters-container" aria-label="Filter events">
+      {/* Events Content */}
+      <div id="events-list" className="events-content-section">
+        <section className="filters-container" aria-label="Filter events">
         <div className="filter-group">
           <label htmlFor="distance-filter">Distance</label>
           <select 
@@ -287,6 +364,7 @@ function Events() {
           <p>No events match your filters. Try adjusting your search criteria.</p>
         </div>
       )}
+      </div>
     </div>
   );
 }
