@@ -4,17 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
-
-// ScrollToTop component - scrolls to top on route change
-function ScrollToTop() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
 import AdminRoute from './components/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
@@ -29,6 +18,17 @@ import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
 import Partners from './pages/Partners';
+
+// ScrollToTop component - scrolls to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   return (

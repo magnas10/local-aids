@@ -5,31 +5,59 @@ import './Pages.css';
 
 function Signup() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { register, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear errors when user types
+    if (formError) setFormError('');
+    if (error) clearError();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      setFormError('Passwords do not match!');
       return;
     }
-    // Sign up and log in the user
-    login({ name: formData.fullName, email: formData.email });
-    // Redirect to home
-    navigate('/');
+    
+    // Validate password length
+    if (formData.password.length < 6) {
+      setFormError('Password must be at least 6 characters');
+      return;
+    }
+    
+    setLoading(true);
+    setFormError('');
+    
+    // Register the user with API
+    const result = await register({
+      name: formData.fullName,
+      email: formData.email,
+      password: formData.password
+    });
+    
+    setLoading(false);
+    
+    if (result.success) {
+      // Redirect to home on success
+      navigate('/');
+    } else {
+      setFormError(result.error || 'Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -40,6 +68,11 @@ function Signup() {
           <p>Join our community and make a difference</p>
           
           <form onSubmit={handleSubmit} className="auth-form" aria-label="Sign up form">
+            {formError && (
+              <div className="form-error" role="alert">
+                {formError}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="signup-fullname">Full Name</label>
               <input 
@@ -52,6 +85,7 @@ function Signup() {
                 required 
                 autoComplete="name"
                 aria-required="true"
+                disabled={loading}
               />
             </div>
             <div className="form-group">
@@ -66,6 +100,7 @@ function Signup() {
                 required 
                 autoComplete="email"
                 aria-required="true"
+                disabled={loading}
               />
             </div>
             <div className="form-group">
@@ -76,10 +111,12 @@ function Signup() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Create a password"
+                placeholder="Create a password (min 6 characters)"
                 required 
                 autoComplete="new-password"
                 aria-required="true"
+                minLength="6"
+                disabled={loading}
               />
             </div>
             <div className="form-group">
@@ -94,6 +131,7 @@ function Signup() {
                 required 
                 autoComplete="new-password"
                 aria-required="true"
+                disabled={loading}
               />
             </div>
             <div className="form-options">
@@ -102,7 +140,9 @@ function Signup() {
                 <span>I agree to the Terms & Conditions</span>
               </label>
             </div>
-            <button type="submit" className="auth-btn">Create Account</button>
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </button>
           </form>
 
           <div className="auth-divider" aria-hidden="true">
