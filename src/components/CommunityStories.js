@@ -10,7 +10,7 @@ function CommunityStories() {
       description: 'Sarah helped 15 elderly residents with weekly grocery shopping during winter, ensuring they had fresh food and a friendly face to chat with.',
       impact: '15 families supported',
       category: 'Groceries',
-      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
+      image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop&q=80',
       volunteer: 'Sarah Mitchell',
       duration: '3 months'
     },
@@ -21,7 +21,7 @@ function CommunityStories() {
       description: 'Local volunteers transformed an empty lot into a thriving community garden, providing fresh produce for local families.',
       impact: '50+ vegetables grown',
       category: 'Community',
-      image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop',
+      image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=400&fit=crop&q=80',
       volunteer: 'Green Thumbs Team',
       duration: '6 months'
     },
@@ -32,7 +32,7 @@ function CommunityStories() {
       description: 'Volunteers provided free tech support helping seniors stay connected with their families through video calls and social media.',
       impact: '30 seniors helped',
       category: 'Technology',
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=300&fit=crop',
+      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=400&fit=crop&q=80',
       volunteer: 'Tech Buddies',
       duration: '2 months'
     }

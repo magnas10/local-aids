@@ -1,3 +1,6 @@
+/* Import Google Fonts - MUST BE FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
 /* =========================================
    LOCAL AIDS - Professional Theme System
    ========================================= */
@@ -19,17 +22,24 @@
   --primary-bg: #E6FFFD;        /* Primary Background - Light Teal */
   
   /* ===========================================
-     2. ACCENT COLORS (Gold CTA System)
+     2. SECONDARY COLORS (Deep Blue)
+     =========================================== */
+  --secondary: #2563eb;
+  --secondary-dark: #1d4ed8;
+  --secondary-light: #3b82f6;
+  
+  /* ===========================================
+     3. ACCENT COLORS (Gold CTA System)
      =========================================== */
   --accent-gold: #FFD700;       /* Accent Gold - CTA */
   --accent-gold-hover: #F0C000; /* Accent Gold Hover - Deep Amber */
   --accent-gold-soft: #FFEC8B;  /* Accent Soft - Pale Gold */
   
   /* ===========================================
-     3. STATUS / SEMANTIC COLORS
+     4. STATUS / SEMANTIC COLORS
      =========================================== */
   --status-success: #4CAF50;    /* Success / Low Priority - Fresh Green */
-  --status-warning: lch(87.44% 58.8 93.2);    /* Medium Priority - Warm Yellow */
+  --status-warning: #FFD93D;    /* Medium Priority - Warm Yellow */
   --status-danger: #FF6B6B;     /* High Priority / Urgent - Alert Red */
   --status-info: #3B82F6;       /* Info - Blue */
   
@@ -79,7 +89,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --shadow-primary: 0 10px 30px rgba(32, 178, 170, 0.25);
+  --shadow-primary: 0 10px 30px rgba(32, 178, 170, 0.3);
   --shadow-gold: 0 10px 30px rgba(255, 215, 0, 0.3);
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
   --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.12);
@@ -112,9 +122,6 @@
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 }
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 /* Reset & Base Styles */
 * {

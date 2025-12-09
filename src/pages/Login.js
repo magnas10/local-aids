@@ -5,36 +5,50 @@ import './Pages.css';
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Clear errors when user types
+    if (formError) setFormError('');
+    if (error) clearError();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login form submitted', formData);
     
     // Validate form
     if (!formData.email || !formData.password) {
-      alert('Please fill in all fields');
+      setFormError('Please fill in all fields');
       return;
     }
     
-    // Login the user
-    console.log('Calling login function');
-    login({ name: 'User', email: formData.email });
+    setLoading(true);
+    setFormError('');
     
-    console.log('Redirecting to home');
-    // Redirect to home
-    navigate('/');
+    // Login the user with API
+    const result = await login({
+      email: formData.email,
+      password: formData.password
+    });
+    
+    setLoading(false);
+    
+    if (result.success) {
+      // Redirect to home on success
+      navigate('/');
+    } else {
+      setFormError(result.error || 'Login failed. Please try again.');
+    }
   };
 
   return (
@@ -45,6 +59,11 @@ function Login() {
           <p>Sign in to continue to Local AIDS</p>
           
           <form onSubmit={handleSubmit} className="auth-form" aria-label="Login form">
+            {formError && (
+              <div className="form-error" role="alert">
+                {formError}
+              </div>
+            )}
             <div className="form-group">
               <label htmlFor="login-email">Email Address</label>
               <input 
@@ -57,6 +76,7 @@ function Login() {
                 required 
                 autoComplete="email"
                 aria-required="true"
+                disabled={loading}
               />
             </div>
             <div className="form-group">
@@ -71,6 +91,7 @@ function Login() {
                 required 
                 autoComplete="current-password"
                 aria-required="true"
+                disabled={loading}
               />
             </div>
             <div className="form-options">
@@ -80,7 +101,9 @@ function Login() {
               </label>
               <Link to="/forgot-password" className="forgot-link">Forgot Password?</Link>
             </div>
-            <button type="submit" className="auth-btn">Sign In</button>
+            <button type="submit" className="auth-btn" disabled={loading}>
+              {loading ? 'Signing In...' : 'Sign In'}
+            </button>
           </form>
 
           <div className="auth-divider" aria-hidden="true">
