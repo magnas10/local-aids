@@ -75,7 +75,7 @@ function Testimonials() {
                 </div>
               </div>
               <span className={`author-type ${testimonials[activeIndex].type.toLowerCase()}`}>
-                {testimonials[activeIndex].type === 'Helped' ? '🙏 Received Help' : '💪 Volunteer'}
+                {testimonials[activeIndex].type === 'Helped' ? 'Received Help' : 'Volunteer'}
               </span>
             </div>
             <div className="testimonial-details">
@@ -107,7 +107,7 @@ function Testimonials() {
                   <span className="nav-location">{testimonial.location}</span>
                 </div>
                 <span className={`nav-type ${testimonial.type.toLowerCase()}`}>
-                  {testimonial.type === 'Helped' ? '🙏' : '💪'}
+                  {testimonial.type === 'Helped' ? '✓' : '•'}
                 </span>
               </button>
             ))}

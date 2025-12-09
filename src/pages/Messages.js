@@ -24,7 +24,7 @@ function Messages() {
     {
       id: 3,
       name: 'Community Group',
-      avatar: '👥',
+      avatar: 'CG',
       lastMessage: 'Next meeting is scheduled for Friday.',
       time: 'Yesterday',
       unread: 0

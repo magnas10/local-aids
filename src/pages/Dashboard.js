@@ -4,10 +4,10 @@ import './Pages.css';
 function Dashboard() {
   const dashboardData = {
     overview: [
-      { label: 'Total Donations', value: '$12,450', icon: '💰', change: '+12%' },
-      { label: 'Active Volunteers', value: '234', icon: '👥', change: '+8%' },
-      { label: 'Events This Month', value: '8', icon: '📅', change: '+2' },
-      { label: 'People Helped', value: '1,420', icon: '❤️', change: '+15%' }
+      { label: 'Total Donations', value: '$12,450', icon: '$', change: '+12%' },
+      { label: 'Active Volunteers', value: '234', icon: '•', change: '+8%' },
+      { label: 'Events This Month', value: '8', icon: '•', change: '+2' },
+      { label: 'People Helped', value: '1,420', icon: '♡', change: '+15%' }
     ],
     recentActivity: [
       { action: 'New volunteer registered', time: '2 hours ago', type: 'volunteer' },

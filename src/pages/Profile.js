@@ -29,10 +29,10 @@ function Profile() {
       reviews: 23
     },
     recentActivity: [
-      { type: 'event', title: 'Community Health Workshop', date: 'Nov 20, 2025', icon: '📚' },
-      { type: 'volunteer', title: 'Transport to Medical Appointment', date: 'Nov 18, 2025', icon: '🚗' },
-      { type: 'donation', title: 'Donated $50 to Food Bank', date: 'Nov 15, 2025', icon: '💚' },
-      { type: 'event', title: 'Volunteer Training Session', date: 'Nov 10, 2025', icon: '🎓' },
+      { type: 'event', title: 'Community Health Workshop', date: 'Nov 20, 2025', icon: '•' },
+      { type: 'volunteer', title: 'Transport to Medical Appointment', date: 'Nov 18, 2025', icon: '•' },
+      { type: 'donation', title: 'Donated $50 to Food Bank', date: 'Nov 15, 2025', icon: '•' },
+      { type: 'event', title: 'Volunteer Training Session', date: 'Nov 10, 2025', icon: '•' },
     ],
     certifications: [
       { name: 'First Aid Certificate', issuer: 'Red Cross Australia', date: 'Valid until Dec 2026' },
@@ -47,7 +47,7 @@ function Profile() {
       <div className="profile-cover">
         <div className="cover-overlay"></div>
         <button className="cover-edit-btn" aria-label="Edit cover photo">
-          📷 Edit Cover
+          Edit Cover
         </button>
       </div>
 
@@ -75,7 +75,7 @@ function Profile() {
           <div className="profile-header-actions">
             <button className="btn-primary">Edit Profile</button>
             <button className="btn-secondary">Share Profile</button>
-            <button className="btn-icon" aria-label="Settings">⚙️</button>
+            <button className="btn-icon" aria-label="Settings">⚙</button>
           </div>
         </div>
       </div>
@@ -151,28 +151,28 @@ function Profile() {
                 <h3>Contact Information</h3>
                 <div className="contact-list">
                   <div className="contact-item">
-                    <span className="contact-icon">✉️</span>
+                    <span className="contact-icon">@</span>
                     <div>
                       <label>Email</label>
                       <p>{user.email}</p>
                     </div>
                   </div>
                   <div className="contact-item">
-                    <span className="contact-icon">📱</span>
+                    <span className="contact-icon">•</span>
                     <div>
                       <label>Phone</label>
                       <p>{user.phone}</p>
                     </div>
                   </div>
                   <div className="contact-item">
-                    <span className="contact-icon">🌐</span>
+                    <span className="contact-icon">•</span>
                     <div>
                       <label>Website</label>
                       <p>{user.website}</p>
                     </div>
                   </div>
                   <div className="contact-item">
-                    <span className="contact-icon">💼</span>
+                    <span className="contact-icon">•</span>
                     <div>
                       <label>LinkedIn</label>
                       <p>{user.linkedin}</p>

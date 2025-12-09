@@ -34,14 +34,14 @@ function RequestHelpModal({ isOpen, onClose }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const helpTypes = [
-    { id: 'transport', icon: '🚗', label: 'Transport', desc: 'Medical appointments, shopping trips' },
-    { id: 'shopping', icon: '🛒', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
-    { id: 'companionship', icon: '💬', label: 'Companionship', desc: 'Social visits, phone calls' },
-    { id: 'household', icon: '🏠', label: 'Household Help', desc: 'Light cleaning, gardening' },
-    { id: 'meals', icon: '🍽️', label: 'Meal Support', desc: 'Meal preparation, delivery' },
-    { id: 'medical', icon: '🏥', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
-    { id: 'tech', icon: '💻', label: 'Tech Support', desc: 'Device setup, digital assistance' },
-    { id: 'other', icon: '📋', label: 'Other', desc: 'Any other assistance needed' }
+    { id: 'transport', icon: '•', label: 'Transport', desc: 'Medical appointments, shopping trips' },
+    { id: 'shopping', icon: '•', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
+    { id: 'companionship', icon: '•', label: 'Companionship', desc: 'Social visits, phone calls' },
+    { id: 'household', icon: '•', label: 'Household Help', desc: 'Light cleaning, gardening' },
+    { id: 'meals', icon: '•', label: 'Meal Support', desc: 'Meal preparation, delivery' },
+    { id: 'medical', icon: '•', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
+    { id: 'tech', icon: '•', label: 'Tech Support', desc: 'Device setup, digital assistance' },
+    { id: 'other', icon: '•', label: 'Other', desc: 'Any other assistance needed' }
   ];
 
   const handleChange = (e) => {

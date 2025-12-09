@@ -185,17 +185,7 @@ function About() {
       {/* Mission Section */}
       <section className="about-mission-pro">
         <div className="mission-container-pro">
-          <div className="mission-image-pro">
-            <img 
-              src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=700&h=500&fit=crop&q=80" 
-              alt="Volunteers helping community" 
-            />
-            <div className="mission-image-badge">
-              <span className="badge-number">5+</span>
-              <span className="badge-text">Years of Impact</span>
-            </div>
-          </div>
-          <div className="mission-content-pro">
+          <div className="mission-content-pro" style={{ gridTemplateColumns: '1fr', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
             <span className="section-label">Our Mission</span>
             <h2>Creating a More Connected & Compassionate Australia</h2>
             <p>
@@ -204,7 +194,7 @@ function About() {
               access help. Every connection we facilitate creates ripples of positive 
               change across the nation.
             </p>
-            <div className="mission-features">
+            <div className="mission-features" style={{ justifyContent: 'center', alignItems: 'center' }}>
               <div className="mission-feature">
                 <div className="feature-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -65,22 +65,22 @@ function Partners() {
 
   const partnerBenefits = [
     {
-      icon: '📊',
+      icon: '•',
       title: 'Expanded Reach',
       description: 'Access our network of 50,000+ community members and volunteers.'
     },
     {
-      icon: '💻',
+      icon: '•',
       title: 'Technology Platform',
       description: 'Leverage our technology to streamline volunteer coordination.'
     },
     {
-      icon: '📣',
+      icon: '•',
       title: 'Co-Marketing',
       description: 'Joint marketing and awareness campaigns to amplify impact.'
     },
     {
-      icon: '📈',
+      icon: '•',
       title: 'Impact Reporting',
       description: 'Detailed analytics and reporting on community impact.'
     }
@@ -90,17 +90,17 @@ function Partners() {
     {
       title: 'Community Partners',
       description: 'Non-profit organizations working directly with communities',
-      icon: '🏘️'
+      icon: '•'
     },
     {
       title: 'Corporate Partners',
       description: 'Businesses supporting community initiatives through CSR programs',
-      icon: '🏢'
+      icon: '•'
     },
     {
       title: 'Government Partners',
       description: 'Local councils and government agencies serving communities',
-      icon: '🏛️'
+      icon: '•'
     },
     {
       title: 'Technology Partners',
