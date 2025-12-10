@@ -192,6 +192,8 @@
   font-weight: 500;
 }
 
+<<<<<<< HEAD
+=======
 /* ===========================
    EVENTS PAGE - HERO SECTION
    =========================== */
@@ -447,6 +449,8 @@
     min-width: 80px;
   }
 }
+
+>>>>>>> b27cf10a907ac863167abf61e70703ab70c308a2
 /* Events Page - Professional */
 .events-grid {
   display: grid;
@@ -7547,6 +7551,8 @@
 }
 
 /* ===========================
+<<<<<<< HEAD
+=======
    PROFESSIONAL PARTNERS PAGE STYLES
    =========================== */
 
@@ -7973,6 +7979,7 @@
 }
 
 /* ===========================
+>>>>>>> b27cf10a907ac863167abf61e70703ab70c308a2
    PROFESSIONAL CONTACT PAGE STYLES
    =========================== */
 
