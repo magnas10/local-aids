@@ -326,8 +326,15 @@ function Donate() {
             <div className="campaigns-title">
               <span className="section-label">Community Initiatives</span>
               <h2>Featured Fundraising Campaigns</h2>
-              <p>Be part of a movement making real change. Support campaigns that empower communities across Australia and create opportunities for those who need it most.</p>
+              <p>Join our community in supporting meaningful initiatives that create lasting impact across Australia</p>
             </div>
+            <button className="create-campaign-btn-pro" onClick={() => setShowCreateCampaign(true)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Create Campaign
+            </button>
           </div>
 
           <div className="campaigns-grid-pro">
@@ -736,8 +743,25 @@ function Donate() {
             </div>
           </div>
 
-          {/* Trust Badges Section */}
-          <div className="donate-trust-section-pro">
+          {/* Impact Section */}
+          <div className="donate-impact-section-pro">
+            <div className="impact-card-pro">
+              <h3>Measurable Impact</h3>
+              <p className="impact-intro-pro">Every contribution creates tangible, lasting change in our communities:</p>
+              <div className="impact-list-pro">
+                {impactItems.map((item, index) => (
+                  <div key={index} className="impact-item-pro">
+                    <img src={item.image} alt="" className="impact-icon-pro" />
+                    <div className="impact-details-pro">
+                      <span className="impact-amount-pro">${item.amount}</span>
+                      <p>{item.impact}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Trust Badges */}
             <div className="trust-badges-pro">
               <div className="trust-badge-pro">
                 <div className="trust-icon-pro">
