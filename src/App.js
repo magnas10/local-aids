@@ -18,6 +18,10 @@ import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
 import Partners from './pages/Partners';
+import Blog from './pages/Blog';
+import CommunityGuidelines from './pages/CommunityGuidelines';
+import SafetyTips from './pages/SafetyTips';
+import HelpCenter from './pages/HelpCenter';
 
 // ScrollToTop component - scrolls to top on route change
 function ScrollToTop() {
@@ -51,6 +55,10 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/partners" element={<Partners />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/community-guidelines" element={<CommunityGuidelines />} />
+              <Route path="/safety-tips" element={<SafetyTips />} />
+              <Route path="/help-center" element={<HelpCenter />} />
             </Routes>
           </main>
           <Footer />
