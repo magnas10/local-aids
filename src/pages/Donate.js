@@ -743,63 +743,44 @@ function Donate() {
             </div>
           </div>
 
-          {/* Impact Section */}
-          <div className="donate-impact-section-pro">
-            <div className="impact-card-pro">
-              <h3>Measurable Impact</h3>
-              <p className="impact-intro-pro">Every contribution creates tangible, lasting change in our communities:</p>
-              <div className="impact-list-pro">
-                {impactItems.map((item, index) => (
-                  <div key={index} className="impact-item-pro">
-                    <img src={item.image} alt="" className="impact-icon-pro" />
-                    <div className="impact-details-pro">
-                      <span className="impact-amount-pro">${item.amount}</span>
-                      <p>{item.impact}</p>
-                    </div>
-                  </div>
-                ))}
+          {/* Trust Badges */}
+          <div className="trust-badges-pro">
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l8-4 8 4v14"/>
+                  <path d="M9 21v-8h6v8"/>
+                </svg>
+              </div>
+              <div className="trust-text">
+                <strong>Registered Charity</strong>
+                <span>ABN: 12 345 678 901</span>
               </div>
             </div>
-
-            {/* Trust Badges */}
-            <div className="trust-badges-pro">
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 21h18"/>
-                    <path d="M5 21V7l8-4 8 4v14"/>
-                    <path d="M9 21v-8h6v8"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>Registered Charity</strong>
-                  <span>ABN: 12 345 678 901</span>
-                </div>
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
               </div>
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>Tax Deductible</strong>
-                  <span>All donations over $2</span>
-                </div>
+              <div className="trust-text">
+                <strong>Tax Deductible</strong>
+                <span>All donations over $2</span>
               </div>
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>95% to Programs</strong>
-                  <span>Minimal overhead costs</span>
-                </div>
+            </div>
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <div className="trust-text">
+                <strong>95% to Programs</strong>
+                <span>Minimal overhead costs</span>
               </div>
             </div>
           </div>
