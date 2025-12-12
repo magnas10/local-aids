@@ -1,44 +1,147 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
 function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const { user, isLoggedIn, updateUser } = useAuth();
+  const navigate = useNavigate();
 
-  const user = {
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    phone: '+61 412 345 678',
-    location: 'Melbourne, Victoria, Australia',
-    joinDate: 'January 2024',
-    role: 'Senior Volunteer',
-    title: 'Community Health Advocate',
-    bio: 'Passionate about making a difference in my community. Active volunteer and advocate for health awareness. Dedicated to supporting individuals affected by HIV/AIDS through compassionate care and education.',
-    website: 'www.johndoe-volunteer.com',
-    linkedin: 'linkedin.com/in/johndoe',
-    verified: true,
-    badges: ['Top Volunteer', 'Community Leader', 'First Responder', '100+ Hours'],
-    skills: ['Health Education', 'Patient Support', 'Event Planning', 'Counseling', 'First Aid', 'Transport'],
-    languages: ['English', 'Spanish'],
-    availability: 'Weekends & Evenings',
-    stats: {
-      eventsAttended: 47,
-      hoursVolunteered: 156,
-      donations: 12,
-      peopleHelped: 89,
-      rating: 4.9,
-      reviews: 23
-    },
-    recentActivity: [
-      { type: 'event', title: 'Community Health Workshop', date: 'Nov 20, 2025', icon: '•' },
-      { type: 'volunteer', title: 'Transport to Medical Appointment', date: 'Nov 18, 2025', icon: '•' },
-      { type: 'donation', title: 'Donated $50 to Food Bank', date: 'Nov 15, 2025', icon: '•' },
-      { type: 'event', title: 'Volunteer Training Session', date: 'Nov 10, 2025', icon: '•' },
-    ],
-    certifications: [
-      { name: 'First Aid Certificate', issuer: 'Red Cross Australia', date: 'Valid until Dec 2026' },
-      { name: 'Mental Health First Aid', issuer: 'MHFA Australia', date: 'Valid until Mar 2026' },
-      { name: 'Community Support Training', issuer: 'Local AIDS', date: 'Completed Jan 2024' },
-    ]
+  // Use actual user data from context with fallback values - memoized to update when user changes
+  const profileData = useMemo(() => {
+    if (!user) return null;
+    return {
+      name: user.name || 'User',
+      email: user.email || '',
+      phone: user.phone || 'Not provided',
+      location: user.address ? `${user.address.city || ''}, ${user.address.state || ''}, ${user.address.country || ''}`.replace(/^,\s*|,\s*$/g, '') || 'Location not provided' : 'Location not provided',
+      joinDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recently joined',
+      role: user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member',
+      title: user.bio || 'Community Member',
+      bio: user.bio || 'No bio provided yet. Update your profile to tell others about yourself.',
+      website: user.website || '',
+      linkedin: user.linkedin || '',
+      verified: user.isVerified || false,
+      badges: user.badges || [],
+      skills: user.skills || [],
+      languages: user.languages || ['English'],
+      availability: user.availability || 'Not specified',
+      avatar: user.avatar || null,
+      stats: {
+        eventsAttended: 0,
+        hoursVolunteered: 0,
+        donations: 0,
+        peopleHelped: 0,
+        rating: 5.0,
+        reviews: 0
+      },
+      recentActivity: [],
+      certifications: []
+    };
+  }, [user]); // This will recalculate when user changes
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoggedIn || !user) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, user, navigate]);
+
+  // Don't render if not logged in or if profileData is not ready
+  if (!isLoggedIn || !user || !profileData) {
+    return <div>Loading...</div>;
+  }
+
+  // Initialize edit form data when modal opens
+  const handleEditProfile = () => {
+    console.log('Opening edit modal with user data:', user);
+    setEditFormData({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      bio: user?.bio || '',
+      address: {
+        city: user?.address?.city || '',
+        state: user?.address?.state || '',
+        country: user?.address?.country || ''
+      }
+    });
+    setShowEditModal(true);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setEditFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
+      }));
+    } else {
+      setEditFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Save profile changes
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      console.log('Sending profile update with data:', editFormData);
+      
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editFormData)
+      });
+      
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (response.ok) {
+        console.log('Profile update successful:', data);
+        
+        // Update user in context - this will trigger profileData to recalculate
+        if (updateUser && data.user) {
+          updateUser(data.user);
+          console.log('Updated user in context:', data.user);
+        } else {
+          // Fallback: update localStorage and reload
+          localStorage.setItem('user', JSON.stringify(data.user || editFormData));
+          window.location.reload();
+        }
+        
+        setShowEditModal(false);
+        alert('Profile updated successfully!');
+      } else {
+        console.error('Profile update failed:', data);
+        // Show the specific error message from the server
+        const errorMessage = data.message || data.errors?.[0]?.msg || 'Failed to update profile';
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Network error updating profile:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -55,25 +158,25 @@ function Profile() {
       <div className="profile-header-section">
         <div className="profile-header-container">
           <div className="profile-avatar-large">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt={user.name} />
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt={profileData.name} />
             <button className="avatar-edit-btn" aria-label="Edit profile photo">📷</button>
-            {user.verified && <span className="verified-badge" title="Verified Volunteer">✓</span>}
+            {profileData.verified && <span className="verified-badge" title="Verified Volunteer">✓</span>}
           </div>
           <div className="profile-header-info">
             <div className="profile-name-row">
-              <h1>{user.name}</h1>
+              <h1>{profileData.name}</h1>
               <span className="profile-status online">● Online</span>
             </div>
-            <p className="profile-title">{user.title}</p>
-            <p className="profile-location">📍 {user.location}</p>
+            <p className="profile-title">{profileData.title}</p>
+            <p className="profile-location">📍 {profileData.location}</p>
             <div className="profile-badges">
-              {user.badges.map((badge, index) => (
+              {profileData.badges.map((badge, index) => (
                 <span key={index} className="badge-tag">{badge}</span>
               ))}
             </div>
           </div>
           <div className="profile-header-actions">
-            <button className="btn-primary">Edit Profile</button>
+            <button className="btn-primary" onClick={handleEditProfile}>Edit Profile</button>
             <button className="btn-secondary">Share Profile</button>
             <button className="btn-icon" aria-label="Settings">⚙</button>
           </div>
@@ -84,24 +187,24 @@ function Profile() {
       <div className="profile-stats-bar">
         <div className="stats-bar-container">
           <div className="stat-box">
-            <span className="stat-value">{user.stats.eventsAttended}</span>
+            <span className="stat-value">{profileData.stats.eventsAttended}</span>
             <span className="stat-title">Events</span>
           </div>
           <div className="stat-box">
-            <span className="stat-value">{user.stats.hoursVolunteered}</span>
+            <span className="stat-value">{profileData.stats.hoursVolunteered}</span>
             <span className="stat-title">Hours</span>
           </div>
           <div className="stat-box">
-            <span className="stat-value">{user.stats.peopleHelped}</span>
+            <span className="stat-value">{profileData.stats.peopleHelped}</span>
             <span className="stat-title">People Helped</span>
           </div>
           <div className="stat-box">
-            <span className="stat-value">${user.stats.donations * 50}</span>
+            <span className="stat-value">${profileData.stats.donations * 50}</span>
             <span className="stat-title">Donated</span>
           </div>
           <div className="stat-box highlight">
-            <span className="stat-value">⭐ {user.stats.rating}</span>
-            <span className="stat-title">{user.stats.reviews} Reviews</span>
+            <span className="stat-value">⭐ {profileData.stats.rating}</span>
+            <span className="stat-title">{profileData.stats.reviews} Reviews</span>
           </div>
         </div>
       </div>
@@ -143,7 +246,7 @@ function Profile() {
               {/* About Card */}
               <div className="profile-card-section">
                 <h3>About</h3>
-                <p className="about-text">{user.bio}</p>
+                <p className="about-text">{profileData.bio}</p>
               </div>
 
               {/* Contact Card */}
@@ -154,28 +257,28 @@ function Profile() {
                     <span className="contact-icon">@</span>
                     <div>
                       <label>Email</label>
-                      <p>{user.email}</p>
+                      <p>{profileData.email}</p>
                     </div>
                   </div>
                   <div className="contact-item">
                     <span className="contact-icon">•</span>
                     <div>
                       <label>Phone</label>
-                      <p>{user.phone}</p>
+                      <p>{profileData.phone}</p>
                     </div>
                   </div>
                   <div className="contact-item">
                     <span className="contact-icon">•</span>
                     <div>
                       <label>Website</label>
-                      <p>{user.website}</p>
+                      <p>{profileData.website || 'Not provided'}</p>
                     </div>
                   </div>
                   <div className="contact-item">
                     <span className="contact-icon">•</span>
                     <div>
                       <label>LinkedIn</label>
-                      <p>{user.linkedin}</p>
+                      <p>{profileData.linkedin || 'Not provided'}</p>
                     </div>
                   </div>
                 </div>
@@ -185,9 +288,13 @@ function Profile() {
               <div className="profile-card-section">
                 <h3>Skills & Expertise</h3>
                 <div className="skills-list">
-                  {user.skills.map((skill, index) => (
-                    <span key={index} className="skill-tag">{skill}</span>
-                  ))}
+                  {profileData.skills.length > 0 ? (
+                    profileData.skills.map((skill, index) => (
+                      <span key={index} className="skill-tag">{skill}</span>
+                    ))
+                  ) : (
+                    <p>No skills added yet. Edit your profile to add skills.</p>
+                  )}
                 </div>
               </div>
 
@@ -195,7 +302,7 @@ function Profile() {
               <div className="profile-card-section">
                 <h3>Languages</h3>
                 <div className="languages-list">
-                  {user.languages.map((lang, index) => (
+                  {profileData.languages.map((lang, index) => (
                     <span key={index} className="language-tag">🌍 {lang}</span>
                   ))}
                 </div>
@@ -210,15 +317,15 @@ function Profile() {
                 <div className="quick-info-list">
                   <div className="quick-info-item">
                     <span className="info-label">Role</span>
-                    <span className="info-value role-badge">{user.role}</span>
+                    <span className="info-value role-badge">{profileData.role}</span>
                   </div>
                   <div className="quick-info-item">
                     <span className="info-label">Member Since</span>
-                    <span className="info-value">{user.joinDate}</span>
+                    <span className="info-value">{profileData.joinDate}</span>
                   </div>
                   <div className="quick-info-item">
                     <span className="info-label">Availability</span>
-                    <span className="info-value">{user.availability}</span>
+                    <span className="info-value">{profileData.availability}</span>
                   </div>
                 </div>
               </div>
@@ -227,15 +334,19 @@ function Profile() {
               <div className="profile-card-section">
                 <h3>Recent Activity</h3>
                 <div className="activity-timeline">
-                  {user.recentActivity.map((activity, index) => (
-                    <div key={index} className="activity-item">
-                      <span className="activity-icon">{activity.icon}</span>
-                      <div className="activity-content">
-                        <p className="activity-title">{activity.title}</p>
-                        <span className="activity-date">{activity.date}</span>
+                  {profileData.recentActivity.length > 0 ? (
+                    profileData.recentActivity.map((activity, index) => (
+                      <div key={index} className="activity-item">
+                        <span className="activity-icon">{activity.icon}</span>
+                        <div className="activity-content">
+                          <p className="activity-title">{activity.title}</p>
+                          <span className="activity-date">{activity.date}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>No recent activity. Start volunteering to see your activity here!</p>
+                  )}
                 </div>
                 <button className="view-all-btn">View All Activity →</button>
               </div>
@@ -245,11 +356,11 @@ function Profile() {
                 <h3>🏆 Impact Summary</h3>
                 <div className="impact-stats">
                   <div className="impact-item">
-                    <span className="impact-number">{user.stats.peopleHelped}</span>
+                    <span className="impact-number">{profileData.stats.peopleHelped}</span>
                     <span className="impact-label">Lives Touched</span>
                   </div>
                   <div className="impact-item">
-                    <span className="impact-number">{user.stats.hoursVolunteered}</span>
+                    <span className="impact-number">{profileData.stats.hoursVolunteered}</span>
                     <span className="impact-label">Hours Given</span>
                   </div>
                 </div>
@@ -263,15 +374,19 @@ function Profile() {
           <div className="activity-full-list">
             <h2>All Activity</h2>
             <div className="activity-timeline-full">
-              {user.recentActivity.concat(user.recentActivity).map((activity, index) => (
-                <div key={index} className="activity-item-full">
-                  <span className="activity-icon-full">{activity.icon}</span>
-                  <div className="activity-content-full">
-                    <p className="activity-title-full">{activity.title}</p>
-                    <span className="activity-date-full">{activity.date}</span>
+              {profileData.recentActivity.length > 0 ? (
+                profileData.recentActivity.map((activity, index) => (
+                  <div key={index} className="activity-item-full">
+                    <span className="activity-icon-full">{activity.icon}</span>
+                    <div className="activity-content-full">
+                      <p className="activity-title-full">{activity.title}</p>
+                      <span className="activity-date-full">{activity.date}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>No activity recorded yet. Start volunteering to see your activity here!</p>
+              )}
             </div>
           </div>
         )}
@@ -280,19 +395,21 @@ function Profile() {
           <div className="certifications-section">
             <h2>Certifications & Training</h2>
             <div className="certifications-grid">
-              {user.certifications.map((cert, index) => (
-                <div key={index} className="certification-card">
-                  <div className="cert-icon">🎖️</div>
-                  <h4>{cert.name}</h4>
-                  <p className="cert-issuer">{cert.issuer}</p>
-                  <span className="cert-date">{cert.date}</span>
+              {profileData.certifications.length > 0 ? (
+                profileData.certifications.map((cert, index) => (
+                  <div key={index} className="certification-card">
+                    <div className="cert-icon">🏆</div>
+                    <h4>{cert.name}</h4>
+                    <p className="cert-issuer">{cert.issuer}</p>
+                    <span className="cert-date">{cert.date}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="no-certifications">
+                  <p>No certifications added yet.</p>
+                  <button className="btn-primary">Add Certification</button>
                 </div>
-              ))}
-              <div className="certification-card add-cert">
-                <div className="cert-icon">➕</div>
-                <h4>Add Certification</h4>
-                <p className="cert-issuer">Upload your credentials</p>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -325,6 +442,109 @@ function Profile() {
           </div>
         )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Edit Profile</h3>
+              <button className="modal-close-btn" onClick={() => setShowEditModal(false)}>×</button>
+            </div>
+            
+            <form onSubmit={handleSaveProfile} className="edit-profile-form">
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={editFormData.name || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={editFormData.email || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={editFormData.phone || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="bio">Bio</label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={editFormData.bio || ''}
+                  onChange={handleInputChange}
+                  rows="4"
+                  placeholder="Tell others about yourself..."
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city">City</label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="address.city"
+                    value={editFormData.address?.city || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="state">State</label>
+                  <input
+                    type="text"
+                    id="state"
+                    name="address.state"
+                    value={editFormData.address?.state || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="country">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="address.country"
+                  value={editFormData.address?.country || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="modal-actions">
+                <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={saving}>
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

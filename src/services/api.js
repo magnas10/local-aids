@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -9,6 +9,8 @@ const getAuthToken = () => {
 // Helper function to make authenticated requests
 const authFetch = async (url, options = {}) => {
   const token = getAuthToken();
+  
+  console.log('Making API call to:', `${API_BASE_URL}${url}`);
   
   const config = {
     ...options,
@@ -24,8 +26,11 @@ const authFetch = async (url, options = {}) => {
 
   const response = await fetch(`${API_BASE_URL}${url}`, config);
   
+  console.log('API response status:', response.status);
+  
   // Handle unauthorized errors
   if (response.status === 401) {
+    console.log('Unauthorized - removing token');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Optionally redirect to login
@@ -37,10 +42,19 @@ const authFetch = async (url, options = {}) => {
 
 // Parse response and handle errors
 const handleResponse = async (response) => {
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    console.error('Failed to parse JSON response:', err);
+    throw new Error('Server response was not valid JSON');
+  }
+  
+  console.log('Response data:', data);
   
   if (!response.ok) {
-    const error = data.message || data.errors?.[0]?.msg || 'Something went wrong';
+    const error = data.message || data.errors?.[0]?.msg || `HTTP ${response.status}: ${response.statusText}`;
+    console.error('API Error:', error);
     throw new Error(error);
   }
   
@@ -50,21 +64,35 @@ const handleResponse = async (response) => {
 // ============ AUTH API ============
 export const authAPI = {
   register: async (userData) => {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-    return handleResponse(response);
+    try {
+      console.log('AuthAPI register called with:', userData);
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+      console.log('Register response status:', response.status);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Network error during registration:', error);
+      throw new Error('Unable to connect to server. Please check your internet connection.');
+    }
   },
 
   login: async (credentials) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
-    return handleResponse(response);
+    try {
+      console.log('AuthAPI login called with:', { email: credentials.email });
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
+      console.log('Login response status:', response.status);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Network error during login:', error);
+      throw new Error('Unable to connect to server. Please check your internet connection.');
+    }
   },
 
   getMe: async () => {

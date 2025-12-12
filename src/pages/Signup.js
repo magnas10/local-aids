@@ -28,6 +28,12 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate all fields are filled
+    if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
+      setFormError('Please fill in all fields');
+      return;
+    }
+    
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setFormError('Passwords do not match!');

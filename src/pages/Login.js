@@ -32,6 +32,12 @@ function Login() {
       return;
     }
     
+    // Basic email validation
+    if (!formData.email.includes('@')) {
+      setFormError('Please enter a valid email address');
+      return;
+    }
+    
     setLoading(true);
     setFormError('');
     
