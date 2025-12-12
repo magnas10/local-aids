@@ -4,8 +4,6 @@ import { AuthProvider } from './context/AuthContext';
 import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import AdminRoute from './components/AdminRoute';
-import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Messages from './pages/Messages';

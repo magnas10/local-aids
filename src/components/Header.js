@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { messagesAPI } from '../services/api';
 import './Header.css';
 
 function Header() {
@@ -47,50 +48,92 @@ function Header() {
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  const notifications = [
-    {
-      id: 1,
-      type: 'match',
-      title: 'New Volunteer Match!',
-      message: 'You\'ve been matched with "Emergency Food Bank" event near you.',
-      time: '5 min ago',
-      unread: true
-    },
-    {
-      id: 2,
-      type: 'status',
-      title: 'Task Status Updated',
-      message: 'Your registration for "Community Health Workshop" has been approved.',
-      time: '1 hour ago',
-      unread: true
-    },
-    {
-      id: 3,
-      type: 'reminder',
-      title: 'Upcoming Event Reminder',
-      message: 'Don\'t forget! "Volunteer Training Session" starts tomorrow at 9:00 AM.',
-      time: '2 hours ago',
-      unread: true
-    },
-    {
-      id: 4,
-      type: 'match',
-      title: 'New Opportunity Available',
-      message: 'A new urgent care request is available 3km from your location.',
-      time: '3 hours ago',
-      unread: false
-    },
-    {
-      id: 5,
-      type: 'status',
-      title: 'Hours Logged',
-      message: 'Your 4 volunteer hours have been verified and added to your profile.',
-      time: 'Yesterday',
-      unread: false
-    }
-  ];
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  useEffect(() => {
+    const loadNotifications = async () => {
+      if (!isLoggedIn) {
+        setUnreadCount(0);
+        setNotifications([]);
+        return;
+      }
+      try {
+        const res = await messagesAPI.unreadCount();
+        const messageCount = res.unreadCount || 0;
+        setUnreadCount(messageCount);
+
+        // Generate contextual notifications for the Local AIDS app
+        const appNotifications = [
+          ...(messageCount > 0 ? [{
+            id: 'msg-1',
+            type: 'message',
+            title: 'New Messages',
+            message: `You have ${messageCount} unread message${messageCount === 1 ? '' : 's'}`,
+            time: 'Just now',
+            unread: true,
+            action: '/messages'
+          }] : []),
+          {
+            id: 'event-1',
+            type: 'reminder',
+            title: 'Event Reminder',
+            message: 'Community Health Fair starts tomorrow at 9:00 AM',
+            time: '2 hours ago',
+            unread: true,
+            action: '/events'
+          },
+          {
+            id: 'volunteer-1',
+            type: 'match',
+            title: 'Volunteer Match',
+            message: 'You\'ve been matched with "Food Bank Distribution" event',
+            time: '5 hours ago',
+            unread: true,
+            action: '/events'
+          },
+          {
+            id: 'donation-1',
+            type: 'status',
+            title: 'Donation Receipt',
+            message: 'Thank you for your donation! Receipt has been sent to your email',
+            time: 'Yesterday',
+            unread: false,
+            action: '/donate'
+          },
+          {
+            id: 'community-1',
+            type: 'info',
+            title: 'Community Update',
+            message: 'New HIV testing services available at our center',
+            time: '2 days ago',
+            unread: false,
+            action: '/about'
+          },
+          {
+            id: 'support-1',
+            type: 'status',
+            title: 'Help Request Approved',
+            message: 'Your request for support services has been approved',
+            time: '3 days ago',
+            unread: false,
+            action: '/dashboard'
+          }
+        ];
+
+        setNotifications(appNotifications);
+      } catch (err) {
+        setUnreadCount(0);
+        setNotifications([]);
+      }
+    };
+
+    loadNotifications();
+    
+    // Refresh notifications every 30 seconds
+    const interval = setInterval(loadNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   const getNotificationIcon = (type) => {
     switch(type) {
@@ -114,6 +157,20 @@ function Header() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        );
+      case 'message':
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        );
+      case 'info':
+        return (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
           </svg>
         );
       default: 
@@ -340,43 +397,58 @@ function Header() {
                   >
                     <div className="notification-header">
                       <h4 id="notifications-title">Notifications</h4>
-                      <button 
-                        className="mark-all-read"
-                        aria-label="Mark all notifications as read"
-                      >
-                        Mark all read
-                      </button>
                     </div>
                     <div 
                       className="notification-list" 
                       role="list" 
                       aria-labelledby="notifications-title"
                     >
-                      {notifications.map(notification => (
-                        <div 
-                          key={notification.id} 
-                          className={`notification-item ${notification.unread ? 'unread' : ''}`}
-                          role="listitem"
-                          tabIndex={0}
-                          aria-label={`${notification.unread ? 'Unread: ' : ''}${notification.title}. ${notification.message}. ${notification.time}`}
-                        >
-                          <span className="notification-icon" aria-hidden="true">
-                            {getNotificationIcon(notification.type)}
-                          </span>
-                          <div className="notification-content">
-                            <h5>{notification.title}</h5>
-                            <p>{notification.message}</p>
-                            <span className="notification-time">{notification.time}</span>
+                      {notifications.length === 0 ? (
+                        <div className="notification-item" style={{ cursor: 'default', textAlign: 'center', padding: '32px 24px' }}>
+                          <div className="notification-content" style={{ textAlign: 'center' }}>
+                            <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>No notifications yet</p>
                           </div>
-                          {notification.unread && <span className="unread-dot" aria-hidden="true"></span>}
                         </div>
-                      ))}
+                      ) : (
+                        notifications.map(notification => (
+                          <div 
+                            key={notification.id}
+                            className={`notification-item ${notification.unread ? 'unread' : ''}`}
+                            role="listitem"
+                            tabIndex={0}
+                            onClick={() => {
+                              navigate(notification.action);
+                              closeAllDropdowns();
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                navigate(notification.action);
+                                closeAllDropdowns();
+                              }
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <span className="notification-icon" aria-hidden="true">
+                              {getNotificationIcon(notification.type)}
+                            </span>
+                            <div className="notification-content">
+                              <h5>{notification.title}</h5>
+                              <p>{notification.message}</p>
+                              <span className="notification-time">{notification.time}</span>
+                            </div>
+                            {notification.unread && <span className="unread-dot" aria-hidden="true"></span>}
+                          </div>
+                        ))
+                      )}
                     </div>
-                    <div className="notification-footer">
-                      <Link to="/notifications" onClick={closeAllDropdowns}>
-                        View All Notifications
-                      </Link>
-                    </div>
+                    {notifications.length > 0 && (
+                      <div className="notification-footer">
+                        <Link to="/dashboard" onClick={closeAllDropdowns}>
+                          View All Notifications
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

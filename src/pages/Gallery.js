@@ -18,6 +18,13 @@ function Gallery() {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const scrollToGallery = () => {
+    const el = document.getElementById('gallery-grid');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const heroImages = [
     'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
     'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
@@ -42,35 +49,99 @@ function Gallery() {
     { id: 'community', label: 'Community Events' }
   ];
 
+  const mediaBase = process.env.REACT_APP_MEDIA_BASE || 'http://localhost:5050';
+  const mediaUrl = (path) => `${mediaBase}${path}`;
+
   const galleryImages = [
     {
       id: 1,
-      src: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&h=600&fit=crop&q=80',
-      title: 'Melbourne Food Bank Distribution',
+      src: mediaUrl('/uploads/gallery/VIC-Foodbank-Christmas-Hampers-012.jpg'),
+      title: 'Food Bank Distribution',
       category: 'food-drive',
-      location: 'Melbourne, VIC',
-      date: 'November 2025',
-      volunteers: 45
+      location: 'Victoria',
+      date: 'December 2025',
+      volunteers: 45,
+      description: 'Distributing Christmas hampers to families in need across Victoria.'
     },
     {
       id: 2,
-      src: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&h=600&fit=crop&q=80',
-      title: 'Sydney Beach Cleanup',
-      category: 'environment',
-      location: 'Bondi Beach, Sydney',
-      date: 'October 2025',
+      src: mediaUrl('/uploads/gallery/FRP_image_692c43882a492.jpg'),
+      title: 'Disaster Relief Operations',
+      category: 'disaster-relief',
+      location: 'Regional Australia',
+      date: 'November 2025',
       volunteers: 120,
-      description: 'Community members came together to clean up Bondi Beach, collecting over 500kg of waste.'
+      description: 'Emergency response team providing critical support during disaster relief operations.'
     },
     {
       id: 3,
-      src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80',
-      title: 'After School Tutoring Program',
-      category: 'education',
-      location: 'Brisbane, QLD',
+      src: mediaUrl('/uploads/gallery/most-common-elderly-care-needs-keystone-health.png'),
+      title: 'Elderly Care Support',
+      category: 'elderly-care',
+      location: 'Community Centers',
       date: 'November 2025',
       volunteers: 28,
-      description: 'Volunteer tutors helping underprivileged students with their homework and exam preparation.'
+      description: 'Providing comprehensive elderly care and support services to seniors in our community.'
+    },
+    {
+      id: 4,
+      src: mediaUrl('/uploads/gallery/id-like-go-that-way-shot-resident-nurse-outside-retirement-home-garden-scaled-(1).jpg'),
+      title: 'Senior Care & Wellness',
+      category: 'elderly-care',
+      location: 'Retirement Communities',
+      date: 'October 2025',
+      volunteers: 15,
+      description: 'Healthcare professionals and volunteers ensuring elderly residents enjoy quality care and active lifestyles.'
+    },
+    {
+      id: 5,
+      src: mediaUrl('/uploads/gallery/natural-disaster-relief-charity-response-emergency.jpg'),
+      title: 'Emergency Disaster Response',
+      category: 'disaster-relief',
+      location: 'Flood-Affected Areas',
+      date: 'September 2025',
+      volunteers: 200,
+      description: 'Coordinated emergency response providing essential aid and support to disaster-affected communities.'
+    },
+    {
+      id: 6,
+      src: mediaUrl('/uploads/gallery/Placemaking-Clarence-Valley-Events-banner.jpg'),
+      title: 'Community Events & Placemaking',
+      category: 'community',
+      location: 'Clarence Valley',
+      date: 'November 2025',
+      volunteers: 35,
+      description: 'Creating vibrant community spaces that bring neighbors together and strengthen local bonds.'
+    },
+    {
+      id: 7,
+      src: mediaUrl('/uploads/gallery/Digital-Pathways-AI-Education-Day-780x439.webp'),
+      title: 'Digital Education & AI Literacy',
+      category: 'education',
+      location: 'Sydney, NSW',
+      date: 'October 2025',
+      volunteers: 22,
+      description: 'Teaching digital skills and AI literacy to empower the next generation of learners.'
+    },
+    {
+      id: 8,
+      src: mediaUrl('/uploads/gallery/20240627_THP_EducationFacts_shutterstock_2383311319.png.webp'),
+      title: 'Education Impact Program',
+      category: 'education',
+      location: 'Darwin, NT',
+      date: 'December 2024',
+      volunteers: 50,
+      description: 'Transforming lives through education and creating opportunities for underprivileged students.'
+    },
+    {
+      id: 9,
+      src: mediaUrl('/uploads/gallery/istockphoto-1199705901-612x612.jpg'),
+      title: 'Community Health & Wellness',
+      category: 'community',
+      location: 'Cairns, QLD',
+      date: 'August 2025',
+      volunteers: 40,
+      description: 'Promoting health, wellness, and community wellbeing through integrated support programs.'
     },
     {
       id: 4,
@@ -161,14 +232,227 @@ function Gallery() {
       date: 'November 2025',
       volunteers: 18,
       description: 'Serving free nutritious breakfasts to homeless individuals every Sunday morning.'
+    },
+    {
+      id: 13,
+      src: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&h=600&fit=crop&q=80',
+      title: 'Disaster Relief Flood Response',
+      category: 'disaster-relief',
+      location: 'Regional NSW',
+      date: 'October 2025',
+      volunteers: 150,
+      description: 'Emergency response team providing critical support and rescue operations during flood crisis.'
+    },
+    {
+      id: 14,
+      src: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=800&h=600&fit=crop&q=80',
+      title: 'Elderly Care & Support',
+      category: 'elderly-care',
+      location: 'Melbourne, VIC',
+      date: 'November 2025',
+      volunteers: 25,
+      description: 'Healthcare workers and volunteers providing compassionate care and support to elderly residents.'
+    },
+    {
+      id: 15,
+      src: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&h=600&fit=crop&q=80',
+      title: 'Education & Digital Literacy',
+      category: 'education',
+      location: 'Sydney, NSW',
+      date: 'October 2025',
+      volunteers: 30,
+      description: 'Teaching children and communities essential digital skills for a connected future.'
+    },
+    {
+      id: 16,
+      src: 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=800&h=600&fit=crop&q=80',
+      title: 'Community Service & Volunteering',
+      category: 'community',
+      location: 'Brisbane, QLD',
+      date: 'November 2025',
+      volunteers: 60,
+      description: 'Young volunteers actively engaging in community service and environmental protection.'
+    },
+    {
+      id: 17,
+      src: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&h=600&fit=crop&q=80',
+      title: 'Food Distribution Center',
+      category: 'food-drive',
+      location: 'Melbourne, VIC',
+      date: 'November 2025',
+      volunteers: 40,
+      description: 'Organizing and distributing food supplies to families in need throughout the region.'
+    },
+    {
+      id: 18,
+      src: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&h=600&fit=crop&q=80',
+      title: 'Community Art & Culture',
+      category: 'community',
+      location: 'Perth, WA',
+      date: 'September 2025',
+      volunteers: 35,
+      description: 'Creating inclusive spaces for community members to share art, culture, and ideas.'
+    },
+    {
+      id: 19,
+      src: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=600&fit=crop&q=80',
+      title: 'Environmental Conservation',
+      category: 'environment',
+      location: 'Hobart, TAS',
+      date: 'October 2025',
+      volunteers: 70,
+      description: 'Working together to preserve natural environments and create sustainable communities.'
+    },
+    {
+      id: 20,
+      src: 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&h=600&fit=crop&q=80',
+      title: 'Education Support Program',
+      category: 'education',
+      location: 'Adelaide, SA',
+      date: 'November 2025',
+      volunteers: 32,
+      description: 'Supporting underprivileged students with tutoring, mentorship, and educational resources.'
+    },
+    {
+      id: 21,
+      src: 'https://share.google/iaoFktwaa1PXHWpOg',
+      title: 'Community Outreach Day',
+      category: 'community',
+      location: 'Sydney, NSW',
+      date: 'December 2025',
+      volunteers: 30,
+      description: 'Neighbors coming together for a day of service, care packages, and connection.'
+    },
+    {
+      id: 22,
+      src: 'https://share.google/SdhjH0gH7FTNZM72r',
+      title: 'Flood Relief Supply Line',
+      category: 'disaster-relief',
+      location: 'Lismore, NSW',
+      date: 'November 2025',
+      volunteers: 85,
+      description: 'Coordinated volunteers moving essentials to families recovering from flooding.'
+    },
+    {
+      id: 23,
+      src: 'https://share.google/6ULmdVzp3XBOG01Rw',
+      title: 'Elderly Care Visits',
+      category: 'elderly-care',
+      location: 'Melbourne, VIC',
+      date: 'October 2025',
+      volunteers: 18,
+      description: 'Friendly visits and wellness checks for seniors needing extra support.'
+    },
+    {
+      id: 24,
+      src: 'https://share.google/9QQxEoq1ZCLqIkdnE',
+      title: 'Education Laptop Drive',
+      category: 'education',
+      location: 'Brisbane, QLD',
+      date: 'September 2025',
+      volunteers: 40,
+      description: 'Collecting refurbished laptops to close the digital divide for students.'
+    },
+    {
+      id: 25,
+      src: 'https://share.google/ng71O8RpeDxCIA1eJ',
+      title: 'Urban Tree Planting',
+      category: 'environment',
+      location: 'Canberra, ACT',
+      date: 'August 2025',
+      volunteers: 65,
+      description: 'Planting native trees and restoring green corridors across urban streets.'
+    },
+    {
+      id: 26,
+      src: 'https://share.google/ZatWsSHsnAR2pGBaf',
+      title: 'Food Bank Packing',
+      category: 'food-drive',
+      location: 'Perth, WA',
+      date: 'July 2025',
+      volunteers: 55,
+      description: 'Packing pantry staples and fresh produce for weekly community distributions.'
+    },
+    {
+      id: 27,
+      src: 'https://share.google/UzVXATjeIL5UWdUP4',
+      title: 'Emergency Shelter Setup',
+      category: 'disaster-relief',
+      location: 'Townsville, QLD',
+      date: 'July 2025',
+      volunteers: 70,
+      description: 'Setting up temporary shelters and comfort stations for displaced families.'
+    },
+    {
+      id: 28,
+      src: 'https://share.google/lhNs4ZBeuWE2iGWLl',
+      title: 'Youth Coding Workshop',
+      category: 'education',
+      location: 'Darwin, NT',
+      date: 'June 2025',
+      volunteers: 20,
+      description: 'Introducing students to coding fundamentals and creative problem solving.'
+    },
+    {
+      id: 29,
+      src: 'https://share.google/Xn7YQT8uDDRyG9dix',
+      title: 'Community Arts Fair',
+      category: 'community',
+      location: 'Hobart, TAS',
+      date: 'May 2025',
+      volunteers: 25,
+      description: 'A vibrant arts fair celebrating local makers and raising funds for outreach.'
+    },
+    {
+      id: 30,
+      src: 'https://share.google/I8yok4JPBayZgxtGN',
+      title: 'Sustainable Gardens Project',
+      category: 'environment',
+      location: 'Adelaide, SA',
+      date: 'April 2025',
+      volunteers: 32,
+      description: 'Building community gardens with water-wise planting and compost hubs.'
+    },
+    {
+      id: 31,
+      src: 'https://share.google/S26EiUgPlWXBuAjo1',
+      title: 'Meals on Wheels Prep',
+      category: 'food-drive',
+      location: 'Geelong, VIC',
+      date: 'March 2025',
+      volunteers: 28,
+      description: 'Preparing home-delivered meals for residents with limited mobility.'
+    },
+    {
+      id: 32,
+      src: 'https://share.google/2OiBCVocXqaaM2Pp4',
+      title: 'Coastal Cleanup Crew',
+      category: 'environment',
+      location: 'Gold Coast, QLD',
+      date: 'February 2025',
+      volunteers: 90,
+      description: 'Removing debris and plastic from beaches to protect marine life and waterways.'
+    },
+    {
+      id: 33,
+      src: mediaUrl('/uploads/gallery/a97d3b67e50afa3aab0af4a4b3c97722.avif'),
+      title: 'Community Resilience Portrait',
+      category: 'community',
+      location: 'Across Australia',
+      date: 'December 2025',
+      volunteers: 24,
+      description: 'Capturing the spirit of volunteers who power local outreach and support every day.'
+    },
+    {
+      id: 34,
+      src: mediaUrl('/uploads/gallery/books-with-ladders.jpg'),
+      title: 'Pathways to Learning',
+      category: 'education',
+      location: 'Nationwide',
+      date: 'December 2025',
+      volunteers: 16,
+      description: 'Building ladders of opportunity through access to books and education resources.'
     }
-  ];
-
-  const stats = [
-    { number: '2,500+', label: 'Events Completed' },
-    { number: '50,000+', label: 'Volunteers Engaged' },
-    { number: '120,000+', label: 'Lives Impacted' },
-    { number: '500+', label: 'Partner Organizations' }
   ];
 
   const filteredImages = activeFilter === 'all' 
@@ -286,7 +570,7 @@ function Gallery() {
             across Australia. Every photo tells a story of compassion and change.
           </p>
           <div className="gallery-hero-cta-section">
-            <button className="gallery-hero-btn-primary" onClick={() => document.getElementById('gallery-grid').scrollIntoView({ behavior: 'smooth' })}>
+            <button className="gallery-hero-btn-primary" onClick={scrollToGallery}>
               Explore Gallery
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
                 <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -493,26 +777,20 @@ function Gallery() {
         </div>
       )}
 
-      {/* Stats Section */}
-      <section className="gallery-stats-pro">
-        <div className="gallery-stats-container-pro">
-          {stats.map((stat, index) => (
-            <div key={index} className="gallery-stat-item-pro">
-              <span className="stat-number-pro">{stat.number}</span>
-              <span className="stat-label-pro">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Filter Section */}
-      <section className="gallery-filters-pro">
+      <section className="gallery-filters-pro" id="gallery-filters">
         <div className="filters-container-gallery-pro">
           <div className="filters-header-pro">
             <div>
               <span className="section-label">Browse Collection</span>
               <h2>Explore by Category</h2>
             </div>
+            <button className="gallery-hero-btn-secondary" onClick={scrollToGallery}>
+              Browse Collection
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </button>
             {isLoggedIn && (
               <button className="add-photo-btn-pro" onClick={openUploadModal}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
@@ -538,7 +816,7 @@ function Gallery() {
       </section>
 
       {/* Gallery Grid */}
-      <section className="gallery-grid-section-pro">
+      <section className="gallery-grid-section-pro" id="gallery-grid">
         <div className="gallery-grid-container-pro">
           <div className="gallery-grid-pro">
             {filteredImages.map((image) => (

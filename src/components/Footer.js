@@ -102,9 +102,9 @@ function Footer() {
             © 2025 Local AIDS. Connecting Communities Through Kindness. All rights reserved.
           </p>
           <div className="footer-legal">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cookie Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/cookies">Cookie Policy</a>
           </div>
         </div>
       </div>

@@ -110,7 +110,8 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Send a new message
 // @access  Private
 router.post('/', protect, [
-  body('recipientId').notEmpty().withMessage('Recipient is required'),
+  body('recipientId').optional().isMongoId().withMessage('Invalid recipient'),
+  body('recipientEmail').optional().isEmail().withMessage('Please provide a valid recipient email'),
   body('content').trim().notEmpty().withMessage('Message content is required')
 ], async (req, res) => {
   try {
@@ -119,16 +120,23 @@ router.post('/', protect, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { recipientId, subject, content, parentMessage } = req.body;
+    const { recipientId, recipientEmail, subject, content, parentMessage } = req.body;
 
-    // Verify recipient exists
-    const recipient = await User.findById(recipientId);
+    if (!recipientId && !recipientEmail) {
+      return res.status(400).json({ message: 'Recipient is required' });
+    }
+
+    // Resolve recipient by ID or email
+    const recipient = recipientId
+      ? await User.findById(recipientId)
+      : await User.findOne({ email: recipientEmail.toLowerCase() });
+
     if (!recipient) {
       return res.status(404).json({ message: 'Recipient not found' });
     }
 
     // Can't message yourself
-    if (recipientId === req.user.id) {
+    if (recipient.id === req.user.id) {
       return res.status(400).json({ message: 'Cannot send message to yourself' });
     }
 

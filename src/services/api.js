@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -45,6 +45,42 @@ const handleResponse = async (response) => {
   }
   
   return data;
+};
+
+// ============ MESSAGES API ============
+export const messagesAPI = {
+  list: async ({ folder = 'inbox', page = 1, limit = 20 } = {}) => {
+    const response = await authFetch(`/messages?folder=${folder}&page=${page}&limit=${limit}`);
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await authFetch(`/messages/${id}`);
+    return handleResponse(response);
+  },
+
+  send: async ({ recipientId, recipientEmail, subject, content, parentMessage }) => {
+    const response = await authFetch('/messages', {
+      method: 'POST',
+      body: JSON.stringify({ recipientId, recipientEmail, subject, content, parentMessage })
+    });
+    return handleResponse(response);
+  },
+
+  markRead: async (id) => {
+    const response = await authFetch(`/messages/${id}/read`, { method: 'PUT' });
+    return handleResponse(response);
+  },
+
+  remove: async (id) => {
+    const response = await authFetch(`/messages/${id}`, { method: 'DELETE' });
+    return handleResponse(response);
+  },
+
+  unreadCount: async () => {
+    const response = await authFetch('/messages/unread-count');
+    return handleResponse(response);
+  }
 };
 
 // ============ AUTH API ============
@@ -207,41 +243,7 @@ export const donationsAPI = {
   },
 };
 
-// ============ MESSAGES API ============
-export const messagesAPI = {
-  getAll: async (folder = 'inbox', page = 1) => {
-    const response = await authFetch(`/messages?folder=${folder}&page=${page}`);
-    return handleResponse(response);
-  },
 
-  getUnreadCount: async () => {
-    const response = await authFetch('/messages/unread-count');
-    return handleResponse(response);
-  },
-
-  getById: async (id) => {
-    const response = await authFetch(`/messages/${id}`);
-    return handleResponse(response);
-  },
-
-  send: async (messageData) => {
-    const response = await authFetch('/messages', {
-      method: 'POST',
-      body: JSON.stringify(messageData),
-    });
-    return handleResponse(response);
-  },
-
-  markAsRead: async (id) => {
-    const response = await authFetch(`/messages/${id}/read`, { method: 'PUT' });
-    return handleResponse(response);
-  },
-
-  delete: async (id) => {
-    const response = await authFetch(`/messages/${id}`, { method: 'DELETE' });
-    return handleResponse(response);
-  },
-};
 
 // ============ CONTACT API ============
 export const contactAPI = {
@@ -367,7 +369,7 @@ export const partnersAPI = {
 };
 
 // Export all APIs
-export default {
+const api = {
   auth: authAPI,
   users: usersAPI,
   events: eventsAPI,
@@ -377,3 +379,5 @@ export default {
   gallery: galleryAPI,
   partners: partnersAPI,
 };
+
+export default api;
