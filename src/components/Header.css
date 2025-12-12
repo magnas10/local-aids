@@ -339,6 +339,31 @@
   margin: 8px 0;
 }
 
+/* User Info in Dropdown */
+.dropdown-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #666;
+  word-break: break-all;
+}
+
 /* Notification Bell */
 .notification-dropdown-container {
   position: relative;
