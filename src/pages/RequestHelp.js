@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+// Google Maps Places Autocomplete integration
+
 import './Pages.css';
 
 function RequestHelp() {
@@ -11,9 +13,52 @@ function RequestHelp() {
       name: '',
       phone: '',
       email: '',
-      address: ''
+      address: '',
+      addressValidated: false,
+      addressPlaceId: ''
     }
   });
+
+  const [addressError, setAddressError] = useState('');
+  const autocompleteRef = useRef(null);
+
+  // Load Google Maps script dynamically
+  React.useEffect(() => {
+    if (!window.google) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places`;
+      script.async = true;
+      script.onload = () => initAutocomplete();
+      document.body.appendChild(script);
+    } else {
+      initAutocomplete();
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  function initAutocomplete() {
+    if (!window.google || !autocompleteRef.current) return;
+    const autocomplete = new window.google.maps.places.Autocomplete(
+      autocompleteRef.current,
+      { types: ['geocode'], componentRestrictions: { country: 'us' } }
+    );
+    autocomplete.setFields(['formatted_address', 'place_id']);
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (place && place.formatted_address && place.place_id) {
+        setFormData((prev) => ({
+          ...prev,
+          contactInfo: {
+            ...prev.contactInfo,
+            address: place.formatted_address,
+            addressValidated: true,
+            addressPlaceId: place.place_id
+          }
+        }));
+        setAddressError('');
+      }
+    });
+  }
 
   const steps = [
     { number: 1, title: 'Help Type', active: currentStep === 1, completed: currentStep > 1 },
@@ -223,12 +268,23 @@ function RequestHelp() {
               <input
                 type="text"
                 placeholder="Address"
+                ref={autocompleteRef}
                 value={formData.contactInfo.address}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: { ...formData.contactInfo, address: e.target.value }
-                })}
+                onChange={(e) => {
+                  setFormData({
+                    ...formData,
+                    contactInfo: {
+                      ...formData.contactInfo,
+                      address: e.target.value,
+                      addressValidated: false,
+                      addressPlaceId: ''
+                    }
+                  });
+                  setAddressError('');
+                }}
+                autoComplete="off"
               />
+              {addressError && <div style={{ color: 'red', marginTop: 4 }}>{addressError}</div>}
             </div>
           </div>
         );
@@ -289,7 +345,16 @@ function RequestHelp() {
           )}
           {currentStep < 4 ? (
             <button 
-              onClick={nextStep} 
+              onClick={() => {
+                // Validate address on step 3 before proceeding
+                if (currentStep === 3) {
+                  if (!formData.contactInfo.addressValidated) {
+                    setAddressError('Please select a real address from the suggestions.');
+                    return;
+                  }
+                }
+                nextStep();
+              }}
               className="btn-primary"
               disabled={currentStep === 1 && (!formData.helpType || !formData.urgency)}
             >
@@ -300,6 +365,8 @@ function RequestHelp() {
               Submit Request
             </button>
           )}
+        // INSTRUCTIONS: Replace YOUR_GOOGLE_MAPS_API_KEY above with your actual Google Maps API key.
+        // For production, store the key securely (e.g., in environment variables or .env file, and proxy it if needed).
         </div>
       </div>
     </div>

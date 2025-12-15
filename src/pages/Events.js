@@ -382,12 +382,20 @@ function Events() {
               </div>
               
               <div className="opportunity-actions">
-                <button className="directions-btn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M9 11H1l8-8v6h8l-8 8v-6z"/>
-                  </svg>
-                  Directions
-                </button>
+                {event.location && event.location !== 'Flexible' && (
+                  <a
+                    className="directions-btn"
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.location)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Get directions to this event"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 11H1l8-8v6h8l-8 8v-6z"/>
+                    </svg>
+                    Directions
+                  </a>
+                )}
                 <button className="volunteer-btn">
                   Volunteer Now
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

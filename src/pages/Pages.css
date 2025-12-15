@@ -1,3 +1,117 @@
+/* =========================
+   REQUEST SUCCESS MODAL
+   ========================= */
+.request-success-modal {
+  background: #e8f8f3;
+  border-radius: 28px;
+  box-shadow: 0 12px 48px rgba(44, 62, 80, 0.22);
+  padding: 72px 60px 60px 60px;
+  max-width: 700px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 48px;
+  font-family: inherit;
+  min-height: 340px;
+}
+
+.request-success-modal .success-icon {
+  background: #26a69a;
+  border-radius: 50%;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.2rem;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(38, 166, 154, 0.18);
+  margin-right: 0;
+}
+
+.request-success-modal .modal-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.request-success-modal .modal-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #1a3c34;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.request-success-modal .modal-message {
+  color: #2c3e50;
+  font-size: 1.25rem;
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+.request-success-modal .modal-details {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(44, 62, 80, 0.09);
+  padding: 32px 32px;
+  margin-left: 32px;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-size: 1.18rem;
+  color: #222;
+}
+
+.request-success-modal .modal-details strong {
+  font-weight: 700;
+  color: #26a69a;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.request-success-modal .modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: #26a69a;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.request-success-modal .modal-close:hover {
+  color: #e74c3c;
+}
+
+@media (max-width: 900px) {
+  .request-success-modal {
+    max-width: 98vw;
+    padding: 40px 10px 30px 10px;
+    gap: 18px;
+  }
+  .request-success-modal .modal-details {
+    margin-left: 0;
+    min-width: unset;
+    width: 100%;
+    margin-top: 18px;
+    padding: 24px 12px;
+    font-size: 1rem;
+  }
+  .request-success-modal .success-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 2.2rem;
+  }
+  .request-success-modal .modal-title {
+    font-size: 1.3rem;
+  }
+}
 /* Common Page Styles - Professional Theme */
 .page-container {
   max-width: 1200px;
@@ -7,7 +121,9 @@
   width: 100%;
   box-sizing: border-box;
 }
-
+/* ===========================
+  EVENTS PAGE - HERO SECTION
+  =========================== */
 /* Dashboard Containers */
 .dashboard-container {
   max-width: 1400px;
@@ -12607,11 +12723,11 @@
 }
 
 .member-count {
-  font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--text-muted, #718096);
+  margin-bottom: 25px;
+  font-size: 0.95rem;
   font-weight: 500;
 }
-
 .no-conversations {
   padding: 40px 20px;
   text-align: center;
@@ -12642,13 +12758,13 @@
     min-height: 500px;
   }
   
-  .conversations-list {
-    max-height: 200px;
-  }
-  
-  .announcements-container {
-    padding: 20px;
-  }
+      text-align: left;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
   
   .announcement-header {
     flex-direction: column;
