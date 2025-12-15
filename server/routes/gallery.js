@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
     const skip = (page - 1) * limit;
     const { category, featured } = req.query;
 
-    const query = { isPublic: true };
+    const query = { isPublic: true, isApproved: true };
     if (category) query.category = category;
     if (featured === 'true') query.isFeatured = true;
 
@@ -111,8 +111,8 @@ router.get('/:id', async (req, res) => {
 
 // @route   POST /api/gallery
 // @desc    Upload a new gallery item
-// @access  Private/Admin
-router.post('/', protect, admin, upload.single('image'), [
+// @access  Private (any logged-in user)
+router.post('/', protect, upload.single('image'), [
   body('title').trim().notEmpty().withMessage('Title is required')
 ], async (req, res) => {
   try {
@@ -121,22 +121,26 @@ router.post('/', protect, admin, upload.single('image'), [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image file is required' });
+    // Allow either uploaded file or provided imageUrl
+    if (!req.file && !req.body.imageUrl) {
+      return res.status(400).json({ message: 'Image file or imageUrl is required' });
     }
 
-    const { title, description, category, event, tags, isPublic, isFeatured } = req.body;
+    const { title, description, category, event, tags, isPublic, isFeatured, imageUrl } = req.body;
 
     const item = new GalleryItem({
       title,
       description,
-      imageUrl: `/uploads/gallery/${req.file.filename}`,
+      imageUrl: req.file ? `/uploads/gallery/${req.file.filename}` : imageUrl,
       category: category || 'other',
       event: event || null,
       tags: tags ? tags.split(',').map(t => t.trim()) : [],
       uploadedBy: req.user.id,
-      isPublic: isPublic !== 'false',
-      isFeatured: isFeatured === 'true'
+      // Default to public for non-admin uploads unless explicitly set to false
+      isPublic: isPublic === 'false' ? false : true,
+      isFeatured: isFeatured === 'true',
+      // Moderation: auto-approve admins, mark others pending
+      isApproved: req.user.role === 'admin'
     });
 
     await item.save();
@@ -204,6 +208,28 @@ router.delete('/:id', protect, admin, async (req, res) => {
     res.json({ message: 'Gallery item deleted successfully' });
   } catch (error) {
     console.error('Delete gallery item error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PATCH /api/gallery/:id/approve
+// @desc    Approve a pending gallery item (admin only)
+// @access  Private/Admin
+router.patch('/:id/approve', protect, admin, async (req, res) => {
+  try {
+    const item = await GalleryItem.findByIdAndUpdate(
+      req.params.id,
+      { $set: { isApproved: true, isPublic: true } },
+      { new: true }
+    ).populate('uploadedBy', 'name');
+
+    if (!item) {
+      return res.status(404).json({ message: 'Gallery item not found' });
+    }
+
+    res.json({ message: 'Gallery item approved', item });
+  } catch (error) {
+    console.error('Approve gallery item error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

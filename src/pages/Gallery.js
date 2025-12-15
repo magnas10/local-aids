@@ -11,8 +11,11 @@ function Gallery() {
     category: 'community',
     location: '',
     description: '',
-    image: null
+    image: null,
+    imageUrl: ''
   });
+  const [apiItems, setApiItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isLoggedIn] = useState(false); // This should come from your auth context
   const navigate = useNavigate();
@@ -39,6 +42,37 @@ function Gallery() {
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
+  // Fetch gallery items from backend
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/gallery')
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || 'Failed to load gallery');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        const items = (data.items || []).map((item) => ({
+          id: item._id,
+          src: mediaUrl(item.imageUrl),
+          title: item.title,
+          category: item.category || 'community',
+          location: item.location || 'Community',
+          date: new Date(item.createdAt || Date.now()).toLocaleDateString(),
+          volunteers: 0,
+          description: item.description || ''
+        }));
+        setApiItems(items);
+      })
+      .catch(() => {
+        // Non-blocking: keep static images if API fails
+        setApiItems([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const categories = [
     { id: 'all', label: 'All Photos' },
     { id: 'food-drive', label: 'Food Drives' },
@@ -49,7 +83,7 @@ function Gallery() {
     { id: 'community', label: 'Community Events' }
   ];
 
-  const mediaBase = process.env.REACT_APP_MEDIA_BASE || 'http://localhost:5050';
+  const mediaBase = process.env.REACT_APP_MEDIA_BASE || 'http://localhost:5001';
   const mediaUrl = (path) => `${mediaBase}${path}`;
 
   const galleryImages = [
@@ -452,12 +486,199 @@ function Gallery() {
       date: 'December 2025',
       volunteers: 16,
       description: 'Building ladders of opportunity through access to books and education resources.'
+    },
+    {
+      id: 35,
+      src: 'https://images.unsplash.com/photo-1581579186988-6c0d7c1c97b4?w=800&h=600&fit=crop&q=80',
+      title: 'Food Bank Volunteers',
+      category: 'food-drive',
+      location: 'Adelaide, SA',
+      date: 'May 2025',
+      volunteers: 22,
+      description: 'Packing fresh produce and pantry items for community families.'
+    },
+    {
+      id: 36,
+      src: 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=800&h=600&fit=crop&q=80',
+      title: 'STEM Learning',
+      category: 'education',
+      location: 'Melbourne, VIC',
+      date: 'June 2025',
+      volunteers: 18,
+      description: 'Hands-on science and coding workshops for teens.'
+    },
+    {
+      id: 37,
+      src: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=800&h=600&fit=crop&q=80',
+      title: 'Park Cleanup Crew',
+      category: 'environment',
+      location: 'Brisbane, QLD',
+      date: 'April 2025',
+      volunteers: 30,
+      description: 'Removing litter and restoring green spaces for local wildlife.'
+    },
+    {
+      id: 38,
+      src: 'https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?w=800&h=600&fit=crop&q=80',
+      title: 'Rescue Support',
+      category: 'disaster-relief',
+      location: 'Regional NSW',
+      date: 'March 2025',
+      volunteers: 55,
+      description: 'Coordinating supplies and logistics during flood evacuations.'
+    },
+    {
+      id: 39,
+      src: 'https://images.unsplash.com/photo-1587502537745-84f7d71c8b0a?w=800&h=600&fit=crop&q=80',
+      title: 'Meal Prep Team',
+      category: 'food-drive',
+      location: 'Sydney, NSW',
+      date: 'July 2025',
+      volunteers: 26,
+      description: 'Cooking nutritious meals for seniors and vulnerable neighbors.'
+    },
+    {
+      id: 40,
+      src: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?w=800&h=600&fit=crop&q=80',
+      title: 'Medical Outreach',
+      category: 'community',
+      location: 'Darwin, NT',
+      date: 'August 2025',
+      volunteers: 32,
+      description: 'Mobile clinics offering check-ups and health education.'
+    },
+    {
+      id: 41,
+      src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&h=600&fit=crop&q=80',
+      title: 'Elder Care Visits',
+      category: 'elderly-care',
+      location: 'Perth, WA',
+      date: 'May 2025',
+      volunteers: 19,
+      description: 'Friendly visits and mobility support for elders at home.'
+    },
+    {
+      id: 42,
+      src: 'https://images.unsplash.com/photo-1559027615-cdcb7d6a6d2b?w=800&h=600&fit=crop&q=80',
+      title: 'Food Relief Line',
+      category: 'food-drive',
+      location: 'Canberra, ACT',
+      date: 'June 2025',
+      volunteers: 28,
+      description: 'Distributing essentials to families impacted by rising costs.'
+    },
+    {
+      id: 43,
+      src: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?w=800&h=600&fit=crop&q=80',
+      title: 'School Supply Drive',
+      category: 'education',
+      location: 'Hobart, TAS',
+      date: 'January 2025',
+      volunteers: 21,
+      description: 'Collecting backpacks and stationery for students in need.'
+    },
+    {
+      id: 44,
+      src: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=800&h=600&fit=crop&q=80',
+      title: 'Community Farming',
+      category: 'environment',
+      location: 'Launceston, TAS',
+      date: 'February 2025',
+      volunteers: 24,
+      description: 'Urban farm volunteers growing fresh produce for local pantries.'
+    },
+    {
+      id: 45,
+      src: 'https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=800&h=600&fit=crop&q=80',
+      title: 'STEM Girls Day',
+      category: 'education',
+      location: 'Sydney, NSW',
+      date: 'April 2025',
+      volunteers: 17,
+      description: 'Empowering girls in STEM through mentorship and labs.'
+    },
+    {
+      id: 46,
+      src: 'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=800&h=600&fit=crop&q=80',
+      title: 'Disaster Recovery Crew',
+      category: 'disaster-relief',
+      location: 'Northern Rivers, NSW',
+      date: 'May 2025',
+      volunteers: 48,
+      description: 'Clearing debris and rebuilding after severe storms.'
+    },
+    {
+      id: 47,
+      src: 'https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&h=600&fit=crop&q=80',
+      title: 'Literacy Tutoring',
+      category: 'education',
+      location: 'Adelaide, SA',
+      date: 'March 2025',
+      volunteers: 16,
+      description: 'One-on-one reading support for young learners.'
+    },
+    {
+      id: 48,
+      src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&h=600&fit=crop&q=80',
+      title: 'Volunteer Briefing',
+      category: 'community',
+      location: 'Melbourne, VIC',
+      date: 'February 2025',
+      volunteers: 34,
+      description: 'Coordinating roles and safety before a large outreach event.'
+    },
+    {
+      id: 49,
+      src: 'https://images.unsplash.com/photo-1513258496099-48168024aec0?w=800&h=600&fit=crop&q=80',
+      title: 'Youth Coding Lab',
+      category: 'education',
+      location: 'Perth, WA',
+      date: 'January 2025',
+      volunteers: 14,
+      description: 'Introducing coding fundamentals to primary students.'
+    },
+    {
+      id: 50,
+      src: 'https://images.unsplash.com/photo-1593113630400-ea4288922497?w=800&h=600&fit=crop&q=80',
+      title: 'Care Home Visit',
+      category: 'elderly-care',
+      location: 'Geelong, VIC',
+      date: 'April 2025',
+      volunteers: 20,
+      description: 'Spending time with residents and assisting with daily activities.'
+    },
+    {
+      id: 51,
+      src: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800&h=600&fit=crop&q=80',
+      title: 'Kitchen Prep Crew',
+      category: 'food-drive',
+      location: 'Sydney, NSW',
+      date: 'March 2025',
+      volunteers: 27,
+      description: 'Cooking and packaging meals for next-day deliveries.'
+    },
+    {
+      id: 52,
+      src: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=600&fit=crop&q=80',
+      title: 'Coding for All',
+      category: 'education',
+      location: 'Canberra, ACT',
+      date: 'May 2025',
+      volunteers: 23,
+      description: 'Community coding night open to all ages and backgrounds.'
     }
   ];
 
   const filteredImages = activeFilter === 'all' 
-    ? galleryImages 
-    : galleryImages.filter(img => img.category === activeFilter);
+    ? [...apiItems, ...galleryImages] 
+    : [...apiItems, ...galleryImages].filter(img => img.category === activeFilter);
+
+  const userImageIds = new Set([35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52]);
+  const displayedImages = filteredImages.slice().sort((a, b) => {
+    const pa = userImageIds.has(a.id) ? 0 : 1;
+    const pb = userImageIds.has(b.id) ? 0 : 1;
+    return pa - pb;
+  });
 
   const openLightbox = (image) => {
     setSelectedImage(image);
@@ -470,14 +691,14 @@ function Gallery() {
   };
 
   const navigateImage = (direction) => {
-    const currentIndex = filteredImages.findIndex(img => img.id === selectedImage.id);
+    const currentIndex = displayedImages.findIndex(img => img.id === selectedImage.id);
     let newIndex;
     if (direction === 'next') {
-      newIndex = currentIndex === filteredImages.length - 1 ? 0 : currentIndex + 1;
+      newIndex = currentIndex === displayedImages.length - 1 ? 0 : currentIndex + 1;
     } else {
-      newIndex = currentIndex === 0 ? filteredImages.length - 1 : currentIndex - 1;
+      newIndex = currentIndex === 0 ? displayedImages.length - 1 : currentIndex - 1;
     }
-    setSelectedImage(filteredImages[newIndex]);
+    setSelectedImage(displayedImages[newIndex]);
   };
 
   const handleUploadChange = (e) => {
@@ -505,21 +726,101 @@ function Gallery() {
 
   const handleUploadSubmit = (e) => {
     e.preventDefault();
-    // Here you would normally send to backend
-    setUploadSuccess(true);
-    setTimeout(() => {
-      setShowUploadModal(false);
-      setUploadSuccess(false);
-      setUploadData({
-        title: '',
-        category: '',
-        location: '',
-        description: '',
-        volunteers: '',
-        image: null,
-        imagePreview: null
-      });
-    }, 2000);
+    // Send to backend as multipart/form-data
+    const useFile = !!uploadData.image;
+    const formData = useFile ? new FormData() : null;
+    if (useFile) {
+      formData.append('title', uploadData.title);
+      formData.append('description', uploadData.description);
+      formData.append('category', uploadData.category);
+      formData.append('image', uploadData.image);
+    }
+    // Optional: location, volunteers could be added to description
+
+    setLoading(true);
+    fetch('/api/gallery', {
+      method: 'POST',
+      headers: useFile ? undefined : { 'Content-Type': 'application/json' },
+      body: useFile ? formData : JSON.stringify({
+        title: uploadData.title,
+        description: uploadData.description,
+        category: uploadData.category,
+        imageUrl: uploadData.imageUrl
+      }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.message || 'Upload failed');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setUploadSuccess(true);
+        // Add new item to apiItems for immediate visibility
+        const item = data.item;
+        setApiItems((prev) => [
+          {
+            id: item._id,
+            src: item.imageUrl?.startsWith('/uploads/') ? mediaUrl(item.imageUrl) : item.imageUrl,
+            title: item.title,
+            category: item.category || 'community',
+            location: uploadData.location || 'Community',
+            date: new Date(item.createdAt || Date.now()).toLocaleDateString(),
+            volunteers: uploadData.volunteers || 0,
+            description: item.description || ''
+          },
+          ...prev
+        ]);
+        setTimeout(() => {
+          setShowUploadModal(false);
+          setUploadSuccess(false);
+          setUploadData({
+            title: '',
+            category: 'community',
+            location: '',
+            description: '',
+            volunteers: '',
+            image: null,
+            imageUrl: '',
+            imagePreview: null
+          });
+        }, 1500);
+      })
+      .catch(() => {
+        // Fallback: still show locally using preview
+        if (uploadData.imagePreview || uploadData.imageUrl) {
+          setApiItems((prev) => [
+            {
+              id: Date.now(),
+              src: uploadData.imagePreview || uploadData.imageUrl,
+              title: uploadData.title,
+              category: uploadData.category,
+              location: uploadData.location || 'Community',
+              date: new Date().toLocaleDateString(),
+              volunteers: uploadData.volunteers || 0,
+              description: uploadData.description
+            },
+            ...prev
+          ]);
+          setUploadSuccess(true);
+          setTimeout(() => {
+            setShowUploadModal(false);
+            setUploadSuccess(false);
+            setUploadData({
+              title: '',
+              category: 'community',
+              location: '',
+              description: '',
+              volunteers: '',
+              image: null,
+              imageUrl: '',
+              imagePreview: null
+            });
+          }, 1500);
+        }
+      })
+      .finally(() => setLoading(false));
   };
 
   const openUploadModal = () => {
@@ -543,6 +844,10 @@ function Gallery() {
 
   return (
     <div className="gallery-page-pro">
+      {/* Load items from backend on mount */}
+      {/** Backend fetch for gallery items **/}
+      {/** Using effect below to populate apiItems **/}
+      
       {/* Hero Section */}
       <section className="gallery-hero-pro">
         <div className="gallery-hero-carousel">
@@ -690,6 +995,19 @@ function Gallery() {
                     />
                   </div>
 
+                  <div className="form-group-pro">
+                    <label htmlFor="upload-image-url">Image URL (optional)</label>
+                    <input
+                      type="url"
+                      id="upload-image-url"
+                      name="imageUrl"
+                      value={uploadData.imageUrl}
+                      onChange={handleUploadChange}
+                      placeholder="Paste a public, licensed image URL"
+                    />
+                    <small className="muted">Use properly licensed images (e.g., Unsplash, Pexels) or your own uploads.</small>
+                  </div>
+
                   <div className="form-row-pro">
                     <div className="form-group-pro">
                       <label htmlFor="upload-category">Category</label>
@@ -761,7 +1079,7 @@ function Gallery() {
                     <button 
                       type="submit" 
                       className="submit-upload-btn-pro"
-                      disabled={!uploadData.image}
+                      disabled={(!uploadData.image && !uploadData.imageUrl) || !uploadData.title}
                     >
                       Upload Photo
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
@@ -819,13 +1137,20 @@ function Gallery() {
       <section className="gallery-grid-section-pro" id="gallery-grid">
         <div className="gallery-grid-container-pro">
           <div className="gallery-grid-pro">
-            {filteredImages.map((image) => (
+            {displayedImages.map((image) => (
               <div 
                 key={image.id} 
                 className="gallery-item-pro"
                 onClick={() => openLightbox(image)}
               >
-                <img src={image.src} alt={image.title} />
+                <img 
+                  src={image.src} 
+                  alt={image.title}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&h=600&fit=crop&q=80';
+                  }}
+                />
                 <div className="gallery-item-overlay-pro">
                   <div className="overlay-content-pro">
                     <h3>{image.title}</h3>
@@ -862,7 +1187,7 @@ function Gallery() {
             ))}
           </div>
 
-          {filteredImages.length === 0 && (
+          {displayedImages.length === 0 && (
             <div className="no-results-pro">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>

@@ -45,6 +45,10 @@ const galleryItemSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isApproved: {
+    type: Boolean,
+    default: true
+  },
   order: {
     type: Number,
     default: 0
