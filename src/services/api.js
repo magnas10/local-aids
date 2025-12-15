@@ -361,6 +361,66 @@ export const galleryAPI = {
   },
 };
 
+// ============ HELP REQUESTS API ============
+export const helpRequestsAPI = {
+  submit: async (requestData) => {
+    console.log('helpRequestsAPI.submit called with:', requestData);
+    try {
+      const jsonData = JSON.stringify(requestData);
+      console.log('JSON stringified successfully');
+      const response = await authFetch('/help-requests', {
+        method: 'POST',
+        body: jsonData,
+      });
+      console.log('Help request response received:', response);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Error in submit:', error);
+      throw error;
+    }
+  },
+
+  getAll: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await authFetch(`/help-requests?${queryString}`);
+    return handleResponse(response);
+  },
+
+  getOpportunities: async (limit = 5) => {
+    const response = await authFetch(`/help-requests/opportunities?limit=${limit}`);
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await authFetch(`/help-requests/${id}`);
+    return handleResponse(response);
+  },
+
+  updateStatus: async (id, status, volunteerId = null) => {
+    const response = await authFetch(`/help-requests/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, volunteerId }),
+    });
+    return handleResponse(response);
+  },
+
+  update: async (id, requestData, email) => {
+    const response = await authFetch(`/help-requests/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...requestData, email }),
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id, email) => {
+    const response = await authFetch(`/help-requests/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ email }),
+    });
+    return handleResponse(response);
+  },
+};
+
 // ============ PARTNERS API ============
 export const partnersAPI = {
   getAll: async (params = {}) => {
@@ -405,6 +465,7 @@ const api = {
   messages: messagesAPI,
   contact: contactAPI,
   gallery: galleryAPI,
+  helpRequests: helpRequestsAPI,
   partners: partnersAPI,
 };
 

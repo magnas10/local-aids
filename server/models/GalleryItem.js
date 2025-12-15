@@ -1,60 +1,47 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const galleryItemSchema = new mongoose.Schema({
+const GalleryItem = sequelize.define('GalleryItem', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   title: {
-    type: String,
-    required: [true, 'Title is required'],
-    trim: true,
-    maxlength: [100, 'Title cannot exceed 100 characters']
+    type: DataTypes.STRING,
+    allowNull: false
   },
   description: {
-    type: String,
-    maxlength: [500, 'Description cannot exceed 500 characters']
+    type: DataTypes.TEXT
   },
   imageUrl: {
-    type: String,
-    required: [true, 'Image URL is required']
-  },
-  thumbnailUrl: {
-    type: String
+    type: DataTypes.STRING,
+    allowNull: false
   },
   category: {
-    type: String,
-    enum: ['events', 'community', 'volunteers', 'campaigns', 'other'],
-    default: 'other'
-  },
-  event: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Event',
-    default: null
+    type: DataTypes.STRING,
+    defaultValue: 'general'
   },
   uploadedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
   },
-  tags: [{
-    type: String,
-    trim: true
-  }],
-  isPublic: {
-    type: Boolean,
-    default: true
+  tags: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
   },
   isFeatured: {
-    type: Boolean,
-    default: false
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
-  isApproved: {
-    type: Boolean,
-    default: true
-  },
-  order: {
-    type: Number,
-    default: 0
+  featured: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
-}, {
-  timestamps: true
 });
 
-module.exports = mongoose.model('GalleryItem', galleryItemSchema);
+module.exports = GalleryItem;

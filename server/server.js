@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const sequelize = require('./config/database');
 
 // Load environment variables
 dotenv.config();
@@ -48,37 +48,25 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined
   });
 });
 
-// Connect to MongoDB
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/local-aids');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.warn('MongoDB connection error:', error.message);
-    console.warn('Continuing without MongoDB - static files will still be served');
-  }
-};
-
-// Start server
+// Database connection & Sync
 const PORT = process.env.PORT || 5001;
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+sequelize.sync({ alter: true }) // Sync models with database
+  .then(() => {
+    console.log('PostgreSQL Database Connected & Synced');
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to connect to PostgreSQL:', err);
   });
-}).catch(() => {
-  // Fallback: Start server even if DB connection fails
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} (without MongoDB)`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  });
-});
 
 module.exports = app;
