@@ -3,6 +3,10 @@ import './Pages.css';
 
 function Partners() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [filteredPartners, setFilteredPartners] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedType, setSelectedType] = useState('All');
+  const [expandedPartner, setExpandedPartner] = useState(null);
 
   const heroImages = [
     'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85',
@@ -10,13 +14,6 @@ function Partners() {
     'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
     'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1920&h=1080&fit=crop&q=85'
   ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
 
   const partners = [
     {
@@ -63,24 +60,52 @@ function Partners() {
     }
   ];
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  // Get unique partner types
+  const partnerTypesList = ['All', ...new Set(partners.map(p => p.type))];
+
+  // Filter partners based on search and type
+  useEffect(() => {
+    let filtered = partners;
+
+    if (selectedType !== 'All') {
+      filtered = filtered.filter(p => p.type === selectedType);
+    }
+
+    if (searchTerm) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredPartners(filtered);
+  }, [searchTerm, selectedType]);
+
   const partnerBenefits = [
     {
-      icon: '•',
+      icon: '✓',
       title: 'Expanded Reach',
       description: 'Access our network of 50,000+ community members and volunteers.'
     },
     {
-      icon: '•',
+      icon: '✓',
       title: 'Technology Platform',
       description: 'Leverage our technology to streamline volunteer coordination.'
     },
     {
-      icon: '•',
+      icon: '✓',
       title: 'Co-Marketing',
       description: 'Joint marketing and awareness campaigns to amplify impact.'
     },
     {
-      icon: '•',
+      icon: '✓',
       title: 'Impact Reporting',
       description: 'Detailed analytics and reporting on community impact.'
     }
@@ -90,17 +115,17 @@ function Partners() {
     {
       title: 'Community Partners',
       description: 'Non-profit organizations working directly with communities',
-      icon: '•'
+      icon: '🤝'
     },
     {
       title: 'Corporate Partners',
       description: 'Businesses supporting community initiatives through CSR programs',
-      icon: '•'
+      icon: '💼'
     },
     {
       title: 'Government Partners',
       description: 'Local councils and government agencies serving communities',
-      icon: '•'
+      icon: '🏛️'
     },
     {
       title: 'Technology Partners',
@@ -177,20 +202,80 @@ function Partners() {
       {/* Current Partners */}
       <section id="partners-section" className="partners-section">
         <div className="section-container">
-          <h2>Our Partners</h2>
-          <p className="section-subtitle">We're proud to work with these amazing organizations.</p>
+          <div style={{textAlign: 'center', marginBottom: '60px'}}>
+            <span style={{color: '#20B2AA', fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '15px'}}>Our Community</span>
+            <h2>Our Partners</h2>
+            <p className="section-subtitle">Discover the organizations we collaborate with to create impact.</p>
+          </div>
           
+          {/* Search and Filter Controls */}
+          <div style={styles.filtersContainer}>
+            <div style={styles.searchWrapper}>
+              <input
+                type="text"
+                placeholder="Search partners..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={styles.searchInput}
+              />
+              <svg style={styles.searchIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+
+            <div style={styles.filterButtons}>
+              {partnerTypesList.map(type => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedType(type)}
+                  style={{
+                    ...styles.filterButton,
+                    ...(selectedType === type ? styles.filterButtonActive : {})
+                  }}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Partners Grid */}
           <div className="partners-grid">
-            {partners.map((partner) => (
-              <div key={partner.id} className="partner-card">
-                <div className="partner-logo">
-                  <img src={partner.logo} alt={partner.name} />
+            {filteredPartners.length > 0 ? (
+              filteredPartners.map((partner) => (
+                <div 
+                  key={partner.id} 
+                  className="partner-card"
+                  onClick={() => setExpandedPartner(expandedPartner === partner.id ? null : partner.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="partner-logo">
+                    <img src={partner.logo} alt={partner.name} />
+                  </div>
+                  <span className="partner-type">{partner.type}</span>
+                  <h3>{partner.name}</h3>
+                  <p>{partner.description}</p>
+                  {expandedPartner === partner.id && (
+                    <div style={styles.expandedContent}>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.location.href = '/contact';
+                        }}
+                        style={styles.inquireBtn}
+                      >
+                        Inquire About Partnership →
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <span className="partner-type">{partner.type}</span>
-                <h3>{partner.name}</h3>
-                <p>{partner.description}</p>
+              ))
+            ) : (
+              <div style={styles.noResults}>
+                <p>No partners found matching your search. Try adjusting your filters.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
@@ -198,8 +283,11 @@ function Partners() {
       {/* Partnership Types */}
       <section className="partner-types-section">
         <div className="section-container">
-          <h2>Partnership Opportunities</h2>
-          <p className="section-subtitle">Different ways to partner with Local AIDS.</p>
+          <div style={{textAlign: 'center', marginBottom: '60px'}}>
+            <span style={{color: '#20B2AA', fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '15px'}}>Partnership Types</span>
+            <h2>Partnership Opportunities</h2>
+            <p className="section-subtitle">Different ways to partner with Local AIDS.</p>
+          </div>
           
           <div className="partner-types-grid">
             {partnerTypes.map((type, index) => (
@@ -216,7 +304,10 @@ function Partners() {
       {/* Benefits */}
       <section className="benefits-section">
         <div className="section-container">
-          <h2>Why Partner With Us?</h2>
+          <div style={{textAlign: 'center', marginBottom: '60px'}}>
+            <span style={{color: '#20B2AA', fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '15px'}}>Key Benefits</span>
+            <h2>Why Partner With Us?</h2>
+          </div>
           <div className="partner-benefits-grid">
             {partnerBenefits.map((benefit, index) => (
               <div key={index} className="benefit-card">
@@ -232,6 +323,7 @@ function Partners() {
       {/* CTA */}
       <section className="page-cta">
         <div className="cta-content">
+          <span style={{color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '15px'}}>Ready to Make an Impact?</span>
           <h2>Become a Partner</h2>
           <p>Join us in building stronger, more connected communities across Australia.</p>
           <div className="cta-buttons">
@@ -243,5 +335,91 @@ function Partners() {
     </div>
   );
 }
+
+const styles = {
+  filtersContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    marginBottom: '50px',
+    flexWrap: 'wrap',
+  },
+  searchWrapper: {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    maxWidth: '400px',
+    margin: '0 auto',
+    width: '100%',
+  },
+  searchInput: {
+    width: '100%',
+    padding: '14px 40px 14px 16px',
+    fontSize: '0.95rem',
+    border: '2px solid #e0e0e0',
+    borderRadius: '8px',
+    outline: 'none',
+    transition: 'all 0.3s ease',
+    boxSizing: 'border-box',
+  },
+  'searchInput:focus': {
+    borderColor: '#0091d9',
+    boxShadow: '0 0 0 3px rgba(0, 145, 217, 0.1)',
+  },
+  searchIcon: {
+    position: 'absolute',
+    right: '12px',
+    width: '20px',
+    height: '20px',
+    color: '#999',
+    pointerEvents: 'none',
+  },
+  filterButtons: {
+    display: 'flex',
+    gap: '10px',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  filterButton: {
+    padding: '10px 20px',
+    border: '2px solid #E5E7EB',
+    background: 'white',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    transition: 'all 0.3s ease',
+    color: '#666',
+  },
+  filterButtonActive: {
+    background: '#20B2AA',
+    color: 'white',
+    borderColor: '#20B2AA',
+  },
+  noResults: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    padding: '40px',
+    color: '#999',
+  },
+  expandedContent: {
+    marginTop: '15px',
+    paddingTop: '15px',
+    borderTop: '2px solid #e0e0e0',
+    animation: 'slideDown 0.3s ease',
+  },
+  inquireBtn: {
+    background: 'linear-gradient(135deg, #20B2AA, #0D6B66)',
+    color: 'white',
+    border: 'none',
+    padding: '10px 20px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    transition: 'all 0.3s ease',
+    width: '100%',
+  },
+};
 
 export default Partners;

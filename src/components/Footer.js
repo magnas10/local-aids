@@ -7,28 +7,28 @@ function Footer() {
     platform: {
       title: 'Platform',
       links: [
-        { text: 'How It Works', path: '/about' },
-        { text: 'Find Opportunities', path: '/events' },
-        { text: 'Post a Request', path: '/signup' },
-        { text: 'Success Stories', path: '/blog' }
+        { label: 'How It Works', path: '/about' },
+        { label: 'Find Opportunities', path: '/events' },
+        { label: 'Post a Request', path: '/contact' },
+        { label: 'Success Stories', path: '/' }
       ]
     },
     resources: {
       title: 'Resources',
       links: [
-        { text: 'Help Center', path: '/help-center' },
-        { text: 'Blog', path: '/blog' },
-        { text: 'Community Guidelines', path: '/community-guidelines' },
-        { text: 'Safety Tips', path: '/safety-tips' }
+        { label: 'Help Center', path: '/help-center' },
+        { label: 'Blog', path: '/blog' },
+        { label: 'Community Guidelines', path: '/community-guidelines' },
+        { label: 'Safety Tips', path: '/safety-tips' }
       ]
     },
     company: {
       title: 'Company',
       links: [
-        { text: 'About Us', path: '/about' },
-        { text: 'Careers', path: '/contact' },
-        { text: 'Press', path: '/contact' },
-        { text: 'Partners', path: '/partners' }
+        { label: 'About Us', path: '/about' },
+        { label: 'Careers', path: '/careers' },
+        { label: 'Press', path: '/press' },
+        { label: 'Partners', path: '/partners' }
       ]
     }
   };
@@ -53,12 +53,7 @@ function Footer() {
           {/* Brand Column */}
           <div className="footer-brand">
             <div className="footer-logo">
-              <img 
-                src="/local-aid-logo.png" 
-                alt="Local Aid Logo" 
-                className="footer-logo-icon"
-                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
-              />
+              <div className="footer-logo-icon">🤝</div>
               <span className="footer-logo-text">Local AIDS</span>
             </div>
             <p className="footer-tagline">
@@ -88,7 +83,9 @@ function Footer() {
               <ul>
                 {column.links.map((link, i) => (
                   <li key={i}>
-                    <Link to={link.path} className="footer-link">{link.text}</Link>
+                    <Link to={link.path} className="footer-link">
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -102,9 +99,9 @@ function Footer() {
             © 2025 Local AIDS. Connecting Communities Through Kindness. All rights reserved.
           </p>
           <div className="footer-legal">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cookie Policy</a>
+            <Link to="/about" className="footer-link">Terms of Service</Link>
+            <Link to="/about" className="footer-link">Privacy Policy</Link>
+            <Link to="/about" className="footer-link">Cookie Policy</Link>
           </div>
         </div>
       </div>

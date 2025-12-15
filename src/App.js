@@ -18,7 +18,9 @@ import Donate from './pages/Donate';
 import Contact from './pages/Contact';
 import Gallery from './pages/Gallery';
 import Partners from './pages/Partners';
+import Careers from './pages/Careers';
 import Blog from './pages/Blog';
+import Press from './pages/Press';
 import CommunityGuidelines from './pages/CommunityGuidelines';
 import SafetyTips from './pages/SafetyTips';
 import HelpCenter from './pages/HelpCenter';
@@ -55,7 +57,9 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/partners" element={<Partners />} />
+              <Route path="/careers" element={<Careers />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/press" element={<Press />} />
               <Route path="/community-guidelines" element={<CommunityGuidelines />} />
               <Route path="/safety-tips" element={<SafetyTips />} />
               <Route path="/help-center" element={<HelpCenter />} />
