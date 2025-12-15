@@ -7,15 +7,15 @@ function MyRequests() {
   const [loading, setLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [showNewRequestForm, setShowNewRequestForm] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [email, setEmail] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [editFormData, setEditFormData] = useState({});
-  const [showNewRequestForm, setShowNewRequestForm] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
   const [newRequestData, setNewRequestData] = useState({
     fullName: '',
     phone: '',

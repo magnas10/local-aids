@@ -93,7 +93,7 @@ function UserDashboard() {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="welcome-section">
-          <h1>🏠 Community Dashboard</h1>
+          <h1>Community Dashboard</h1>
           <p>Welcome, {user.name}! Here's your community support overview.</p>
         </div>
       </div>
@@ -101,28 +101,28 @@ function UserDashboard() {
       {/* Stats Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">📋</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.activeRequests}</div>
             <div className="stat-label">Active Requests</div>
           </div>
         </div>
         <div className="stat-card success">
-          <div className="stat-icon">✅</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.completedRequests}</div>
             <div className="stat-label">Completed Requests</div>
           </div>
         </div>
         <div className="stat-card warning">
-          <div className="stat-icon">🤝</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.volunteerConnections}</div>
             <div className="stat-label">Volunteers Met</div>
           </div>
         </div>
         <div className="stat-card info">
-          <div className="stat-icon">🎯</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.eventsAttended}</div>
             <div className="stat-label">Events Attended</div>
@@ -134,7 +134,7 @@ function UserDashboard() {
         {/* My Recent Requests */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h3>📝 My Recent Requests</h3>
+            <h3>My Recent Requests</h3>
             <Link to="/my-requests" className="view-all-link">View All</Link>
           </div>
           {myRequests.length > 0 ? (
@@ -142,18 +142,18 @@ function UserDashboard() {
               {myRequests.map(request => (
                 <div key={request._id} className={`request-item ${request.status}`}>
                   <div className="request-icon">
-                    {request.helpType === 'shopping' && '🛒'}
-                    {request.helpType === 'transport' && '🚗'}
-                    {request.helpType === 'companionship' && '👥'}
-                    {request.helpType === 'housing' && '🏠'}
-                    {request.helpType === 'meals' && '🍽️'}
-                    {request.helpType === 'medical' && '💊'}
-                    {request.helpType === 'technology' && '💻'}
+                    {request.helpType === 'shopping' && ''}
+                    {request.helpType === 'transport' && ''}
+                    {request.helpType === 'companionship' && ''}
+                    {request.helpType === 'housing' && ''}
+                    {request.helpType === 'meals' && ''}
+                    {request.helpType === 'medical' && ''}
+                    {request.helpType === 'technology' && ''}
                   </div>
                   <div className="request-content">
                     <div className="request-title">{request.description}</div>
                     <div className="request-details">
-                      📍 {request.location} • 📅 {new Date(request.preferredDate).toLocaleDateString()}
+                      {request.location} • {new Date(request.preferredDate).toLocaleDateString()}
                     </div>
                   </div>
                   <div className={`request-status ${request.status}`}>
@@ -175,20 +175,20 @@ function UserDashboard() {
         {/* Available Community Help */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h3>🌟 Available Community Help</h3>
+            <h3>Available Community Help</h3>
           </div>
           <div className="help-list">
             {availableHelp.map(help => (
               <div key={help.id} className="help-item">
                 <div className="help-icon">
-                  {help.category === 'food' && '🍽️'}
-                  {help.category === 'transport' && '🚗'}
-                  {help.category === 'technology' && '💻'}
+                  {help.category === 'food' && ''}
+                  {help.category === 'transport' && ''}
+                  {help.category === 'technology' && ''}
                 </div>
                 <div className="help-content">
                   <div className="help-title">{help.title}</div>
                   <div className="help-description">{help.description}</div>
-                  <div className="help-location">📍 {help.location}</div>
+                  <div className="help-location">{help.location}</div>
                 </div>
                 <button className="btn btn-sm btn-outline">Learn More</button>
               </div>
@@ -199,22 +199,22 @@ function UserDashboard() {
 
       {/* Quick Actions */}
       <div className="quick-actions">
-        <h3>⚡ Quick Actions</h3>
+        <h3>Quick Actions</h3>
         <div className="actions-grid">
           <Link to="/request-help" className="action-btn primary">
-            <span className="action-icon">🆘</span>
+            <span className="action-icon"></span>
             <span>Request Help</span>
           </Link>
           <Link to="/events" className="action-btn success">
-            <span className="action-icon">📅</span>
+            <span className="action-icon"></span>
             <span>Community Events</span>
           </Link>
           <Link to="/gallery" className="action-btn info">
-            <span className="action-icon">📸</span>
+            <span className="action-icon"></span>
             <span>Community Stories</span>
           </Link>
           <Link to="/contact" className="action-btn secondary">
-            <span className="action-icon">📞</span>
+            <span className="action-icon"></span>
             <span>Contact Support</span>
           </Link>
         </div>

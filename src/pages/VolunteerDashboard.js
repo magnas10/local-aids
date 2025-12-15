@@ -74,7 +74,7 @@ function VolunteerDashboard() {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="welcome-section">
-          <h1>🌟 Volunteer Dashboard</h1>
+          <h1>Volunteer Dashboard</h1>
           <p>Welcome back, {user.name}! Here's your volunteer activity overview.</p>
         </div>
       </div>
@@ -82,28 +82,28 @@ function VolunteerDashboard() {
       {/* Stats Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">📅</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.activeEvents}</div>
             <div className="stat-label">Active Events</div>
           </div>
         </div>
         <div className="stat-card success">
-          <div className="stat-icon">⏰</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.hoursVolunteered}</div>
             <div className="stat-label">Hours This Month</div>
           </div>
         </div>
         <div className="stat-card warning">
-          <div className="stat-icon">❤️</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.peopleHelped}</div>
             <div className="stat-label">People Helped</div>
           </div>
         </div>
         <div className="stat-card info">
-          <div className="stat-icon">🔔</div>
+          <div className="stat-icon"></div>
           <div className="stat-content">
             <div className="stat-number">{stats.upcomingEvents}</div>
             <div className="stat-label">Upcoming Events</div>
@@ -115,15 +115,15 @@ function VolunteerDashboard() {
         {/* Recent Activity */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h3>🕒 Recent Activity</h3>
+            <h3>Recent Activity</h3>
           </div>
           <div className="activity-list">
             {recentActivities.map(activity => (
               <div key={activity.id} className={`activity-item ${activity.status}`}>
                 <div className="activity-icon">
-                  {activity.type === 'event_joined' && '✅'}
-                  {activity.type === 'help_provided' && '🤝'}
-                  {activity.type === 'event_registered' && '📝'}
+                  {activity.type === 'event_joined' && ''}
+                  {activity.type === 'help_provided' && ''}
+                  {activity.type === 'event_registered' && ''}
                 </div>
                 <div className="activity-content">
                   <div className="activity-title">{activity.title}</div>
@@ -140,7 +140,7 @@ function VolunteerDashboard() {
         {/* Upcoming Tasks */}
         <div className="dashboard-section">
           <div className="section-header">
-            <h3>📋 Upcoming Tasks</h3>
+            <h3>Upcoming Tasks</h3>
           </div>
           <div className="tasks-list">
             {upcomingTasks.map(task => (
@@ -148,7 +148,7 @@ function VolunteerDashboard() {
                 <div className="task-content">
                   <div className="task-title">{task.title}</div>
                   <div className="task-datetime">
-                    📅 {new Date(task.date).toLocaleDateString()} at {task.time}
+                    {new Date(task.date).toLocaleDateString()} at {task.time}
                   </div>
                 </div>
                 <div className={`task-priority ${task.priority}`}>
@@ -162,22 +162,22 @@ function VolunteerDashboard() {
 
       {/* Quick Actions */}
       <div className="quick-actions">
-        <h3>⚡ Quick Actions</h3>
+        <h3>Quick Actions</h3>
         <div className="actions-grid">
           <Link to="/events" className="action-btn primary">
-            <span className="action-icon">📅</span>
+            <span className="action-icon"></span>
             <span>Browse Events</span>
           </Link>
           <Link to="/my-requests" className="action-btn success">
-            <span className="action-icon">📝</span>
+            <span className="action-icon"></span>
             <span>My Applications</span>
           </Link>
           <Link to="/profile" className="action-btn info">
-            <span className="action-icon">👤</span>
+            <span className="action-icon"></span>
             <span>Update Profile</span>
           </Link>
           <Link to="/help-center" className="action-btn secondary">
-            <span className="action-icon">❓</span>
+            <span className="action-icon"></span>
             <span>Help Center</span>
           </Link>
         </div>

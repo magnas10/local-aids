@@ -47,15 +47,31 @@ const handleResponse = async (response) => {
     data = await response.json();
   } catch (err) {
     console.error('Failed to parse JSON response:', err);
+    console.error('Response status:', response.status);
+    console.error('Response text might be:', response.statusText);
     throw new Error('Server response was not valid JSON');
   }
   
   console.log('Response data:', data);
   
   if (!response.ok) {
-    const error = data.message || data.errors?.[0]?.msg || `HTTP ${response.status}: ${response.statusText}`;
-    console.error('API Error:', error);
-    throw new Error(error);
+    console.error('Response not ok, status:', response.status);
+    let errorMessage = '';
+    
+    if (data.message) {
+      errorMessage = data.message;
+    } else if (data.errors && Array.isArray(data.errors)) {
+      errorMessage = data.errors.map(e => e.message || e.msg || JSON.stringify(e)).join('; ');
+    } else if (data.errors && typeof data.errors === 'object') {
+      errorMessage = Object.values(data.errors).map(e => e.message || e).join('; ');
+    } else {
+      errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+    }
+    
+    console.error('API Error:', errorMessage);
+    const error = new Error(errorMessage);
+    error.errors = data.errors;
+    throw error;
   }
   
   return data;
@@ -371,11 +387,20 @@ export const galleryAPI = {
 // ============ HELP REQUESTS API ============
 export const helpRequestsAPI = {
   submit: async (requestData) => {
-    const response = await authFetch('/help-requests', {
-      method: 'POST',
-      body: JSON.stringify(requestData),
-    });
-    return handleResponse(response);
+    console.log('helpRequestsAPI.submit called with:', requestData);
+    try {
+      const jsonData = JSON.stringify(requestData);
+      console.log('JSON stringified successfully');
+      const response = await authFetch('/help-requests', {
+        method: 'POST',
+        body: jsonData,
+      });
+      console.log('Help request response received:', response);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Error in submit:', error);
+      throw error;
+    }
   },
 
   getAll: async (params = {}) => {

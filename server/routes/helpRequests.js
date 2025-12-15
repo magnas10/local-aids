@@ -8,6 +8,7 @@ const { protect, admin, optionalAuth } = require('../middleware/auth');
 // @desc    Create a new help request
 // @access  Public
 router.post('/', [
+  // Required fields
   body('fullName').trim().notEmpty().withMessage('Full name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
   body('phone').trim().notEmpty().withMessage('Phone number is required'),
@@ -18,11 +19,37 @@ router.post('/', [
   body('helpType').isIn(['transport', 'shopping', 'companionship', 'household', 'meals', 'medical', 'tech', 'other']).withMessage('Valid help type is required'),
   body('urgency').isIn(['low', 'normal', 'high', 'urgent']).withMessage('Valid urgency level is required'),
   body('description').trim().notEmpty().isLength({ max: 1000 }).withMessage('Description is required and must not exceed 1000 characters'),
-  body('agreeTerms').isBoolean().equals('true').withMessage('Must agree to terms and conditions'),
-  body('agreePrivacy').isBoolean().equals('true').withMessage('Must agree to privacy policy')
+  
+  // Terms and privacy agreements
+  body('agreeTerms').custom(value => {
+    // Accept boolean true, string 'true', or the string representation
+    const isTrue = value === true || value === 'true' || value === 1 || value === '1';
+    if (!isTrue) throw new Error('Must agree to terms and conditions');
+    return true;
+  }),
+  body('agreePrivacy').custom(value => {
+    // Accept boolean true, string 'true', or the string representation
+    const isTrue = value === true || value === 'true' || value === 1 || value === '1';
+    if (!isTrue) throw new Error('Must agree to privacy policy');
+    return true;
+  }),
+  
+  // Optional fields - just trim them
+  body('preferredDate').optional().trim(),
+  body('preferredTime').optional().trim(),
+  body('duration').optional().trim(),
+  body('specialRequirements').optional().trim(),
+  body('howHeard').optional().trim()
 ], async (req, res) => {
   try {
+    console.log('POST /api/help-requests - processing request');
+    console.log('Request body:', req.body);
     const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      console.log('Validation passed');
+    } else {
+      console.log('Validation errors:', errors.array());
+    }
     if (!errors.isEmpty()) {
       return res.status(400).json({
         message: 'Validation failed',
@@ -30,8 +57,31 @@ router.post('/', [
       });
     }
 
-    const helpRequest = new HelpRequest(req.body);
+    // Only include fields that are in the schema
+    const helpRequestData = {
+      fullName: req.body.fullName,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      suburb: req.body.suburb,
+      state: req.body.state,
+      postcode: req.body.postcode,
+      helpType: req.body.helpType,
+      urgency: req.body.urgency,
+      preferredDate: req.body.preferredDate,
+      preferredTime: req.body.preferredTime,
+      duration: req.body.duration,
+      description: req.body.description,
+      specialRequirements: req.body.specialRequirements,
+      howHeard: req.body.howHeard,
+      agreeTerms: req.body.agreeTerms,
+      agreePrivacy: req.body.agreePrivacy
+    };
+    
+    console.log('Creating help request with data:', helpRequestData);
+    const helpRequest = new HelpRequest(helpRequestData);
     await helpRequest.save();
+    console.log('Help request created successfully:', helpRequest._id);
 
     res.status(201).json({
       message: 'Help request submitted successfully',
@@ -55,7 +105,10 @@ router.post('/', [
         errors
       });
     }
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ 
+      message: error.message || 'Server error while creating help request',
+      error: process.env.NODE_ENV === 'development' ? error.toString() : undefined
+    });
   }
 });
 

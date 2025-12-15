@@ -57,8 +57,41 @@ function RequestHelpModal({ isOpen, onClose }) {
     setFormData(prev => ({ ...prev, helpType: typeId }));
   };
 
+  const validateStep = (stepNum) => {
+    switch(stepNum) {
+      case 1:
+        if (!formData.helpType) {
+          alert('Please select a type of help');
+          return false;
+        }
+        return true;
+      case 2:
+        if (!formData.description || formData.description.trim() === '') {
+          alert('Please describe what help you need');
+          return false;
+        }
+        return true;
+      case 3:
+        if (!formData.fullName || !formData.email || !formData.phone || !formData.address || !formData.suburb || !formData.postcode) {
+          alert('Please fill in all required personal information');
+          return false;
+        }
+        return true;
+      case 4:
+        if (!formData.agreeTerms || !formData.agreePrivacy) {
+          alert('Please agree to the terms and conditions');
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  };
+
   const nextStep = () => {
-    setStep(prev => Math.min(prev + 1, 4));
+    if (validateStep(step)) {
+      setStep(prev => Math.min(prev + 1, 4));
+    }
   };
 
   const prevStep = () => {
@@ -70,13 +103,26 @@ function RequestHelpModal({ isOpen, onClose }) {
     setIsSubmitting(true);
     
     try {
-      await submitHelpRequest(formData);
+      console.log('Submitting help request with data:', formData);
+      const result = await submitHelpRequest(formData);
+      console.log('Help request submitted successfully:', result);
       setIsSubmitting(false);
       setIsSubmitted(true);
     } catch (error) {
       setIsSubmitting(false);
       console.error('Failed to submit help request:', error);
-      alert('Failed to submit help request. Please try again.');
+      console.error('Error details:', error);
+      
+      // Show more detailed error message
+      let errorMessage = 'Failed to submit help request. Please try again.';
+      if (error.errors && Array.isArray(error.errors)) {
+        errorMessage = error.errors.map(e => e.message || e).join(', ');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      console.error('Displaying error to user:', errorMessage);
+      alert(errorMessage);
     }
   };
 
