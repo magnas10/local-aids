@@ -1,10 +1,11 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // ProtectedRoute - Requires user to be logged in
-function ProtectedRoute({ children }) {
-  const { isLoggedIn, loading } = useAuth();
+function ProtectedRoute({ children, requireRole }) {
+  const { isLoggedIn, user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -16,7 +17,12 @@ function ProtectedRoute({ children }) {
   }
 
   if (!isLoggedIn) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // If a specific role is required and user doesn't have it
+  if (requireRole && user?.role !== requireRole) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

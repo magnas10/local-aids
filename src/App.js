@@ -6,11 +6,13 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import AdminRoute from './components/AdminRoute';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminNavigation from './components/AdminNavigation';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
-import Dashboard from './pages/Dashboard';
+import VolunteerDashboard from './pages/VolunteerDashboard';
+import UserDashboard from './pages/UserDashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import About from './pages/About';
@@ -22,6 +24,17 @@ import Blog from './pages/Blog';
 import CommunityGuidelines from './pages/CommunityGuidelines';
 import SafetyTips from './pages/SafetyTips';
 import HelpCenter from './pages/HelpCenter';
+import RequestHelp from './pages/RequestHelp';
+import MyRequests from './pages/MyRequests';
+import TestLogin from './pages/TestLogin';
+
+// Admin Components
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUserManagement from './pages/admin/AdminUserManagement';
+import AdminRequestManagement from './pages/admin/AdminRequestManagement';
+import AdminReports from './pages/admin/AdminReports';
+import AdminContent from './pages/admin/AdminContent';
+import AdminSettings from './pages/admin/AdminSettings';
 
 // ScrollToTop component - scrolls to top on route change
 function ScrollToTop() {
@@ -47,7 +60,8 @@ function App() {
               <Route path="/events" element={<Events />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/volunteer-dashboard" element={<ProtectedRoute requireRole="volunteer"><VolunteerDashboard /></ProtectedRoute>} />
+              <Route path="/user-dashboard" element={<ProtectedRoute requireRole="user"><UserDashboard /></ProtectedRoute>} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/about" element={<About />} />
@@ -59,6 +73,47 @@ function App() {
               <Route path="/community-guidelines" element={<CommunityGuidelines />} />
               <Route path="/safety-tips" element={<SafetyTips />} />
               <Route path="/help-center" element={<HelpCenter />} />
+              <Route path="/request-help" element={<RequestHelp />} />
+              <Route path="/my-requests" element={<MyRequests />} />
+              <Route path="/test-login" element={<TestLogin />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/dashboard" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminDashboard />
+                </AdminRoute>
+              } />
+              <Route path="/admin/users" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminUserManagement />
+                </AdminRoute>
+              } />
+              <Route path="/admin/requests" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminRequestManagement />
+                </AdminRoute>
+              } />
+              <Route path="/admin/reports" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminReports />
+                </AdminRoute>
+              } />
+              <Route path="/admin/content" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminContent />
+                </AdminRoute>
+              } />
+              <Route path="/admin/settings" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminSettings />
+                </AdminRoute>
+              } />
             </Routes>
           </main>
           <Footer />

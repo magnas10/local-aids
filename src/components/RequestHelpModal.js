@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { submitHelpRequest } from '../services/api';
 import './RequestHelpModal.css';
 
 function RequestHelpModal({ isOpen, onClose }) {
@@ -34,14 +35,14 @@ function RequestHelpModal({ isOpen, onClose }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const helpTypes = [
-    { id: 'transport', icon: '•', label: 'Transport', desc: 'Medical appointments, shopping trips' },
-    { id: 'shopping', icon: '•', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
-    { id: 'companionship', icon: '•', label: 'Companionship', desc: 'Social visits, phone calls' },
-    { id: 'household', icon: '•', label: 'Household Help', desc: 'Light cleaning, gardening' },
-    { id: 'meals', icon: '•', label: 'Meal Support', desc: 'Meal preparation, delivery' },
-    { id: 'medical', icon: '•', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
-    { id: 'tech', icon: '•', label: 'Tech Support', desc: 'Device setup, digital assistance' },
-    { id: 'other', icon: '•', label: 'Other', desc: 'Any other assistance needed' }
+    { id: 'transport', icon: '🚗', label: 'Transport', desc: 'Medical appointments, shopping trips' },
+    { id: 'shopping', icon: '🛒', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
+    { id: 'companionship', icon: '👥', label: 'Companionship', desc: 'Social visits, phone calls' },
+    { id: 'household', icon: '🏠', label: 'Household Help', desc: 'Light cleaning, gardening' },
+    { id: 'meals', icon: '🍽️', label: 'Meal Support', desc: 'Meal preparation, delivery' },
+    { id: 'medical', icon: '💊', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
+    { id: 'tech', icon: '💻', label: 'Tech Support', desc: 'Device setup, digital assistance' },
+    { id: 'other', icon: '❓', label: 'Other', desc: 'Any other assistance needed' }
   ];
 
   const handleChange = (e) => {
@@ -68,11 +69,15 @@ function RequestHelpModal({ isOpen, onClose }) {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      await submitHelpRequest(formData);
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    } catch (error) {
+      setIsSubmitting(false);
+      console.error('Failed to submit help request:', error);
+      alert('Failed to submit help request. Please try again.');
+    }
   };
 
   const resetForm = () => {
