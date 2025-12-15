@@ -405,17 +405,17 @@ export const helpRequestsAPI = {
 
   getAll: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
-    const response = await fetch(`${API_BASE_URL}/help-requests?${queryString}`);
+    const response = await authFetch(`/help-requests?${queryString}`);
     return handleResponse(response);
   },
 
   getOpportunities: async (limit = 5) => {
-    const response = await fetch(`${API_BASE_URL}/help-requests/opportunities?limit=${limit}`);
+    const response = await authFetch(`/help-requests/opportunities?limit=${limit}`);
     return handleResponse(response);
   },
 
   getById: async (id) => {
-    const response = await fetch(`${API_BASE_URL}/help-requests/${id}`);
+    const response = await authFetch(`/help-requests/${id}`);
     return handleResponse(response);
   },
 

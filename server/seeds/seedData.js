@@ -1,44 +1,40 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const sequelize = require('../config/database');
+const User = require('../models/User');
+const Event = require('../models/Event');
+const Partner = require('../models/Partner');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Import models
-const User = require('../models/User');
-const Event = require('../models/Event');
-const Partner = require('../models/Partner');
-
 const seedData = async () => {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/local-aids');
-    console.log('Connected to MongoDB');
+    // Authenticate and sync
+    await sequelize.authenticate();
+    console.log('Connected to PostgreSQL');
 
-    // Clear existing data
-    await User.deleteMany({});
-    await Event.deleteMany({});
-    await Partner.deleteMany({});
-    console.log('Cleared existing data');
+    // Force sync to clear tables
+    await sequelize.sync({ force: true });
+    console.log('Cleared existing data (tables dropped and recreated)');
 
     // Create admin user
     const adminUser = await User.create({
       name: 'Admin User',
       email: 'admin@localaid.org',
-      password: 'admin123',
+      password: 'admin123', // hooks will hash it
       role: 'admin',
-      isVerified: true
+      isActive: true,
+      phone: '1234567890'
     });
     console.log('Created admin user:', adminUser.email);
 
     // Create sample users
-    const users = await User.create([
+    await User.bulkCreate([
       {
         name: 'John Volunteer',
         email: 'volunteer@example.com',
         password: 'password123',
         role: 'volunteer',
-        bio: 'Passionate about helping the community'
+        // bio: 'Passionate about helping the community' // Removed bio if not in model or added to model later
       },
       {
         name: 'Jane Doe',
@@ -46,89 +42,69 @@ const seedData = async () => {
         password: 'password123',
         role: 'user'
       }
-    ]);
+    ], { individualHooks: true }); // Important for password hashing!
     console.log('Created sample users');
 
     // Create sample events
-    const events = await Event.create([
+    await Event.bulkCreate([
       {
         title: 'Community Health Fair',
         description: 'Join us for a free health screening and wellness education event. Services include blood pressure checks, HIV testing, and nutrition counseling.',
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
-        time: '9:00 AM - 3:00 PM',
-        location: {
-          venue: 'Community Center',
-          address: '123 Main Street',
-          city: 'Springfield',
-          state: 'IL',
-          zipCode: '62701'
-        },
-        category: 'community',
-        organizer: adminUser._id,
-        isFeatured: true,
+        location: 'Community Center, 123 Main Street, Springfield, IL 62701',
+        category: 'other', // Mapped to existing enum options if needed, 'other' used for safety
+        createdBy: adminUser.id,
+        organizer: 'Local-AIDS',
         status: 'upcoming'
       },
       {
         title: 'Annual Fundraising Gala',
         description: 'Our biggest fundraising event of the year! Join us for an evening of dinner, dancing, and giving back to the community.',
         date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 1 month from now
-        time: '6:00 PM - 10:00 PM',
-        location: {
-          venue: 'Grand Ballroom',
-          address: '500 Luxury Ave',
-          city: 'Springfield',
-          state: 'IL',
-          zipCode: '62701'
-        },
-        category: 'fundraising',
-        organizer: adminUser._id,
-        maxAttendees: 200,
-        isFeatured: true,
+        location: 'Grand Ballroom, 500 Luxury Ave, Springfield, IL 62701',
+        category: 'fundraiser',
+        createdBy: adminUser.id,
+        organizer: 'Local-AIDS',
         status: 'upcoming'
       },
       {
         title: 'Volunteer Training Workshop',
         description: 'Learn how to become an effective volunteer with our comprehensive training program.',
         date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
-        time: '10:00 AM - 2:00 PM',
-        location: {
-          venue: 'Local-AIDS Office',
-          address: '456 Hope Street',
-          city: 'Springfield',
-          state: 'IL',
-          zipCode: '62702'
-        },
+        location: 'Local-AIDS Office, 456 Hope Street, Springfield, IL 62702',
         category: 'volunteer',
-        organizer: adminUser._id,
+        createdBy: adminUser.id,
+        organizer: 'Local-AIDS',
         status: 'upcoming'
       }
     ]);
     console.log('Created sample events');
 
     // Create sample partners
-    const partners = await Partner.create([
+    await Partner.bulkCreate([
       {
         name: 'Springfield Hospital',
         description: 'Providing comprehensive healthcare services to our community for over 50 years.',
-        category: 'healthcare',
-        website: 'https://springfieldhospital.example.com',
-        partnershipType: 'collaborator',
-        isFeatured: true
+        category: 'corporate', // Mapped to enum
+        logoUrl: 'https://placehold.co/400x200?text=Springfield+Hospital',
+        websiteUrl: 'https://springfieldhospital.example.com',
+        isActive: true
       },
       {
         name: 'Community Foundation',
         description: 'Supporting local nonprofits and community initiatives.',
-        category: 'nonprofit',
-        website: 'https://communityfoundation.example.com',
-        partnershipType: 'sponsor',
-        isFeatured: true
+        category: 'community-group',
+        logoUrl: 'https://placehold.co/400x200?text=Community+Foundation',
+        websiteUrl: 'https://communityfoundation.example.com',
+        isActive: true
       },
       {
         name: 'Local Business Association',
         description: 'Connecting businesses with community organizations.',
-        category: 'corporate',
-        website: 'https://localbusiness.example.com',
-        partnershipType: 'supporter'
+        category: 'local-business',
+        logoUrl: 'https://placehold.co/400x200?text=Local+Business+Assoc',
+        websiteUrl: 'https://localbusiness.example.com',
+        isActive: true
       }
     ]);
     console.log('Created sample partners');

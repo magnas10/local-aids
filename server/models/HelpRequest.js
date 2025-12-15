@@ -1,149 +1,175 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const helpRequestSchema = new mongoose.Schema({
+const HelpRequest = sequelize.define('HelpRequest', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   // Personal Info
   fullName: {
-    type: String,
-    required: [true, 'Full name is required'],
-    trim: true,
-    maxlength: [100, 'Name cannot exceed 100 characters']
-  },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    trim: true,
-    lowercase: true
-  },
-  phone: {
-    type: String,
-    required: [true, 'Phone number is required'],
-    trim: true
-  },
-  address: {
-    type: String,
-    required: [true, 'Address is required'],
-    trim: true
-  },
-  suburb: {
-    type: String,
-    required: [true, 'Suburb is required'],
-    trim: true
-  },
-  state: {
-    type: String,
-    required: [true, 'State is required'],
-    enum: ['VIC', 'NSW', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']
-  },
-  postcode: {
-    type: String,
-    required: [true, 'Postcode is required'],
-    trim: true
-  },
-  
-  // Request Details
-  helpType: {
-    type: String,
-    required: [true, 'Help type is required'],
-    enum: ['transport', 'shopping', 'companionship', 'household', 'meals', 'medical', 'tech', 'other']
-  },
-  urgency: {
-    type: String,
-    required: [true, 'Urgency level is required'],
-    enum: ['low', 'normal', 'high', 'urgent'],
-    default: 'normal'
-  },
-  preferredDate: {
-    type: String,
-    required: false
-  },
-  preferredTime: {
-    type: String,
-    required: false
-  },
-  duration: {
-    type: String,
-    required: false
-  },
-  
-  // Description
-  description: {
-    type: String,
-    required: [true, 'Description is required'],
-    maxlength: [1000, 'Description cannot exceed 1000 characters']
-  },
-  specialRequirements: {
-    type: String,
-    maxlength: [500, 'Special requirements cannot exceed 500 characters']
-  },
-  
-  // Status and Meta
-  status: {
-    type: String,
-    enum: ['pending', 'matched', 'in-progress', 'completed', 'cancelled'],
-    default: 'pending'
-  },
-  assignedVolunteer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: false
-  },
-  showAsEvent: {
-    type: Boolean,
-    default: true
-  },
-  showInOpportunities: {
-    type: Boolean,
-    default: function() {
-      return this.urgency === 'high' || this.urgency === 'urgent';
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [1, 100]
     }
   },
-  
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  suburb: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['VIC', 'NSW', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT']]
+    }
+  },
+  postcode: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+
+  // Request Details
+  helpType: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['transport', 'shopping', 'companionship', 'household', 'meals', 'medical', 'tech', 'other']]
+    }
+  },
+  urgency: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'normal',
+    validate: {
+      isIn: [['low', 'normal', 'high', 'urgent']]
+    }
+  },
+  preferredDate: {
+    type: DataTypes.STRING
+  },
+  preferredTime: {
+    type: DataTypes.STRING
+  },
+  duration: {
+    type: DataTypes.STRING
+  },
+
+  // Description
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      len: [1, 1000]
+    }
+  },
+  specialRequirements: {
+    type: DataTypes.TEXT,
+    validate: {
+      len: [0, 500]
+    }
+  },
+
+  // Status and Meta
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'pending',
+    validate: {
+      isIn: [['pending', 'matched', 'in-progress', 'completed', 'cancelled']]
+    }
+  },
+  assignedVolunteerId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  },
+  showAsEvent: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  showInOpportunities: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false // Logic moved to setter/hooks if needed, or calculated by caller
+  },
+
   // Additional
   howHeard: {
-    type: String,
-    required: false
+    type: DataTypes.STRING
   },
   agreeTerms: {
-    type: Boolean,
-    required: [true, 'Must agree to terms and conditions']
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    validate: {
+      isTrue(value) {
+        if (!value) throw new Error('Must agree to terms and conditions');
+      }
+    }
   },
   agreePrivacy: {
-    type: Boolean,
-    required: [true, 'Must agree to privacy policy']
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    validate: {
+      isTrue(value) {
+        if (!value) throw new Error('Must agree to privacy policy');
+      }
+    }
   }
 }, {
-  timestamps: true
+  getterMethods: {
+    formattedLocation() {
+      return `${this.suburb}, ${this.state} ${this.postcode}`;
+    },
+    priority() {
+      const priorityMap = {
+        'low': 'Low',
+        'normal': 'Medium',
+        'high': 'High',
+        'urgent': 'Urgent'
+      };
+      return priorityMap[this.urgency];
+    },
+    category() {
+      const categoryMap = {
+        'transport': 'Transport',
+        'shopping': 'Groceries',
+        'companionship': 'Companionship',
+        'household': 'Household',
+        'meals': 'Meals',
+        'medical': 'Medical',
+        'tech': 'Tech Support',
+        'other': 'Other'
+      };
+      return categoryMap[this.helpType];
+    }
+  },
+  hooks: {
+    beforeSave: (request) => {
+      // Auto-set showInOpportunities based on urgency
+      if (request.urgency === 'high' || request.urgency === 'urgent') {
+        request.showInOpportunities = true;
+      }
+    }
+  }
 });
 
-// Virtual for formatted location
-helpRequestSchema.virtual('formattedLocation').get(function() {
-  return `${this.suburb}, ${this.state} ${this.postcode}`;
-});
-
-// Virtual for priority level
-helpRequestSchema.virtual('priority').get(function() {
-  const priorityMap = {
-    'low': 'Low',
-    'normal': 'Medium', 
-    'high': 'High',
-    'urgent': 'Urgent'
-  };
-  return priorityMap[this.urgency];
-});
-
-// Virtual for category mapping
-helpRequestSchema.virtual('category').get(function() {
-  const categoryMap = {
-    'transport': 'Transport',
-    'shopping': 'Groceries',
-    'companionship': 'Companionship',
-    'household': 'Household',
-    'meals': 'Meals',
-    'medical': 'Medical',
-    'tech': 'Tech Support',
-    'other': 'Other'
-  };
-  return categoryMap[this.helpType];
-});
-
-module.exports = mongoose.model('HelpRequest', helpRequestSchema);
+module.exports = HelpRequest;

@@ -660,8 +660,9 @@
   font-weight: 500;
 }
 
-<<<<<<< HEAD
-=======
+/* ===========================
+  EVENTS PAGE - HERO SECTION
+  =========================== */
 /* ===========================
    EVENTS PAGE - HERO SECTION
    =========================== */
@@ -918,7 +919,7 @@
   }
 }
 
->>>>>>> b27cf10a907ac863167abf61e70703ab70c308a2
+/* End Events Hero */
 /* Opportunities Header - Matching Screenshot */
 .opportunities-header {
   text-align: left;
@@ -12757,15 +12758,6 @@
     height: auto;
     min-height: 500px;
   }
-  
-      text-align: left;
-      margin-bottom: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 20px;
-  
   .announcement-header {
     flex-direction: column;
     align-items: flex-start;

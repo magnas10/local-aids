@@ -23,7 +23,7 @@ function AdminRequestManagement() {
       setError('');
       const response = await getHelpRequests();
       console.log('Help requests response:', response);
-      
+
       const requestsData = Array.isArray(response) ? response : response.helpRequests || [];
       setRequests(requestsData);
     } catch (error) {
@@ -38,10 +38,18 @@ function AdminRequestManagement() {
     try {
       setActionLoading(true);
       setError('');
-      
+
+      // Check for token first
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Your session has expired. Please login again.');
+        window.location.href = '/login';
+        return;
+      }
+
       switch (action) {
         case 'approve':
-          await updateHelpRequestStatus(requestId, 'approved');
+          await updateHelpRequestStatus(requestId, 'matched');
           break;
         case 'reject':
           await updateHelpRequestStatus(requestId, 'rejected');
@@ -68,7 +76,7 @@ function AdminRequestManagement() {
           setActionLoading(false);
           return;
       }
-      
+
       await fetchRequests();
     } catch (error) {
       console.error(`Failed to ${action} request:`, error);
@@ -109,7 +117,7 @@ function AdminRequestManagement() {
     const matchesSearch = (request.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (request.contactName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       (request.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesStatus && matchesUrgency && matchesSearch;
   });
 
@@ -157,7 +165,7 @@ function AdminRequestManagement() {
                     <p><strong>Requester:</strong> {request.contactName}</p>
                     <p><strong>Location:</strong> {request.location}</p>
                     <p><strong>Time:</strong> {new Date(request.createdAt).toLocaleString()}</p>
-                    <button 
+                    <button
                       className="alert-action-btn"
                       onClick={() => window.open(`mailto:volunteers@localaid.org?subject=Urgent Help Needed&body=High priority request needs attention: ${request.title}`, '_blank')}
                     >
@@ -176,8 +184,8 @@ function AdminRequestManagement() {
           <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
             <div>
               <label>Status Filter: </label>
-              <select 
-                value={filterStatus} 
+              <select
+                value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 style={{ marginLeft: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
               >
@@ -191,8 +199,8 @@ function AdminRequestManagement() {
             </div>
             <div>
               <label>Urgency Filter: </label>
-              <select 
-                value={filterUrgency} 
+              <select
+                value={filterUrgency}
                 onChange={(e) => setFilterUrgency(e.target.value)}
                 style={{ marginLeft: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
               >
@@ -209,10 +217,10 @@ function AdminRequestManagement() {
                 placeholder="Search requests..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{ 
-                  width: '100%', 
-                  padding: '8px 12px', 
-                  borderRadius: '4px', 
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '4px',
                   border: '1px solid #ddd',
                   fontSize: '14px'
                 }}
@@ -259,9 +267,9 @@ function AdminRequestManagement() {
                     </div>
                   </td>
                   <td>
-                    <span 
+                    <span
                       className="status-badge"
-                      style={{ 
+                      style={{
                         backgroundColor: getStatusColor(request.status) + '20',
                         color: getStatusColor(request.status),
                         border: `1px solid ${getStatusColor(request.status)}`
@@ -271,9 +279,9 @@ function AdminRequestManagement() {
                     </span>
                   </td>
                   <td>
-                    <span 
+                    <span
                       className="status-badge"
-                      style={{ 
+                      style={{
                         backgroundColor: getUrgencyColor(request.urgency) + '20',
                         color: getUrgencyColor(request.urgency),
                         border: `1px solid ${getUrgencyColor(request.urgency)}`
@@ -297,14 +305,14 @@ function AdminRequestManagement() {
                   <td>
                     <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
                       {request.status === 'pending' && (
-                        <button 
+                        <button
                           onClick={() => handleRequestAction(request.id, 'approve')}
-                          style={{ 
-                            padding: '4px 8px', 
-                            fontSize: '0.8rem', 
-                            background: '#28a745', 
-                            color: 'white', 
-                            border: 'none', 
+                          style={{
+                            padding: '4px 8px',
+                            fontSize: '0.8rem',
+                            background: '#28a745',
+                            color: 'white',
+                            border: 'none',
                             borderRadius: '3px',
                             cursor: 'pointer'
                           }}
@@ -312,16 +320,16 @@ function AdminRequestManagement() {
                           Approve
                         </button>
                       )}
-                      
+
                       {request.urgency !== 'critical' && (
-                        <button 
+                        <button
                           onClick={() => handleRequestAction(request.id, 'urgent')}
-                          style={{ 
-                            padding: '4px 8px', 
-                            fontSize: '0.8rem', 
-                            background: '#dc3545', 
-                            color: 'white', 
-                            border: 'none', 
+                          style={{
+                            padding: '4px 8px',
+                            fontSize: '0.8rem',
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
                             borderRadius: '3px',
                             cursor: 'pointer'
                           }}
@@ -329,16 +337,16 @@ function AdminRequestManagement() {
                           Mark Urgent
                         </button>
                       )}
-                      
+
                       {request.status !== 'completed' && request.status !== 'cancelled' && (
-                        <button 
+                        <button
                           onClick={() => handleRequestAction(request.id, 'cancel')}
-                          style={{ 
-                            padding: '4px 8px', 
-                            fontSize: '0.8rem', 
-                            background: '#dc3545', 
-                            color: 'white', 
-                            border: 'none', 
+                          style={{
+                            padding: '4px 8px',
+                            fontSize: '0.8rem',
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
                             borderRadius: '3px',
                             cursor: 'pointer'
                           }}
@@ -346,14 +354,14 @@ function AdminRequestManagement() {
                           Cancel
                         </button>
                       )}
-                      
-                      <button 
-                        style={{ 
-                          padding: '4px 8px', 
-                          fontSize: '0.8rem', 
-                          background: '#007bff', 
-                          color: 'white', 
-                          border: 'none', 
+
+                      <button
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: '0.8rem',
+                          background: '#007bff',
+                          color: 'white',
+                          border: 'none',
                           borderRadius: '3px',
                           cursor: 'pointer'
                         }}

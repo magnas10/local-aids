@@ -1,86 +1,45 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const notificationSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Notification title is required'],
-    trim: true,
-    maxLength: [200, 'Title cannot exceed 200 characters']
+const Notification = sequelize.define('Notification', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   },
-  message: {
-    type: String,
-    required: [true, 'Notification message is required'],
-    trim: true,
-    maxLength: [1000, 'Message cannot exceed 1000 characters']
+  recipientId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
   },
   type: {
-    type: String,
-    enum: ['info', 'warning', 'success', 'error', 'announcement'],
-    default: 'info'
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'normal', 'high', 'urgent'],
-    default: 'normal'
-  },
-  targetAudience: {
-    type: String,
-    enum: ['all', 'users', 'volunteers', 'admins'],
-    default: 'all'
-  },
-  isGlobal: {
-    type: Boolean,
-    default: true
-  },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-  expiresAt: {
-    type: Date,
-    default: null // null means no expiration
-  },
-  readBy: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    readAt: {
-      type: Date,
-      default: Date.now
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['request_update', 'new_message', 'event_reminder', 'system', 'volunteer_match']]
     }
-  }]
-}, {
-  timestamps: true
-});
-
-// Index for efficient querying
-notificationSchema.index({ isActive: 1, createdAt: -1 });
-notificationSchema.index({ targetAudience: 1, isActive: 1 });
-notificationSchema.index({ expiresAt: 1 });
-
-// Virtual for read status
-notificationSchema.virtual('readCount').get(function() {
-  return this.readBy.length;
-});
-
-// Method to check if notification is expired
-notificationSchema.methods.isExpired = function() {
-  return this.expiresAt && this.expiresAt < new Date();
-};
-
-// Method to mark as read by user
-notificationSchema.methods.markAsRead = function(userId) {
-  const existingRead = this.readBy.find(read => read.user.toString() === userId.toString());
-  if (!existingRead) {
-    this.readBy.push({ user: userId });
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  message: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  relatedId: {
+    type: DataTypes.STRING // ID of related item (request, event, etc), kept as string to be flexible
+  },
+  relatedModel: {
+    type: DataTypes.STRING // 'HelpRequest', 'Event', 'Message', etc.
+  },
+  read: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
-  return this.save();
-};
+});
 
-module.exports = mongoose.model('Notification', notificationSchema);
+module.exports = Notification;

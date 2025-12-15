@@ -1,90 +1,77 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const eventSchema = new mongoose.Schema({
+const Event = sequelize.define('Event', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   title: {
-    type: String,
-    required: [true, 'Event title is required'],
-    trim: true,
-    maxlength: [100, 'Title cannot exceed 100 characters']
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Title is required' }
+    }
   },
   description: {
-    type: String,
-    required: [true, 'Event description is required'],
-    maxlength: [2000, 'Description cannot exceed 2000 characters']
+    type: DataTypes.TEXT,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Description is required' }
+    }
   },
   date: {
-    type: Date,
-    required: [true, 'Event date is required']
-  },
-  endDate: {
-    type: Date
-  },
-  time: {
-    type: String,
-    required: [true, 'Event time is required']
+    type: DataTypes.DATE,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Date is required' }
+    }
   },
   location: {
-    venue: { type: String, required: true },
-    address: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    coordinates: {
-      lat: Number,
-      lng: Number
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Location is required' }
     }
   },
   category: {
-    type: String,
-    enum: ['community', 'fundraising', 'awareness', 'volunteer', 'support-group', 'other'],
-    default: 'community'
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['fundraiser', 'workshop', 'social', 'volunteer', 'other']]
+    }
   },
   image: {
-    type: String,
-    default: null
+    type: DataTypes.STRING,
+    defaultValue: 'default-event.jpg'
   },
   organizer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  attendees: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    registeredAt: { type: Date, default: Date.now },
-    status: { type: String, enum: ['registered', 'attended', 'cancelled'], default: 'registered' }
-  }],
-  maxAttendees: {
-    type: Number,
-    default: null // null means unlimited
+  capacity: {
+    type: DataTypes.INTEGER
   },
-  isPublic: {
-    type: Boolean,
-    default: true
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false
+  registeredAttendees: {
+    type: DataTypes.ARRAY(DataTypes.INTEGER), // Array of User IDs
+    defaultValue: []
   },
   status: {
-    type: String,
-    enum: ['upcoming', 'ongoing', 'completed', 'cancelled'],
-    default: 'upcoming'
+    type: DataTypes.STRING,
+    defaultValue: 'upcoming',
+    validate: {
+      isIn: [['upcoming', 'completed', 'cancelled']]
+    }
   },
-  tags: [{
-    type: String,
-    trim: true
-  }]
-}, {
-  timestamps: true
+  createdBy: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  }
 });
 
-// Index for searching
-eventSchema.index({ title: 'text', description: 'text' });
-
-// Virtual for checking if event is full
-eventSchema.virtual('isFull').get(function() {
-  if (!this.maxAttendees) return false;
-  return this.attendees.length >= this.maxAttendees;
-});
-
-module.exports = mongoose.model('Event', eventSchema);
+module.exports = Event;
