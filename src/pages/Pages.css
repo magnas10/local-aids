@@ -2758,7 +2758,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8fafa 0%, #e8f0f0 100%);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   padding: 60px 24px;
   position: relative;
 }
@@ -2771,8 +2771,8 @@
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(32, 178, 170, 0.08) 0%, transparent 50%);
   pointer-events: none;
 }
 
@@ -2784,15 +2784,17 @@
 }
 
 .auth-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 28px;
   padding: 50px 45px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .auth-card h1 {
-  color: var(--text-primary, #1a1a1a);
+  color: white;
   margin-bottom: 10px;
   text-align: center;
   font-size: 2rem;
@@ -2800,7 +2802,7 @@
 }
 
 .auth-card > p {
-  color: var(--text-muted, #718096);
+  color: rgba(255, 255, 255, 0.7);
   text-align: center;
   margin-bottom: 35px;
   font-size: 1rem;
@@ -2819,29 +2821,30 @@
 }
 
 .form-group label {
-  color: var(--text-primary, #1a1a1a);
+  color: white;
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .form-group input {
   padding: 16px 20px;
-  border: 2px solid var(--border-light, #e2e8f0);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 14px;
   font-size: 1rem;
   transition: all 0.2s ease;
   outline: none;
-  background: var(--bg-light, #f8fafa);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
 }
 
 .form-group input:hover {
-  border-color: var(--border-medium, #cbd5e0);
+  border-color: rgba(255, 215, 0, 0.4);
 }
 
 .form-group input:focus {
-  border-color: var(--primary, #2563eb);
-  background: white;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  border-color: #ffd700;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.1);
 }
 
 .form-group input::placeholder {
@@ -5761,8 +5764,7 @@
   z-index: 2;
   text-align: center;
   max-width: 800px;
-  padding: 40px 20px;
-  z-index: 0;
+  padding: 60px 20px;
 }
 
 .about-hero-overlay {
@@ -7961,7 +7963,7 @@
 }
 
 .donate-container-pro {
-  max-width: 650px;
+  max-width: 700px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
@@ -8266,6 +8268,9 @@
 /* Impact Side Section */
 .donate-impact-section-pro {
   width: 100%;
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid #e0e0e0;
 }
 
 .impact-card-pro {
@@ -9137,8 +9142,7 @@
 }
 
 /* ===========================
-<<<<<<< HEAD
-=======
+/* ===========================
    PROFESSIONAL PARTNERS PAGE STYLES
    =========================== */
 
@@ -9565,7 +9569,6 @@
 }
 
 /* ===========================
->>>>>>> b27cf10a907ac863167abf61e70703ab70c308a2
    PROFESSIONAL CONTACT PAGE STYLES
    =========================== */
 
@@ -10730,6 +10733,7 @@
 }
 
 
+<<<<<<< Updated upstream
 
 
 /* ===========================
@@ -12768,4 +12772,3 @@
     min-width: auto;
   }
 }
-
