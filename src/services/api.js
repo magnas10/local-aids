@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = '/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -9,6 +9,8 @@ const getAuthToken = () => {
 // Helper function to make authenticated requests
 const authFetch = async (url, options = {}) => {
   const token = getAuthToken();
+  
+  console.log('Making API call to:', `${API_BASE_URL}${url}`);
   
   const config = {
     ...options,
@@ -24,8 +26,11 @@ const authFetch = async (url, options = {}) => {
 
   const response = await fetch(`${API_BASE_URL}${url}`, config);
   
+  console.log('API response status:', response.status);
+  
   // Handle unauthorized errors
   if (response.status === 401) {
+    console.log('Unauthorized - removing token');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     // Optionally redirect to login
@@ -37,11 +42,36 @@ const authFetch = async (url, options = {}) => {
 
 // Parse response and handle errors
 const handleResponse = async (response) => {
-  const data = await response.json();
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    console.error('Failed to parse JSON response:', err);
+    console.error('Response status:', response.status);
+    console.error('Response text might be:', response.statusText);
+    throw new Error('Server response was not valid JSON');
+  }
+  
+  console.log('Response data:', data);
   
   if (!response.ok) {
-    const error = data.message || data.errors?.[0]?.msg || 'Something went wrong';
-    throw new Error(error);
+    console.error('Response not ok, status:', response.status);
+    let errorMessage = '';
+    
+    if (data.message) {
+      errorMessage = data.message;
+    } else if (data.errors && Array.isArray(data.errors)) {
+      errorMessage = data.errors.map(e => e.message || e.msg || JSON.stringify(e)).join('; ');
+    } else if (data.errors && typeof data.errors === 'object') {
+      errorMessage = Object.values(data.errors).map(e => e.message || e).join('; ');
+    } else {
+      errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+    }
+    
+    console.error('API Error:', errorMessage);
+    const error = new Error(errorMessage);
+    error.errors = data.errors;
+    throw error;
   }
   
   return data;
@@ -50,21 +80,43 @@ const handleResponse = async (response) => {
 // ============ AUTH API ============
 export const authAPI = {
   register: async (userData) => {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-    return handleResponse(response);
+    try {
+      console.log('AuthAPI register called with:', userData);
+      console.log('API URL:', `${API_BASE_URL}/auth/register`);
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+      console.log('Register response status:', response.status);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Network error during registration:', error);
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+      }
+      throw new Error('Unable to connect to server. Please check your internet connection.');
+    }
   },
 
   login: async (credentials) => {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials),
-    });
-    return handleResponse(response);
+    try {
+      console.log('AuthAPI login called with:', { email: credentials.email });
+      console.log('API URL:', `${API_BASE_URL}/auth/login`);
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
+      console.log('Login response status:', response.status);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Network error during login:', error);
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+      }
+      throw new Error('Unable to connect to server. Please check your internet connection.');
+    }
   },
 
   getMe: async () => {
@@ -88,7 +140,7 @@ export const authAPI = {
 
 // ============ USERS API ============
 export const usersAPI = {
-  getAll: async (page = 1, limit = 10) => {
+  getAll: async (page = 1, limit = 100) => {
     const response = await authFetch(`/users?page=${page}&limit=${limit}`);
     return handleResponse(response);
   },
@@ -98,8 +150,9 @@ export const usersAPI = {
     return handleResponse(response);
   },
 
-  updateProfile: async (userData) => {
-    const response = await authFetch('/users/profile', {
+  updateProfile: async (id, userData) => {
+    // Use admin update endpoint for admin operations
+    const response = await authFetch(`/users/${id}/admin-update`, {
       method: 'PUT',
       body: JSON.stringify(userData),
     });
@@ -331,6 +384,66 @@ export const galleryAPI = {
   },
 };
 
+// ============ HELP REQUESTS API ============
+export const helpRequestsAPI = {
+  submit: async (requestData) => {
+    console.log('helpRequestsAPI.submit called with:', requestData);
+    try {
+      const jsonData = JSON.stringify(requestData);
+      console.log('JSON stringified successfully');
+      const response = await authFetch('/help-requests', {
+        method: 'POST',
+        body: jsonData,
+      });
+      console.log('Help request response received:', response);
+      return handleResponse(response);
+    } catch (error) {
+      console.error('Error in submit:', error);
+      throw error;
+    }
+  },
+
+  getAll: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await authFetch(`/help-requests?${queryString}`);
+    return handleResponse(response);
+  },
+
+  getOpportunities: async (limit = 5) => {
+    const response = await authFetch(`/help-requests/opportunities?limit=${limit}`);
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await authFetch(`/help-requests/${id}`);
+    return handleResponse(response);
+  },
+
+  updateStatus: async (id, status, volunteerId = null) => {
+    const response = await authFetch(`/help-requests/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, volunteerId }),
+    });
+    return handleResponse(response);
+  },
+
+  update: async (id, requestData, email) => {
+    const response = await authFetch(`/help-requests/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...requestData, email }),
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id, email) => {
+    const response = await authFetch(`/help-requests/${id}`, {
+      method: 'DELETE',
+      body: JSON.stringify({ email }),
+    });
+    return handleResponse(response);
+  },
+};
+
 // ============ PARTNERS API ============
 export const partnersAPI = {
   getAll: async (params = {}) => {
@@ -366,7 +479,87 @@ export const partnersAPI = {
   },
 };
 
-// Export all APIs
+// Individual function exports for convenience
+export const submitHelpRequest = helpRequestsAPI.submit;
+export const getHelpRequests = helpRequestsAPI.getAll;
+export const getHelpOpportunities = helpRequestsAPI.getOpportunities;
+export const updateHelpRequestStatus = helpRequestsAPI.updateStatus;
+export const updateHelpRequest = helpRequestsAPI.update;
+export const deleteHelpRequest = helpRequestsAPI.delete;
+
+// ============ NOTIFICATIONS API ============
+export const notificationsAPI = {
+  getAll: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await authFetch(`/notifications?${queryString}`);
+    return handleResponse(response);
+  },
+
+  getUnreadCount: async () => {
+    const response = await authFetch('/notifications/unread-count');
+    return handleResponse(response);
+  },
+
+  markAsRead: async (id) => {
+    const response = await authFetch(`/notifications/${id}/read`, {
+      method: 'PUT'
+    });
+    return handleResponse(response);
+  },
+
+  markAllAsRead: async () => {
+    const response = await authFetch('/notifications/mark-all-read', {
+      method: 'PUT'
+    });
+    return handleResponse(response);
+  },
+
+  // Admin functions
+  create: async (notificationData) => {
+    const response = await authFetch('/notifications', {
+      method: 'POST',
+      body: JSON.stringify(notificationData)
+    });
+    return handleResponse(response);
+  },
+
+  getAllForAdmin: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await authFetch(`/notifications/admin?${queryString}`);
+    return handleResponse(response);
+  },
+
+  update: async (id, notificationData) => {
+    const response = await authFetch(`/notifications/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(notificationData)
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id) => {
+    const response = await authFetch(`/notifications/${id}`, {
+      method: 'DELETE'
+    });
+    return handleResponse(response);
+  }
+};
+
+// User management convenience exports
+export const getAllUsers = usersAPI.getAll;
+export const deleteUser = usersAPI.delete;
+export const updateUserProfile = usersAPI.updateProfile;
+
+// Notification convenience exports
+export const getNotifications = notificationsAPI.getAll;
+export const getUnreadNotificationCount = notificationsAPI.getUnreadCount;
+export const markNotificationAsRead = notificationsAPI.markAsRead;
+export const markAllNotificationsAsRead = notificationsAPI.markAllAsRead;
+export const createNotification = notificationsAPI.create;
+export const getAllNotificationsForAdmin = notificationsAPI.getAllForAdmin;
+export const updateNotification = notificationsAPI.update;
+export const deleteNotification = notificationsAPI.delete;
+
 export default {
   auth: authAPI,
   users: usersAPI,
@@ -376,4 +569,6 @@ export default {
   contact: contactAPI,
   gallery: galleryAPI,
   partners: partnersAPI,
+  helpRequests: helpRequestsAPI,
+  notifications: notificationsAPI,
 };

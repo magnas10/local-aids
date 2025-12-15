@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { submitHelpRequest } from '../services/api';
 import './RequestHelpModal.css';
 
 function RequestHelpModal({ isOpen, onClose }) {
@@ -34,14 +35,14 @@ function RequestHelpModal({ isOpen, onClose }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const helpTypes = [
-    { id: 'transport', icon: '•', label: 'Transport', desc: 'Medical appointments, shopping trips' },
-    { id: 'shopping', icon: '•', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
-    { id: 'companionship', icon: '•', label: 'Companionship', desc: 'Social visits, phone calls' },
-    { id: 'household', icon: '•', label: 'Household Help', desc: 'Light cleaning, gardening' },
-    { id: 'meals', icon: '•', label: 'Meal Support', desc: 'Meal preparation, delivery' },
-    { id: 'medical', icon: '•', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
-    { id: 'tech', icon: '•', label: 'Tech Support', desc: 'Device setup, digital assistance' },
-    { id: 'other', icon: '•', label: 'Other', desc: 'Any other assistance needed' }
+    { id: 'transport', icon: '🚗', label: 'Transport', desc: 'Medical appointments, shopping trips' },
+    { id: 'shopping', icon: '🛒', label: 'Shopping Assistance', desc: 'Grocery shopping, errands' },
+    { id: 'companionship', icon: '👥', label: 'Companionship', desc: 'Social visits, phone calls' },
+    { id: 'household', icon: '🏠', label: 'Household Help', desc: 'Light cleaning, gardening' },
+    { id: 'meals', icon: '🍽️', label: 'Meal Support', desc: 'Meal preparation, delivery' },
+    { id: 'medical', icon: '💊', label: 'Medical Support', desc: 'Medication reminders, health check-ins' },
+    { id: 'tech', icon: '💻', label: 'Tech Support', desc: 'Device setup, digital assistance' },
+    { id: 'other', icon: '❓', label: 'Other', desc: 'Any other assistance needed' }
   ];
 
   const handleChange = (e) => {
@@ -56,8 +57,41 @@ function RequestHelpModal({ isOpen, onClose }) {
     setFormData(prev => ({ ...prev, helpType: typeId }));
   };
 
+  const validateStep = (stepNum) => {
+    switch(stepNum) {
+      case 1:
+        if (!formData.helpType) {
+          alert('Please select a type of help');
+          return false;
+        }
+        return true;
+      case 2:
+        if (!formData.description || formData.description.trim() === '') {
+          alert('Please describe what help you need');
+          return false;
+        }
+        return true;
+      case 3:
+        if (!formData.fullName || !formData.email || !formData.phone || !formData.address || !formData.suburb || !formData.postcode) {
+          alert('Please fill in all required personal information');
+          return false;
+        }
+        return true;
+      case 4:
+        if (!formData.agreeTerms || !formData.agreePrivacy) {
+          alert('Please agree to the terms and conditions');
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  };
+
   const nextStep = () => {
-    setStep(prev => Math.min(prev + 1, 4));
+    if (validateStep(step)) {
+      setStep(prev => Math.min(prev + 1, 4));
+    }
   };
 
   const prevStep = () => {
@@ -68,11 +102,28 @@ function RequestHelpModal({ isOpen, onClose }) {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    try {
+      console.log('Submitting help request with data:', formData);
+      const result = await submitHelpRequest(formData);
+      console.log('Help request submitted successfully:', result);
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+    } catch (error) {
+      setIsSubmitting(false);
+      console.error('Failed to submit help request:', error);
+      console.error('Error details:', error);
+      
+      // Show more detailed error message
+      let errorMessage = 'Failed to submit help request. Please try again.';
+      if (error.errors && Array.isArray(error.errors)) {
+        errorMessage = error.errors.map(e => e.message || e).join(', ');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      console.error('Displaying error to user:', errorMessage);
+      alert(errorMessage);
+    }
   };
 
   const resetForm = () => {

@@ -38,8 +38,10 @@ export function AuthProvider({ children }) {
   // Register new user
   const register = async (userData) => {
     try {
+      console.log('Attempting to register user:', userData);
       setError(null);
       const response = await authAPI.register(userData);
+      console.log('Registration successful:', response);
       
       // Save token and user to localStorage
       localStorage.setItem('token', response.token);
@@ -50,6 +52,7 @@ export function AuthProvider({ children }) {
       
       return { success: true, user: response.user };
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err.message);
       return { success: false, error: err.message };
     }
@@ -58,8 +61,10 @@ export function AuthProvider({ children }) {
   // Login user
   const login = async (credentials) => {
     try {
+      console.log('Attempting to login user:', credentials.email);
       setError(null);
       const response = await authAPI.login(credentials);
+      console.log('Login successful:', response);
       
       // Save token and user to localStorage
       localStorage.setItem('token', response.token);
@@ -70,6 +75,7 @@ export function AuthProvider({ children }) {
       
       return { success: true, user: response.user };
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.message);
       return { success: false, error: err.message };
     }
@@ -100,7 +106,9 @@ export function AuthProvider({ children }) {
   };
 
   // Clear error
-  const clearError = () => setError(null);
+  const clearError = () => {
+    setError(null);
+  };
 
   const value = {
     isLoggedIn,

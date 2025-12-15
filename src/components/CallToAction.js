@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CallToAction.css';
 
 function CallToAction() {
+  const navigate = useNavigate();
   const features = [
     { icon: '•', text: 'Connect with neighbors' },
     { icon: '•', text: 'Quick & easy signup' },
@@ -32,7 +34,7 @@ function CallToAction() {
           </div>
 
           <div className="cta-buttons">
-            <button className="cta-btn primary">
+            <button className="cta-btn primary" onClick={() => navigate('/events')}>
               <span>Start Volunteering</span>
               <span className="btn-arrow">→</span>
             </button>
