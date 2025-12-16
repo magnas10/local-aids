@@ -1,59 +1,38 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const partnerSchema = new mongoose.Schema({
+const Partner = sequelize.define('Partner', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   name: {
-    type: String,
-    required: [true, 'Partner name is required'],
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   description: {
-    type: String,
-    maxlength: [1000, 'Description cannot exceed 1000 characters']
+    type: DataTypes.TEXT,
+    allowNull: false
   },
-  logo: {
-    type: String,
-    default: null
+  logoUrl: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
-  website: {
-    type: String,
-    trim: true
+  websiteUrl: {
+    type: DataTypes.STRING
   },
   category: {
-    type: String,
-    enum: ['healthcare', 'nonprofit', 'government', 'corporate', 'education', 'community', 'other'],
-    default: 'nonprofit'
-  },
-  contact: {
-    name: String,
-    email: String,
-    phone: String
-  },
-  address: {
-    street: String,
-    city: String,
-    state: String,
-    zipCode: String,
-    country: String
-  },
-  partnershipType: {
-    type: String,
-    enum: ['sponsor', 'collaborator', 'affiliate', 'supporter'],
-    default: 'supporter'
-  },
-  startDate: {
-    type: Date,
-    default: Date.now
+    type: DataTypes.STRING,
+    defaultValue: 'corporate',
+    validate: {
+      isIn: [['corporate', 'local-business', 'community-group', 'government', 'other']]
+    }
   },
   isActive: {
-    type: Boolean,
-    default: true
-  },
-  isFeatured: {
-    type: Boolean,
-    default: false
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
   }
-}, {
-  timestamps: true
 });
 
-module.exports = mongoose.model('Partner', partnerSchema);
+module.exports = Partner;

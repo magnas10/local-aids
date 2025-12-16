@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getHelpOpportunities } from '../services/api';
 import './Opportunities.css';
+import './HelpRequestStyles.css';
 
 function Opportunities() {
   const { isLoggedIn, user } = useAuth();
@@ -25,8 +27,30 @@ function Opportunities() {
   
   // Notification States
   const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+  
+  // Help Requests State
+  const [helpOpportunities, setHelpOpportunities] = useState([]);
+  const [loadingHelp, setLoadingHelp] = useState(true);
 
-  const opportunities = [
+  // Fetch help opportunities on component mount
+  useEffect(() => {
+    const fetchHelpOpportunities = async () => {
+      try {
+        setLoadingHelp(true);
+        const response = await getHelpOpportunities(3); // Get top 3 high priority requests
+        setHelpOpportunities(response || []);
+      } catch (error) {
+        console.error('Failed to fetch help opportunities:', error);
+        setHelpOpportunities([]);
+      } finally {
+        setLoadingHelp(false);
+      }
+    };
+
+    fetchHelpOpportunities();
+  }, []);
+
+  const staticOpportunities = [
     {
       id: 1,
       title: 'Transport to Medical Appointment',
@@ -100,6 +124,9 @@ function Opportunities() {
       verified: true
     }
   ];
+
+  // Combine static opportunities with help requests from API
+  const opportunities = loadingHelp ? staticOpportunities : [...helpOpportunities, ...staticOpportunities];
 
   const openMapModal = (opportunity, directionsMode = false) => {
     setMapLocation(opportunity);
@@ -251,7 +278,8 @@ function Opportunities() {
           {opportunities.map((opportunity) => (
             <article 
               key={opportunity.id} 
-              className={`opp-card priority-${opportunity.priority.toLowerCase()}`}
+              className={`opp-card priority-${opportunity.priority.toLowerCase()} ${opportunity.type === 'help-request' ? 'help-request-card' : ''}`}
+              data-type={opportunity.type}
               onClick={() => setSelectedOpportunity(opportunity)}
             >
               {/* Card Image */}
@@ -270,7 +298,7 @@ function Opportunities() {
               </div>
 
               {/* Card Content */}
-              <div className="opp-card-content">
+              <div className={`opp-card-content ${opportunity.type === 'help-request' ? 'help-request-content' : ''}`}>
                 <h3 className="opp-title">{opportunity.title}</h3>
                 <p className="opp-description">{opportunity.description}</p>
 

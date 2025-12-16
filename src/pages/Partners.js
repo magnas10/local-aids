@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { partnersAPI } from '../services/api';
 import './Pages.css';
 
 function Partners() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [partners, setPartners] = useState([]);
   const [filteredPartners, setFilteredPartners] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('All');
   const [expandedPartner, setExpandedPartner] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   const heroImages = [
     'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85',
@@ -15,7 +19,28 @@ function Partners() {
     'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1920&h=1080&fit=crop&q=85'
   ];
 
-  const partners = [
+  // Fetch partners from backend
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        setLoading(true);
+        const response = await partnersAPI.getAll();
+        setPartners(response.data || []);
+        setError('');
+      } catch (err) {
+        console.error('Error fetching partners:', err);
+        setError('Failed to load partners');
+        setPartners(fallbackPartners);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartners();
+  }, []);
+
+  // Fallback partner data
+  const fallbackPartners = [
     {
       id: 1,
       name: 'Australian Red Cross',

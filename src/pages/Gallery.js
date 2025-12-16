@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { galleryAPI } from '../services/api';
 import './Pages.css';
 
 function Gallery() {
@@ -14,9 +16,23 @@ function Gallery() {
     image: null
   });
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [isLoggedIn] = useState(false); // This should come from your auth context
+  const [uploadError, setUploadError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { user } = useAuth();
+  const isLoggedIn = !!user;
+
+  // State for gallery data
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [stats, setStats] = useState([
+    { number: '2,500+', label: 'Events Completed' },
+    { number: '50,000+', label: 'Volunteers Engaged' },
+    { number: '120,000+', label: 'Lives Impacted' },
+    { number: '500+', label: 'Partner Organizations' }
+  ]);
 
   const heroImages = [
     'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
@@ -24,6 +40,27 @@ function Gallery() {
     'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1920&h=1080&fit=crop&q=85',
     'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&h=1080&fit=crop&q=85'
   ];
+
+  // Fetch gallery data from backend
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        setLoading(true);
+        const response = await galleryAPI.getAll();
+        setGalleryImages(response.data || []);
+        setError('');
+      } catch (err) {
+        console.error('Error fetching gallery:', err);
+        setError('Failed to load gallery images');
+        // Fallback to placeholder data if API fails
+        setGalleryImages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGallery();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,7 +79,8 @@ function Gallery() {
     { id: 'community', label: 'Community Events' }
   ];
 
-  const galleryImages = [
+  // Fallback gallery data if API fails
+  const fallbackGalleryImages = [
     {
       id: 1,
       src: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=800&h=600&fit=crop&q=80',
@@ -164,16 +202,12 @@ function Gallery() {
     }
   ];
 
-  const stats = [
-    { number: '2,500+', label: 'Events Completed' },
-    { number: '50,000+', label: 'Volunteers Engaged' },
-    { number: '120,000+', label: 'Lives Impacted' },
-    { number: '500+', label: 'Partner Organizations' }
-  ];
-
+  // Use fallback data if gallery is empty and not loading
+  const displayImages = galleryImages.length > 0 ? galleryImages : (loading ? [] : fallbackGalleryImages);
+  
   const filteredImages = activeFilter === 'all' 
-    ? galleryImages 
-    : galleryImages.filter(img => img.category === activeFilter);
+    ? displayImages 
+    : displayImages.filter(img => img.category === activeFilter);
 
   const openLightbox = (image) => {
     setSelectedImage(image);
@@ -219,23 +253,51 @@ function Gallery() {
     }
   };
 
-  const handleUploadSubmit = (e) => {
+  const handleUploadSubmit = async (e) => {
     e.preventDefault();
-    // Here you would normally send to backend
-    setUploadSuccess(true);
-    setTimeout(() => {
-      setShowUploadModal(false);
-      setUploadSuccess(false);
-      setUploadData({
-        title: '',
-        category: '',
-        location: '',
-        description: '',
-        volunteers: '',
-        image: null,
-        imagePreview: null
-      });
-    }, 2000);
+    if (!uploadData.image) {
+      setUploadError('Please select an image');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadError('');
+
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('image', uploadData.image);
+      formData.append('title', uploadData.title);
+      formData.append('category', uploadData.category);
+      formData.append('location', uploadData.location);
+      formData.append('description', uploadData.description);
+
+      // Upload to backend
+      const response = await galleryAPI.upload(formData);
+      
+      setUploadSuccess(true);
+      // Refresh gallery data
+      const updatedGallery = await galleryAPI.getAll();
+      setGalleryImages(updatedGallery.data || []);
+
+      setTimeout(() => {
+        setShowUploadModal(false);
+        setUploadSuccess(false);
+        setUploadData({
+          title: '',
+          category: 'community',
+          location: '',
+          description: '',
+          image: null,
+          imagePreview: null
+        });
+      }, 2000);
+    } catch (err) {
+      console.error('Upload error:', err);
+      setUploadError(err.message || 'Failed to upload image');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const openUploadModal = () => {
@@ -281,32 +343,6 @@ function Gallery() {
             Our Impact in Action
           </span>
           <h1>Community<br/><span className="highlight">Gallery</span></h1>
-          <p>
-            Witness the incredible work done by our volunteers and community members 
-            across Australia. Every photo tells a story of compassion and change.
-          </p>
-          <div className="gallery-hero-cta-section">
-            <button className="gallery-hero-btn-primary" onClick={() => document.getElementById('gallery-grid').scrollIntoView({ behavior: 'smooth' })}>
-              Explore Gallery
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                <path d="M7 17L17 7M17 7H7M17 7V17"/>
-              </svg>
-            </button>
-            <div className="gallery-hero-stats">
-              <div className="hero-stat">
-                <span className="stat-number">2,500+</span>
-                <span className="stat-label">Events</span>
-              </div>
-              <div className="hero-stat">
-                <span className="stat-number">50K+</span>
-                <span className="stat-label">Volunteers</span>
-              </div>
-              <div className="hero-stat">
-                <span className="stat-number">120K+</span>
-                <span className="stat-label">Lives Impacted</span>
-              </div>
-            </div>
-          </div>
         </div>
         {/* Carousel Indicators */}
         <div className="gallery-carousel-indicators">
@@ -466,6 +502,11 @@ function Gallery() {
                   </div>
 
                   <div className="upload-form-footer-pro">
+                    {uploadError && (
+                      <div style={{color: '#e74c3c', marginBottom: '10px', fontSize: '14px'}}>
+                        ⚠️ {uploadError}
+                      </div>
+                    )}
                     <div className="form-note-pro">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                         <circle cx="12" cy="12" r="10"/>
@@ -477,9 +518,9 @@ function Gallery() {
                     <button 
                       type="submit" 
                       className="submit-upload-btn-pro"
-                      disabled={!uploadData.image}
+                      disabled={!uploadData.image || isUploading}
                     >
-                      Upload Photo
+                      {isUploading ? 'Uploading...' : 'Upload Photo'}
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                         <line x1="5" y1="12" x2="19" y2="12"/>
                         <polyline points="12 5 19 12 12 19"/>
@@ -492,18 +533,6 @@ function Gallery() {
           </div>
         </div>
       )}
-
-      {/* Stats Section */}
-      <section className="gallery-stats-pro">
-        <div className="gallery-stats-container-pro">
-          {stats.map((stat, index) => (
-            <div key={index} className="gallery-stat-item-pro">
-              <span className="stat-number-pro">{stat.number}</span>
-              <span className="stat-label-pro">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* Filter Section */}
       <section className="gallery-filters-pro">
@@ -540,44 +569,64 @@ function Gallery() {
       {/* Gallery Grid */}
       <section className="gallery-grid-section-pro">
         <div className="gallery-grid-container-pro">
+          {loading && (
+            <div style={{padding: '40px', textAlign: 'center'}}>
+              <p>Loading gallery...</p>
+            </div>
+          )}
+          {error && (
+            <div style={{padding: '20px', textAlign: 'center', color: '#e74c3c'}}>
+              <p>⚠️ {error}</p>
+            </div>
+          )}
           <div className="gallery-grid-pro">
             {filteredImages.map((image) => (
               <div 
-                key={image.id} 
+                key={image._id || image.id} 
                 className="gallery-item-pro"
-                onClick={() => openLightbox(image)}
               >
-                <img src={image.src} alt={image.title} />
-                <div className="gallery-item-overlay-pro">
-                  <div className="overlay-content-pro">
-                    <h3>{image.title}</h3>
-                    <div className="gallery-location-pro">
+                <div className="gallery-item-image-pro" onClick={() => openLightbox(image)}>
+                  <img src={image.src || image.imageUrl || image.image} alt={image.title} />
+                </div>
+                <div className="gallery-item-content-pro">
+                  <h3 className="gallery-item-title-pro">{image.title}</h3>
+                  {image.description && (
+                    <p className="gallery-item-description-pro">{image.description}</p>
+                  )}
+                  
+                  {image.location && (
+                    <div className="gallery-location-info-pro">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                         <circle cx="12" cy="10" r="3"/>
                       </svg>
-                      {image.location}
+                      <span>{image.location}</span>
                     </div>
-                    <div className="gallery-meta-pro">
-                      <span>
+                  )}
+                  
+                  <div className="gallery-meta-info-pro">
+                    {image.volunteers && (
+                      <div className="gallery-volunteers-pro">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
                           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                           <circle cx="9" cy="7" r="4"/>
                           <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
                           <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
-                        {image.volunteers} volunteers
-                      </span>
-                      <span>
+                        <span>{image.volunteers} volunteers</span>
+                      </div>
+                    )}
+                    {image.date && (
+                      <div className="gallery-date-pro">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
                           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                           <line x1="16" y1="2" x2="16" y2="6"/>
                           <line x1="8" y1="2" x2="8" y2="6"/>
                           <line x1="3" y1="10" x2="21" y2="10"/>
                         </svg>
-                        {image.date}
-                      </span>
-                    </div>
+                        <span>{image.date}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -620,39 +669,45 @@ function Gallery() {
             </button>
             
             <div className="lightbox-image-container-pro">
-              <img src={selectedImage.src} alt={selectedImage.title} />
+              <img src={selectedImage.src || selectedImage.imageUrl || selectedImage.image} alt={selectedImage.title} />
             </div>
             
             <div className="lightbox-info-pro">
               <h2>{selectedImage.title}</h2>
               <div className="lightbox-meta-pro">
-                <span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  {selectedImage.location}
-                </span>
-                <span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                    <line x1="16" y1="2" x2="16" y2="6"/>
-                    <line x1="8" y1="2" x2="8" y2="6"/>
-                    <line x1="3" y1="10" x2="21" y2="10"/>
-                  </svg>
-                  {selectedImage.date}
-                </span>
-                <span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                  </svg>
-                  {selectedImage.volunteers} volunteers
-                </span>
+                {selectedImage.location && (
+                  <span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                    {selectedImage.location}
+                  </span>
+                )}
+                {selectedImage.date && (
+                  <span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    {selectedImage.date}
+                  </span>
+                )}
+                {selectedImage.volunteers && (
+                  <span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    {selectedImage.volunteers} volunteers
+                  </span>
+                )}
               </div>
-              <p>{selectedImage.description}</p>
+              {selectedImage.description && <p>{selectedImage.description}</p>}
             </div>
           </div>
         </div>

@@ -1,57 +1,44 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const messageSchema = new mongoose.Schema({
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  recipient: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+const Message = sequelize.define('Message', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   },
   subject: {
-    type: String,
-    trim: true,
-    maxlength: [100, 'Subject cannot exceed 100 characters']
+    type: DataTypes.STRING,
+    allowNull: false
   },
   content: {
-    type: String,
-    required: [true, 'Message content is required'],
-    maxlength: [5000, 'Message cannot exceed 5000 characters']
+    type: DataTypes.TEXT,
+    allowNull: false
   },
-  isRead: {
-    type: Boolean,
-    default: false
+  senderId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
   },
-  readAt: {
-    type: Date
+  recipientId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
   },
-  parentMessage: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message',
-    default: null // For threading/replies
+  read: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
-  attachments: [{
-    filename: String,
-    url: String,
-    type: String,
-    size: Number
-  }],
-  deletedBy: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }]
-}, {
-  timestamps: true
+  archived: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  }
 });
 
-// Mark message as read
-messageSchema.methods.markAsRead = async function() {
-  this.isRead = true;
-  this.readAt = new Date();
-  return this.save();
-};
-
-module.exports = mongoose.model('Message', messageSchema);
+module.exports = Message;
