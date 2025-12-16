@@ -2,10 +2,10 @@
 
 ## Architecture Overview
 
-This is a **full-stack MERN application** with a React frontend and Express/MongoDB backend serving a community AIDS support platform. The codebase follows a clear separation:
+This is a **full-stack PERN application** with a React frontend and Express/PostgreSQL backend serving a community AIDS support platform. The codebase follows a clear separation:
 
 - **Frontend**: React SPA with React Router, context-based auth, and component-driven UI
-- **Backend**: Express.js REST API with JWT authentication, role-based access control, and MongoDB models
+- **Backend**: Express.js REST API with JWT authentication, role-based access control, and PostgreSQL models
 - **Development**: Concurrent development setup with proxy configuration
 
 ## Key Development Workflows
@@ -59,7 +59,7 @@ router.post('/', protect, admin, validators, async (req, res) => {
 ## Database Model Patterns
 
 ### Schema Structure (server/models/*.js)
-- All models use Mongoose with built-in validation
+- All models use Sequelize with built-in validation
 - User roles: `user`, `volunteer`, `admin`
 - Common fields: `createdAt`, `updatedAt` (auto-added by timestamps)
 - Models: User, Event, Donation, Message, Contact, GalleryItem, Partner
@@ -101,7 +101,7 @@ router.post('/', protect, admin, validators, async (req, res) => {
 ## Key Dependencies & Tools
 
 - **Frontend**: React 19, React Router v7, no UI framework (custom CSS)
-- **Backend**: Express, Mongoose, JWT, bcryptjs, multer, express-validator
+- **Backend**: Express, Sequelize, JWT, bcryptjs, multer, express-validator
 - **Development**: concurrently for dual server setup, nodemon for backend hot-reload
 
 ## Common Pitfalls
@@ -109,5 +109,5 @@ router.post('/', protect, admin, validators, async (req, res) => {
 - JWT tokens require 'Bearer ' prefix in Authorization headers
 - User roles are strings, not enums in frontend - use exact matches
 - File uploads require multipart/form-data, handled by multer middleware
-- MongoDB connection requires environment variable `MONGODB_URI`
+- PostgreSQL connection uses environment variables `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`
 - Frontend API calls use proxy in development, update for production deployment

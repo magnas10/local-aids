@@ -1,6 +1,6 @@
 # Local-AIDS Backend API
 
-A Node.js/Express backend API for the Local-AIDS application with MongoDB database.
+A Node.js/Express backend API for the Local-AIDS application with PostgreSQL database.
 
 ## Features
 
@@ -16,7 +16,7 @@ A Node.js/Express backend API for the Local-AIDS application with MongoDB databa
 ## Prerequisites
 
 - Node.js (v18 or higher)
-- MongoDB (local or Atlas)
+- PostgreSQL (local or cloud)
 - npm or yarn
 
 ## Quick Start
@@ -41,19 +41,32 @@ Edit `.env` with your configuration:
 ```env
 PORT=5000
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/local-aids
+DB_NAME=local_aids
+DB_USER=your-username
+DB_PASSWORD=your-password
+DB_HOST=localhost
 JWT_SECRET=your-super-secret-key-change-in-production
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:3000
 ```
 
-### 3. Start MongoDB
+### 3. Start PostgreSQL
 
-Make sure MongoDB is running locally, or use MongoDB Atlas cloud:
+Make sure PostgreSQL is running locally, or use a cloud PostgreSQL service:
 
 ```bash
-# If using local MongoDB
-mongod
+# If using local PostgreSQL
+# On macOS with Homebrew:
+brew services start postgresql
+
+# Or start manually:
+pg_ctl -D /usr/local/var/postgres start
+```
+
+Create the database:
+
+```sql
+CREATE DATABASE local_aids;
 ```
 
 ### 4. Seed Sample Data (Optional)
@@ -163,7 +176,7 @@ The server will run at `http://localhost:5000`
 ```
 server/
 ├── config/
-│   └── db.js           # MongoDB connection
+│   └── database.js    # PostgreSQL connection
 ├── middleware/
 │   └── auth.js         # JWT authentication middleware
 ├── models/

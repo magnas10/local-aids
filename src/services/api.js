@@ -46,10 +46,23 @@ const handleResponse = async (response) => {
   try {
     data = await response.json();
   } catch (err) {
+    // When JSON parsing fails, capture raw response body for debugging
     console.error('Failed to parse JSON response:', err);
     console.error('Response status:', response.status);
-    console.error('Response text might be:', response.statusText);
-    throw new Error('Server response was not valid JSON');
+    try {
+      const rawText = await response.text();
+      console.error('Raw response body:', rawText);
+      // Surface a more helpful, user-friendly error
+      const snippet = rawText ? rawText.slice(0, 1000) : '<empty body>';
+      if (snippet.trim().startsWith('<')) {
+        // Likely an HTML error page
+        throw new Error('Server returned a non-JSON (HTML) response. Please check server logs (server console) for details.');
+      }
+      throw new Error(`Server response was not valid JSON. Response body: ${snippet}`);
+    } catch (readErr) {
+      console.error('Failed to read raw response body:', readErr);
+      throw new Error('Server response was not valid JSON and response body could not be read.');
+    }
   }
   
   console.log('Response data:', data);
@@ -58,11 +71,11 @@ const handleResponse = async (response) => {
     console.error('Response not ok, status:', response.status);
     let errorMessage = '';
     
-    if (data.message) {
+    if (data && data.message) {
       errorMessage = data.message;
-    } else if (data.errors && Array.isArray(data.errors)) {
+    } else if (data && data.errors && Array.isArray(data.errors)) {
       errorMessage = data.errors.map(e => e.message || e.msg || JSON.stringify(e)).join('; ');
-    } else if (data.errors && typeof data.errors === 'object') {
+    } else if (data && data.errors && typeof data.errors === 'object') {
       errorMessage = Object.values(data.errors).map(e => e.message || e).join('; ');
     } else {
       errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -70,7 +83,7 @@ const handleResponse = async (response) => {
     
     console.error('API Error:', errorMessage);
     const error = new Error(errorMessage);
-    error.errors = data.errors;
+    error.errors = data && data.errors;
     throw error;
   }
   

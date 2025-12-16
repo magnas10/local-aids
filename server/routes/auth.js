@@ -28,6 +28,13 @@ router.post('/register', [
       return res.status(400).json({ errors: errors.array() });
     }
 
+    // Debug logging: capture incoming request headers and body to diagnose JSON parsing issues on the client
+    console.log('Register route hit - headers:', {
+      'content-type': req.headers['content-type'],
+      origin: req.headers.origin
+    });
+    console.log('Register route hit - body:', req.body);
+
     const { name, email, password, phone } = req.body;
 
     // Check if user already exists

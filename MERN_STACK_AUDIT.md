@@ -1,9 +1,9 @@
-# Local AIDS MERN Stack Audit Report
+# Local AIDS PERN Stack Audit Report
 ## Comprehensive Technology Assessment
 
 **Date**: December 15, 2025  
 **Project**: Local AIDS Community Support Platform  
-**Tech Stack**: MongoDB, Express.js, React.js, Node.js
+**Tech Stack**: PostgreSQL, Express.js, React.js, Node.js
 
 ---
 
@@ -67,8 +67,8 @@
 - Error handling middleware
 - Static file serving (/uploads)
 
-### ✅ Database (MongoDB)
-- **ODM**: Mongoose 8.0.3
+### ✅ Database (PostgreSQL)
+- **ORM**: Sequelize 6.37.7
 - **Models** (in `server/models/`):
   1. **User** - Users with roles (user, volunteer, admin)
   2. **Event** - Community events
@@ -80,10 +80,10 @@
   8. **HelpRequest** - Help requests
   9. **Notification** - User notifications
 
-#### MongoDB Configuration:
-- Connection: `server/config/db.js`
-- URI: `process.env.MONGODB_URI` or `mongodb://localhost:27017/local-aids`
-- Connection handler: Async with error handling
+#### PostgreSQL Configuration:
+- Connection: `server/config/database.js`
+- Environment variables: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`
+- ORM: Sequelize with connection pooling
 - Seed script: `server/seeds/seedData.js`
 
 ---
@@ -105,7 +105,7 @@ Express Middleware (protect, admin)
     ↓
 Express Routes
     ↓
-MongoDB Models
+Sequelize Models
     ↓
 Database Operations
     ↓ (Response with data/status)
@@ -247,7 +247,10 @@ server/uploads/
 ```
 PORT=5001
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/local-aids
+DB_NAME=local_aids
+DB_USER=sangamdevkota
+DB_PASSWORD=null
+DB_HOST=localhost
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
 CLIENT_URL=http://localhost:3000
@@ -298,9 +301,9 @@ Express: authRoutes.post('/register')
     ↓
 Validation (express-validator)
     ↓
-User.create() [Mongoose]
-    ↓ (password auto-hashed via pre-save)
-MongoDB: users collection
+User.create() [Sequelize]
+    ↓ (password auto-hashed via hooks)
+PostgreSQL: users table
     ↓ (return user object + JWT)
 Frontend: Store token + user in localStorage & AuthContext
     ↓
@@ -315,9 +318,9 @@ eventAPI.getAll()
     ↓ (GET /api/events)
 Express: eventRoutes.get('/')
     ↓ (pagination, filtering)
-Event.find().populate('organizer')
+Event.findAll({ include: ['organizer'] })
     ↓
-MongoDB: events collection
+PostgreSQL: events table
     ↓ (return array of events)
 Frontend: setState(events)
     ↓
@@ -332,9 +335,9 @@ messageAPI.send()
     ↓ (POST /api/messages + JWT)
 Express: messageRoutes.post('/')
     ↓ (protect middleware validates JWT)
-Message.create() [Mongoose]
+Message.create() [Sequelize]
     ↓ (set sender from req.user)
-MongoDB: messages collection
+PostgreSQL: messages table
     ↓ (return created message)
 Frontend: Add to messages array
     ↓
@@ -345,8 +348,8 @@ UI: Show success message
 
 ## 9. COMPLETENESS CHECKLIST
 
-### ✅ MERN Components Present
-- [x] MongoDB with Mongoose models
+### ✅ PERN Components Present
+- [x] PostgreSQL with Sequelize models
 - [x] Express.js REST API
 - [x] React.js with routing and context
 - [x] Node.js runtime and npm packages
@@ -383,7 +386,7 @@ UI: Show success message
 
 ### ✅ Backend Infrastructure
 - [x] Express middleware chain
-- [x] MongoDB connection
+- [x] PostgreSQL connection
 - [x] Request validation
 - [x] Error handling middleware
 - [x] CORS configuration
@@ -420,9 +423,9 @@ UI: Show success message
 
 ## 11. CONCLUSION
 
-The Local AIDS application is a **fully functional MERN stack application** with:
+The Local AIDS application is a **fully functional PERN stack application** with:
 
-✅ **Complete MongoDB integration** - 9 collections with proper schemas  
+✅ **Complete PostgreSQL integration** - 9 tables with proper schemas  
 ✅ **Express.js backend** - 10 routes with proper middleware  
 ✅ **React.js frontend** - Components properly calling backend APIs  
 ✅ **Node.js runtime** - Proper package management and scripts  
