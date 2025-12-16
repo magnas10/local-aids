@@ -1,9 +1,10 @@
 /* Hero Section - Professional Design */
 .hero-section {
   position: relative;
-  min-height: 90vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
 }
 
@@ -15,6 +16,8 @@
   right: 0;
   bottom: 0;
   z-index: 0;
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-slide {
@@ -41,9 +44,9 @@
   bottom: 0;
   background: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.6) 0%,
-    rgba(0, 0, 0, 0.4) 50%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.35) 50%,
+    rgba(0, 0, 0, 0.55) 100%
   );
   z-index: 1;
 }
@@ -54,12 +57,16 @@
   z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 30px;
+  padding: 80px 40px;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .hero-content {
-  max-width: 750px;
+  max-width: 700px;
+  text-align: left;
 }
 
 /* Badge */
@@ -139,26 +146,28 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #ffd700, #f0c000);
-  color: #1a1a1a;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
   border: none;
-  padding: 18px 35px;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  padding: 16px 40px;
+  border-radius: 10px;
+  font-size: 1.05rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
-  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+  letter-spacing: 0.5px;
 }
 
 .hero-btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .hero-btn-primary .btn-arrow {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   transition: transform 0.3s ease;
 }
 
@@ -170,22 +179,24 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 16px 35px;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 14px 40px;
+  border-radius: 10px;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  letter-spacing: 0.5px;
 }
 
 .hero-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.15);
 }
 
 .hero-btn-secondary .btn-icon {
