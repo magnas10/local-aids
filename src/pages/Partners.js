@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Pages.css';
-import * as partnersAPI from '../services/api';
+import { partnersAPI } from '../services/api';
 
 function Partners() {
   const [currentSlide, setCurrentSlide] = useState(0);
