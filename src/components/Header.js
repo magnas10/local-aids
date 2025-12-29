@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getNotifications, getUnreadNotificationCount, markNotificationAsRead } from '../services/api';
 import './Header.css';
 
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
   
   // Refs for focus management
   const searchRef = useRef(null);
@@ -39,7 +43,9 @@ function Header() {
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
-        closeAllDropdowns();
+        setShowSearch(false);
+        setShowNotifications(false);
+        setShowDropdown(false);
       }
     };
 
@@ -47,82 +53,57 @@ function Header() {
     return () => document.removeEventListener('keydown', handleEscape);
   }, []);
 
-  const notifications = [
-    {
-      id: 1,
-      type: 'match',
-      title: 'New Volunteer Match!',
-      message: 'You\'ve been matched with "Emergency Food Bank" event near you.',
-      time: '5 min ago',
-      unread: true
-    },
-    {
-      id: 2,
-      type: 'status',
-      title: 'Task Status Updated',
-      message: 'Your registration for "Community Health Workshop" has been approved.',
-      time: '1 hour ago',
-      unread: true
-    },
-    {
-      id: 3,
-      type: 'reminder',
-      title: 'Upcoming Event Reminder',
-      message: 'Don\'t forget! "Volunteer Training Session" starts tomorrow at 9:00 AM.',
-      time: '2 hours ago',
-      unread: true
-    },
-    {
-      id: 4,
-      type: 'match',
-      title: 'New Opportunity Available',
-      message: 'A new urgent care request is available 3km from your location.',
-      time: '3 hours ago',
-      unread: false
-    },
-    {
-      id: 5,
-      type: 'status',
-      title: 'Hours Logged',
-      message: 'Your 4 volunteer hours have been verified and added to your profile.',
-      time: 'Yesterday',
-      unread: false
+  // Load notifications and unread count
+  useEffect(() => {
+    if (isLoggedIn) {
+      loadUnreadCount();
+      loadNotifications();
     }
-  ];
+  }, [isLoggedIn]);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const loadUnreadCount = async () => {
+    try {
+      const response = await getUnreadNotificationCount();
+      setUnreadCount(response.count || 0);
+    } catch (error) {
+      console.error('Failed to load unread count:', error);
+    }
+  };
 
-  const getNotificationIcon = (type) => {
-    switch(type) {
-      case 'match': 
-        return (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-        );
-      case 'status': 
-        return (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-        );
-      case 'reminder': 
-        return (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-        );
-      default: 
-        return (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-        );
+  const loadNotifications = async () => {
+    try {
+      setLoadingNotifications(true);
+      const response = await getNotifications({ limit: 10 });
+      setNotifications(response.notifications || []);
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  const handleNotificationClick = async (notification) => {
+    if (!notification.isRead) {
+      try {
+        await markNotificationAsRead(notification._id);
+        // Update local state
+        setNotifications(prev => prev.map(n => 
+          n._id === notification._id ? { ...n, isRead: true } : n
+        ));
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+      }
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      // Mark all notifications as read locally
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
     }
   };
 
@@ -182,6 +163,13 @@ function Header() {
         >
           <span>Events</span>
         </Link>
+        {/* <Link 
+          to="/my-requests" 
+          className={`nav-link ${location.pathname === '/my-requests' ? 'active' : ''}`}
+          aria-current={location.pathname === '/my-requests' ? 'page' : undefined}
+        >
+          <span>My Requests</span>
+        </Link> */}
         <Link 
           to="/about" 
           className={`nav-link ${location.pathname === '/about' ? 'active' : ''}`}
@@ -217,20 +205,16 @@ function Header() {
         >
           <span>Contact</span>
         </Link>
-        
-        {/* Only show Messages when logged in */}
         {isLoggedIn && (
           <Link 
             to="/messages" 
             className={`nav-link ${location.pathname === '/messages' ? 'active' : ''}`}
             aria-current={location.pathname === '/messages' ? 'page' : undefined}
-            aria-label="Messages, 3 unread"
           >
             <span>Messages</span>
-            <span className="notification-badge" aria-hidden="true">3</span>
           </Link>
         )}
-
+        
         <div className="auth-buttons">
           {/* Search Button */}
           <div className="search-dropdown-container" ref={searchRef}>
@@ -273,7 +257,7 @@ function Header() {
                 </form>
                 <div className="search-suggestions" role="menu" aria-label="Quick links">
                   <p className="search-label" id="quick-links-label">Quick Links</p>
-                  <Link to="/events" onClick={closeAllDropdowns} role="menuitem">
+                  <Link to="/events" onClick={() => setShowDropdown(false)} role="menuitem">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                       <circle cx="12" cy="12" r="10"/>
                       <circle cx="12" cy="12" r="6"/>
@@ -281,7 +265,7 @@ function Header() {
                     </svg>
                     <span>Browse Events</span>
                   </Link>
-                  <Link to="/events?type=urgent" onClick={closeAllDropdowns} role="menuitem">
+                  <Link to="/events?type=urgent" onClick={() => setShowDropdown(false)} role="menuitem">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                       <line x1="12" y1="9" x2="12" y2="13"/>
@@ -289,7 +273,7 @@ function Header() {
                     </svg>
                     <span>Urgent Requests</span>
                   </Link>
-                  <Link to="/events?type=volunteer" onClick={closeAllDropdowns} role="menuitem">
+                  <Link to="/events?type=volunteer" onClick={() => setShowDropdown(false)} role="menuitem">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                       <circle cx="9" cy="7" r="4"/>
@@ -298,7 +282,7 @@ function Header() {
                     </svg>
                     <span>Volunteer Opportunities</span>
                   </Link>
-                  <Link to="/events?type=workshop" onClick={closeAllDropdowns} role="menuitem">
+                  <Link to="/events?type=workshop" onClick={() => setShowDropdown(false)} role="menuitem">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
@@ -352,31 +336,63 @@ function Header() {
                       role="list" 
                       aria-labelledby="notifications-title"
                     >
-                      {notifications.map(notification => (
-                        <div 
-                          key={notification.id} 
-                          className={`notification-item ${notification.unread ? 'unread' : ''}`}
-                          role="listitem"
-                          tabIndex={0}
-                          aria-label={`${notification.unread ? 'Unread: ' : ''}${notification.title}. ${notification.message}. ${notification.time}`}
-                        >
-                          <span className="notification-icon" aria-hidden="true">
-                            {getNotificationIcon(notification.type)}
-                          </span>
+                      {loadingNotifications ? (
+                        <div className="notification-item">
                           <div className="notification-content">
-                            <h5>{notification.title}</h5>
-                            <p>{notification.message}</p>
-                            <span className="notification-time">{notification.time}</span>
+                            <p>Loading notifications...</p>
                           </div>
-                          {notification.unread && <span className="unread-dot" aria-hidden="true"></span>}
                         </div>
-                      ))}
+                      ) : notifications.length > 0 ? (
+                        notifications.map(notification => (
+                          <div 
+                            key={notification._id} 
+                            className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
+                            role="listitem"
+                            tabIndex={0}
+                            onClick={() => handleNotificationClick(notification)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div className="notification-content">
+                              <h5>{notification.title}</h5>
+                              <p>{notification.message}</p>
+                              <span className="notification-time">
+                                {new Date(notification.createdAt).toLocaleDateString()}
+                              </span>
+                              <span className={`notification-type ${notification.type}`}>
+                                {notification.type.toUpperCase()}
+                              </span>
+                            </div>
+                            {!notification.isRead && <span className="unread-dot" aria-hidden="true"></span>}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="notification-item">
+                          <div className="notification-content">
+                            <p>No notifications yet</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                    <div className="notification-footer">
-                      <Link to="/notifications" onClick={closeAllDropdowns}>
-                        View All Notifications
-                      </Link>
-                    </div>
+                    {unreadCount > 0 && (
+                      <div className="notification-actions">
+                        <button 
+                          className="mark-all-read-btn"
+                          onClick={markAllAsRead}
+                          style={{
+                            width: '100%',
+                            padding: '10px',
+                            background: '#ff6b35',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            fontSize: '14px'
+                          }}
+                        >
+                          Mark all as read
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -393,10 +409,18 @@ function Header() {
                   aria-expanded={showDropdown}
                   aria-haspopup="menu"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
-                  </svg>
+                  {user?.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt={user.name || 'User'} 
+                      className="profile-avatar-img"
+                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                    />
+                  ) : (
+                    <div className="profile-avatar-placeholder">
+                      {user?.name ? user.name.charAt(0).toUpperCase() : '?'}
+                    </div>
+                  )}
                 </button>
                 {showDropdown && (
                   <div 
@@ -417,18 +441,29 @@ function Header() {
                       <span>Profile</span>
                     </Link>
                     <Link 
-                      to="/dashboard" 
+                      to="/my-requests" 
                       className="dropdown-item"
                       onClick={closeAllDropdowns}
                       role="menuitem"
                     >
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="3" y1="9" x2="21" y2="9"/>
-                        <line x1="9" y1="21" x2="9" y2="9"/>
+                        <path d="M3 6h18M3 12h18M3 18h18"/>
                       </svg>
-                      <span>Dashboard</span>
+                      <span>My Requests</span>
                     </Link>
+                    {user && user.role && user.role === 'admin' && (
+                      <Link 
+                        to="/admin/dashboard" 
+                        className="dropdown-item admin-item"
+                        onClick={closeAllDropdowns}
+                        role="menuitem"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                          <path d="M12 1l3 6 6 .75-4.12 4.62L17 19l-5-3-5 3 .88-6.63L3 7.75 9 7z"/>
+                        </svg>
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <div className="dropdown-divider" role="separator"></div>
                     <button 
                       className="dropdown-item logout" 

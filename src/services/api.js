@@ -366,6 +366,30 @@ export const partnersAPI = {
   },
 };
 
+// ============ NOTIFICATIONS API ============
+export const notificationsAPI = {
+  getAll: async (params = {}) => {
+    const queryString = new URLSearchParams(params).toString();
+    const response = await authFetch(`/notifications?${queryString}`);
+    return handleResponse(response);
+  },
+
+  getUnreadCount: async () => {
+    const response = await authFetch('/notifications/unread-count');
+    return handleResponse(response);
+  },
+
+  markAsRead: async (id) => {
+    const response = await authFetch(`/notifications/${id}/read`, { method: 'PUT' });
+    return handleResponse(response);
+  },
+};
+
+// Export individual notification functions
+export const getNotifications = notificationsAPI.getAll;
+export const getUnreadNotificationCount = notificationsAPI.getUnreadCount;
+export const markNotificationAsRead = notificationsAPI.markAsRead;
+
 // Export all APIs
 export default {
   auth: authAPI,
@@ -376,4 +400,5 @@ export default {
   contact: contactAPI,
   gallery: galleryAPI,
   partners: partnersAPI,
+  notifications: notificationsAPI,
 };
