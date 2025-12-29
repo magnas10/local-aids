@@ -64,7 +64,7 @@
 .logo {
   font-size: 1.75rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #20b2aa, #16a085, #0D6B66);
+  background: var(--gradient-title);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -73,7 +73,7 @@
   gap: 12px;
   margin-right: 60px;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(32, 178, 170, 0.2));
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.18));
 }
 
 .logo:hover {
@@ -84,7 +84,7 @@
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, var(--primary, #20b2aa), var(--primary-dark, #0D6B66));
+  background: var(--gradient-primary);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@
 /* Focus styles for keyboard navigation */
 .nav a:focus,
 .nav button:focus {
-  outline: 3px solid var(--primary, #20b2aa);
+  outline: 3px solid var(--primary);
   outline-offset: 2px;
   border-radius: 8px;
 }
@@ -133,16 +133,16 @@
 }
 
 .nav-item:hover {
-  background: linear-gradient(135deg, rgba(32, 178, 170, 0.08), rgba(22, 160, 133, 0.08));
-  color: #20b2aa;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(37, 99, 235, 0.06));
+  color: var(--primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.15);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, #20b2aa, #16a085);
+  background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.28);
   transform: translateY(-1px);
 }
 
@@ -188,20 +188,20 @@
 
 .get-started-btn {
   margin-left: auto;
-  background: linear-gradient(135deg, var(--primary, #20b2aa), var(--primary-dark, #1a8f88));
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--on-primary, white);
   border: none;
   padding: 12px 28px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
+  box-shadow: var(--shadow-primary);
 }
 
 .get-started-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(32, 178, 170, 0.4);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.32);
 }
 
 .auth-buttons {

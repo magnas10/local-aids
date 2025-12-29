@@ -15,11 +15,11 @@
   /* ===========================================
      1. PRIMARY BRAND COLORS (Teal System)
      =========================================== */
-  --primary: #20B2AA;           /* Primary Brand - Teal */
-  --primary-hover: #1A8F88;     /* Primary Hover - Deep Teal */
-  --primary-dark: #0D6B66;      /* Primary Dark - Rich Ocean */
-  --primary-light: #CFF6F3;     /* Primary Light - Soft Mint */
-  --primary-bg: #E6FFFD;        /* Primary Background - Light Teal */
+  --primary: #3B82F6;           /* Primary Brand - Blue */
+  --primary-hover: #2563EB;     /* Primary Hover - Deeper Blue */
+  --primary-dark: #1D4ED8;      /* Primary Dark - Strong Blue */
+  --primary-light: #BFDBFE;     /* Primary Light - Pale Blue */
+  --primary-bg: #E8F2FF;        /* Primary Background - Light Blue */
   
   /* ===========================================
      2. SECONDARY COLORS (Deep Blue)
@@ -75,11 +75,11 @@
   /* ===========================================
      5. GRADIENT SYSTEM (Modern Look)
      =========================================== */
-  --gradient-primary: linear-gradient(135deg, #20B2AA, #1A8F88);
-  --gradient-primary-dark: linear-gradient(135deg, #1A8F88, #0D6B66);
+  --gradient-primary: linear-gradient(135deg, #3B82F6, #2563EB);
+  --gradient-primary-dark: linear-gradient(135deg, #2563EB, #1D4ED8);
   --gradient-gold: linear-gradient(135deg, #FFD700, #F0C000);
-  --gradient-title: linear-gradient(120deg, #0F172A 0%, #333333 45%, #20B2AA 100%);
-  --gradient-hero: linear-gradient(160deg, #E6FFFD, rgba(32, 178, 170, 0.12));
+  --gradient-title: linear-gradient(120deg, #0F172A 0%, #333333 45%, #3B82F6 100%);
+  --gradient-hero: linear-gradient(160deg, #E8F2FF, rgba(59, 130, 246, 0.12));
   --gradient-section: linear-gradient(180deg, #F8F9FA 0%, #FFFFFF 50%, #F0F8F7 100%);
   
   /* ===========================================
@@ -89,7 +89,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --shadow-primary: 0 10px 30px rgba(32, 178, 170, 0.3);
+  --shadow-primary: 0 10px 30px rgba(59, 130, 246, 0.28);
   --shadow-gold: 0 10px 30px rgba(255, 215, 0, 0.3);
   --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
   --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.12);

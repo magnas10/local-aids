@@ -1,6 +1,6 @@
 /* Professional CTA Section */
 .cta-section {
-  background: linear-gradient(135deg, #0d4f4a 0%, #1a8f88 50%, #20b2aa 100%);
+  background: linear-gradient(135deg, #0d4f4a 0%, var(--primary-dark) 50%, var(--primary) 100%);
   padding: 100px 20px;
   position: relative;
   overflow: hidden;

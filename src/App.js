@@ -18,7 +18,6 @@ import Signup from './pages/Signup';
 import About from './pages/About';
 import Donate from './pages/Donate';
 import Contact from './pages/Contact';
-import Gallery from './pages/Gallery';
 import Partners from './pages/Partners';
 import Careers from './pages/Careers';
 import Blog from './pages/Blog';
@@ -69,7 +68,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/donate" element={<Donate />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/gallery" element={<Gallery />} />
+              
               <Route path="/partners" element={<Partners />} />
               <Route path="/careers" element={<Careers />} />
               <Route path="/blog" element={<Blog />} />

@@ -47,7 +47,7 @@
   gap: 50px;
   margin-bottom: 50px;
   padding: 30px;
-  background: linear-gradient(135deg, #20b2aa, #1a8f88);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   border-radius: 20px;
 }
 
@@ -111,13 +111,13 @@
 }
 
 .amount-btn:hover {
-  border-color: #20b2aa;
-  color: #20b2aa;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .amount-btn.active {
-  background: #20b2aa;
-  border-color: #20b2aa;
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
@@ -180,7 +180,7 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #20b2aa, #1a8f88);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
   padding: 18px;

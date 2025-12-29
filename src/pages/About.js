@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Pages.css';
+import './AboutPage.css';
 
 function About() {
   const navigate = useNavigate();
@@ -246,8 +247,8 @@ function About() {
       {/* Final CTA - Premium Style */}
       <section className="about-cta-section">
         <div className="cta-background">
-          <img 
-            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=600&fit=crop&q=80" 
+          <img
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=600&fit=crop&q=80"
             alt="Community support"
           />
         </div>

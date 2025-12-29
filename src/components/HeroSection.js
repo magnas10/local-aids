@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import RequestHelpModal from './RequestHelpModal';
+// Note: RequestHelpModal remains in repo for inline use elsewhere, but
+// Hero now navigates to the full page route instead of opening a modal.
 import './HeroSection.css';
 
 function HeroSection() {
   const { isLoggedIn } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const heroImages = [
     {
@@ -74,7 +74,7 @@ function HeroSection() {
             Join Australia's largest volunteer network. Help your neighbors, make a
             difference, and build stronger communities together.
           </p>
-          
+
           <div className="hero-stats">
             <div className="hero-stat">
               <span className="stat-number">10K+</span>
@@ -102,9 +102,9 @@ function HeroSection() {
                 <span className="btn-arrow">→</span>
               </Link>
             )}
-            <button className="hero-btn-secondary" onClick={() => setIsModalOpen(true)}>
+            <Link to="/request-help" className="hero-btn-secondary">
               Request Help
-            </button>
+            </Link>
           </div>
 
           <div className="hero-trust">
@@ -143,8 +143,7 @@ function HeroSection() {
         </div>
       </div>
 
-      {/* Request Help Modal */}
-      <RequestHelpModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      {/* Request Help Modal retained for other pages/components if needed */}
     </section>
   );
 }

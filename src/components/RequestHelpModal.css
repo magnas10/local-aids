@@ -40,7 +40,7 @@
 }
 
 .modal-container::-webkit-scrollbar-thumb {
-  background: #20b2aa;
+  background: var(--primary);
   border-radius: 3px;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .progress-step.active .step-number {
-  background: #20b2aa;
+  background: var(--primary);
   color: white;
 }
 
@@ -150,7 +150,7 @@
 }
 
 .progress-step.active .step-label {
-  color: #20b2aa;
+  color: var(--primary);
 }
 
 .progress-step.completed .step-label {
@@ -209,7 +209,7 @@
 
 .help-type-card.selected {
   background: #e0f7f5;
-  border-color: #20b2aa;
+  border-color: var(--primary);
 }
 
 .help-type-icon {
@@ -279,7 +279,7 @@
 }
 
 .urgency-option.selected {
-  border-color: #20b2aa;
+  border-color: var(--primary);
   background: #f0f9f8;
 }
 
@@ -466,7 +466,7 @@
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  accent-color: #20b2aa;
+  accent-color: var(--primary);
 }
 
 .checkbox-label span {
@@ -476,7 +476,7 @@
 }
 
 .checkbox-label a {
-  color: #20b2aa;
+  color: var(--primary);
   text-decoration: none;
 }
 
@@ -512,7 +512,7 @@
 
 .btn-next,
 .btn-submit {
-  background: linear-gradient(135deg, #20b2aa, #1a8f88);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
   padding: 12px 32px;
@@ -619,7 +619,7 @@
 }
 
 .btn-close {
-  background: linear-gradient(135deg, #20b2aa, #1a8f88);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
   border: none;
   padding: 12px 40px;

@@ -38,7 +38,7 @@ function CallToAction() {
               <span>Start Volunteering</span>
               <span className="btn-arrow">→</span>
             </button>
-            <button className="cta-btn secondary">
+            <button className="cta-btn secondary" onClick={() => navigate('/request-help')}>
               <span>Request Help</span>
             </button>
           </div>

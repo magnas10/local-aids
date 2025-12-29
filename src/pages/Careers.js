@@ -25,9 +25,9 @@ function Careers() {
       location: 'Sydney, NSW',
       type: 'Full-time',
       salary: '$120,000 - $150,000',
-      description: 'Join our engineering team and help build and scale our MERN platform that connects thousands of volunteers with people in need. You\'ll work on features that directly impact our community\'s ability to receive critical support services.',
+      description: 'Join our engineering team and help build and scale our PERN platform that connects thousands of volunteers with people in need. You\'ll work on features that directly impact our community\'s ability to receive critical support services.',
       requirements: [
-        '5+ years experience with React, Node.js, and MongoDB',
+        '5+ years experience with React, Node.js, and PostgreSQL (or other relational DBs)',
         'Strong understanding of REST APIs and database design',
         'Experience with JWT authentication and security best practices',
         'Passion for building community-focused applications',
@@ -93,7 +93,7 @@ function Careers() {
       requirements: [
         '3+ years data analysis experience',
         'Proficiency in SQL, Python, and data visualization',
-        'Experience with MongoDB and NoSQL databases',
+        'Experience with PostgreSQL and relational databases',
         'Strong analytical and problem-solving skills',
         'Experience with nonprofit or social impact metrics'
       ]

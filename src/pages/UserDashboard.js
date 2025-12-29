@@ -209,10 +209,7 @@ function UserDashboard() {
             <span className="action-icon"></span>
             <span>Community Events</span>
           </Link>
-          <Link to="/gallery" className="action-btn info">
-            <span className="action-icon"></span>
-            <span>Community Stories</span>
-          </Link>
+          
           <Link to="/contact" className="action-btn secondary">
             <span className="action-icon"></span>
             <span>Contact Support</span>

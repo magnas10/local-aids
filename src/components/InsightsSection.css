@@ -17,7 +17,7 @@
 .insights-badge {
   display: inline-block;
   background: linear-gradient(135deg, #e8f8f5, #d4f1ec);
-  color: #20b2aa;
+  color: var(--primary);
   padding: 10px 22px;
   border-radius: 30px;
   font-size: 0.9rem;
@@ -141,7 +141,7 @@
 
 .chart-bar {
   width: 35px;
-  background: linear-gradient(180deg, #20b2aa 0%, #1a8f88 100%);
+  background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
   border-radius: 8px 8px 0 0;
   position: relative;
   transition: all 0.3s ease;
@@ -196,7 +196,7 @@
 .category-rank {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #20b2aa;
+  color: var(--primary);
   width: 28px;
 }
 
@@ -221,7 +221,7 @@
 
 .category-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #20b2aa, #27ae60);
+  background: linear-gradient(90deg, var(--primary), #27ae60);
   border-radius: 10px;
   transition: width 0.5s ease;
 }
@@ -281,7 +281,7 @@
 }
 
 .feed-item strong {
-  color: #20b2aa;
+  color: var(--primary);
 }
 
 .feed-time {

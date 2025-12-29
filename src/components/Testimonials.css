@@ -195,7 +195,7 @@
 }
 
 .nav-item.active {
-  border-color: #20b2aa;
+  border-color: var(--primary);
   background: #f0f9f8;
 }
 
@@ -239,8 +239,8 @@
   align-items: center;
   gap: 10px;
   background: white;
-  color: #20b2aa;
-  border: 2px solid #20b2aa;
+  color: var(--primary);
+  border: 2px solid var(--primary);
   padding: 16px 35px;
   border-radius: 12px;
   font-size: 1rem;
@@ -250,7 +250,7 @@
 }
 
 .read-more-btn:hover {
-  background: #20b2aa;
+  background: var(--primary);
   color: white;
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(32, 178, 170, 0.3);

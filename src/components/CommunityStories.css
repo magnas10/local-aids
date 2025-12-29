@@ -19,7 +19,7 @@
 .community-stories-section .stories-badge {
   display: inline-block;
   background: linear-gradient(135deg, #e8f5f4, #d4efed);
-  color: #20b2aa;
+  color: var(--primary);
   padding: 10px 22px;
   border-radius: 30px;
   font-size: 0.9rem;
@@ -93,7 +93,7 @@
   position: absolute;
   top: 15px;
   left: 15px;
-  background: #20b2aa;
+  background: var(--primary);
   color: #ffffff;
   padding: 6px 14px;
   border-radius: 20px;
@@ -193,7 +193,7 @@
 .community-stories-section .read-story-btn {
   background: none;
   border: none;
-  color: #20b2aa;
+  color: var(--primary);
   font-weight: 600;
   font-size: 0.85rem;
   cursor: pointer;
