@@ -21,12 +21,21 @@ function RequestHelp() {
 
   const [addressError, setAddressError] = useState('');
   const autocompleteRef = useRef(null);
+  const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-  // Load Google Maps script dynamically
+  // Load Google Maps script dynamically using env var
   React.useEffect(() => {
+    if (!GOOGLE_MAPS_API_KEY) {
+      // Key missing — do not attempt to load script in this case
+      // This avoids committing keys to source; developer should set REACT_APP_GOOGLE_MAPS_API_KEY
+      // eslint-disable-next-line no-console
+      console.warn('Google Maps API key not set: set REACT_APP_GOOGLE_MAPS_API_KEY in your environment');
+      return;
+    }
+
     if (!window.google) {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
       script.async = true;
       script.onload = () => initAutocomplete();
       document.body.appendChild(script);
@@ -34,7 +43,7 @@ function RequestHelp() {
       initAutocomplete();
     }
     // eslint-disable-next-line
-  }, []);
+  }, [GOOGLE_MAPS_API_KEY]);
 
   function initAutocomplete() {
     if (!window.google || !autocompleteRef.current) return;
@@ -365,8 +374,7 @@ function RequestHelp() {
               Submit Request
             </button>
           )}
-        // INSTRUCTIONS: Replace YOUR_GOOGLE_MAPS_API_KEY above with your actual Google Maps API key.
-        // For production, store the key securely (e.g., in environment variables or .env file, and proxy it if needed).
+        
         </div>
       </div>
     </div>
