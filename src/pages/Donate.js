@@ -8,6 +8,8 @@ function Donate() {
   const [customAmount, setCustomAmount] = useState('');
   const [donationType, setDonationType] = useState('one-time');
   const [showCreateCampaign, setShowCreateCampaign] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [selectedCampaignModal, setSelectedCampaignModal] = useState(null);
   const [campaignData, setCampaignData] = useState({
     title: '',
     category: '',
@@ -97,6 +99,18 @@ function Donate() {
     setCustomAmount('');
   };
 
+  const nextSlide = () => {
+    setCarouselIndex((prev) => (prev + 1) % activeCampaigns.length);
+  };
+
+  const prevSlide = () => {
+    setCarouselIndex((prev) => (prev - 1 + activeCampaigns.length) % activeCampaigns.length);
+  };
+
+  const goToSlide = (index) => {
+    setCarouselIndex(index);
+  };
+
   const handleCampaignChange = (e) => {
     const { name, value } = e.target;
     setCampaignData(prev => ({
@@ -121,38 +135,42 @@ function Donate() {
 
   return (
     <div className="donate-page-pro">
-      {/* Hero Section */}
+      {/* Hero Section - Enhanced */}
       <section className="donate-hero-pro">
         <div className="donate-hero-bg">
           <img 
-            src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=1920&h=800&fit=crop&q=80" 
-            alt="Donation making a difference"
+            src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85" 
+            alt="Community volunteers making a real difference together"
           />
-          <div className="donate-hero-overlay"></div>
+          <div className="donate-hero-overlay-dark"></div>
+          <div className="donate-hero-glow"></div>
         </div>
         <div className="donate-hero-content-pro">
-          <span className="donate-badge-pro">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-            Invest in Community Impact
-          </span>
-          <h1>Your Contribution<br/>Transforms Lives</h1>
-          <p>
-            Every contribution drives meaningful change by connecting dedicated volunteers with communities in need, 
-            fostering sustainable impact across Australia.
-          </p>
-          <div className="donate-hero-actions">
-            <button className="donate-quick-btn" onClick={() => document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' })}>
-              Donate Now
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <polyline points="19 12 12 19 5 12"/>
-              </svg>
-            </button>
-            <button className="start-fundraiser-btn" onClick={() => setShowCreateCampaign(true)}>
-              Start a Fundraiser
-            </button>
+          <div className="donate-hero-text">
+            <span className="donate-hero-badge">Make a Difference</span>
+            <h1>Every Gift Creates<br/>Real Change</h1>
+            <p className="hero-tagline">
+              Your donation directly helps families and communities across Australia. Small acts, big impact.
+            </p>
+            <div className="donate-hero-cta-section">
+              <button className="donate-hero-btn-primary" onClick={() => document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' })}>
+                Donate Now
+              </button>
+              <div className="donate-hero-stats">
+                <div className="hero-stat">
+                  <span className="stat-number">$2.5M+</span>
+                  <span className="stat-label">Raised</span>
+                </div>
+                <div className="hero-stat">
+                  <span className="stat-number">50K+</span>
+                  <span className="stat-label">Donors</span>
+                </div>
+                <div className="hero-stat">
+                  <span className="stat-number">100K+</span>
+                  <span className="stat-label">Lives Impacted</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -289,7 +307,7 @@ function Donate() {
                   <p>Your campaign will be reviewed within 24 hours before going live.</p>
                 </div>
                 <button type="submit" className="submit-campaign-btn-pro">
-                  Create Campaign
+                  Crea
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
                     <line x1="5" y1="12" x2="19" y2="12"/>
                     <polyline points="12 5 19 12 12 19"/>
@@ -366,6 +384,224 @@ function Donate() {
                     <button className="donate-campaign-btn">Donate</button>
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Campaign Carousel Section */}
+      <section className="campaign-carousel-section-pro">
+        <div className="carousel-container-pro">
+          <div className="carousel-header-pro">
+            <h2>Featured Campaigns</h2>
+            <p>Explore and support impactful causes</p>
+          </div>
+
+          <div className="carousel-wrapper-pro">
+            <button className="carousel-btn-prev-pro" onClick={prevSlide} aria-label="Previous campaign">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+
+            <div className="carousel-track-pro">
+              <div 
+                className="carousel-slides-pro"
+                style={{ transform: `translateX(-${carouselIndex * 100}%)` }}
+              >
+                {activeCampaigns.map((campaign) => (
+                  <div 
+                    key={campaign.id} 
+                    className="carousel-slide-pro"
+                    onClick={() => setSelectedCampaignModal(campaign)}
+                  >
+                    <div className="carousel-card-pro">
+                      <div className="carousel-image-pro">
+                        <img src={campaign.image} alt={campaign.title} />
+                        <div className="carousel-overlay-pro">
+                          <button className="carousel-cta-btn-pro">Donate Now</button>
+                        </div>
+                        <span className="carousel-category-pro">{campaign.category}</span>
+                      </div>
+                      <div className="carousel-content-pro">
+                        <h3>{campaign.title}</h3>
+                        <p className="carousel-organizer-pro">by {campaign.organizer}</p>
+                        
+                        <div className="carousel-progress-pro">
+                          <div className="carousel-progress-bar-pro">
+                            <div 
+                              className="carousel-progress-fill-pro" 
+                              style={{ width: `${(campaign.raised / campaign.goal) * 100}%` }}
+                            ></div>
+                          </div>
+                          <div className="carousel-progress-info-pro">
+                            <span className="carousel-raised">${campaign.raised.toLocaleString()}</span>
+                            <span className="carousel-percent">{Math.round((campaign.raised / campaign.goal) * 100)}%</span>
+                          </div>
+                        </div>
+
+                        <div className="carousel-meta-pro">
+                          <span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                              <circle cx="12" cy="12" r="10"/>
+                              <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            {campaign.daysLeft} days left
+                          </span>
+                          <span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                              <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            {campaign.donors} donors
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="carousel-btn-next-pro" onClick={nextSlide} aria-label="Next campaign">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Carousel Indicators */}
+          <div className="carousel-indicators-pro">
+            {activeCampaigns.map((_, index) => (
+              <button
+                key={index}
+                className={`indicator-dot-pro ${index === carouselIndex ? 'active' : ''}`}
+                onClick={() => goToSlide(index)}
+                aria-label={`Go to campaign ${index + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Campaign Details Modal */}
+      {selectedCampaignModal && (
+        <div className="campaign-modal-overlay-pro" onClick={() => setSelectedCampaignModal(null)}>
+          <div className="campaign-modal-pro" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-btn-pro" onClick={() => setSelectedCampaignModal(null)}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <div className="campaign-modal-content-pro">
+              <img src={selectedCampaignModal.image} alt={selectedCampaignModal.title} className="modal-image-pro" />
+              <div className="modal-info-pro">
+                <span className="modal-category-pro">{selectedCampaignModal.category}</span>
+                <h2>{selectedCampaignModal.title}</h2>
+                <p className="modal-organizer-pro">Organized by {selectedCampaignModal.organizer}</p>
+                
+                <div className="modal-progress-pro">
+                  <div className="modal-progress-bar-pro">
+                    <div 
+                      className="modal-progress-fill-pro" 
+                      style={{ width: `${(selectedCampaignModal.raised / selectedCampaignModal.goal) * 100}%` }}
+                    ></div>
+                  </div>
+                  <div className="modal-stats-pro">
+                    <div>
+                      <div className="stat-value-pro">${selectedCampaignModal.raised.toLocaleString()}</div>
+                      <div className="stat-label-pro">Raised</div>
+                    </div>
+                    <div>
+                      <div className="stat-value-pro">${selectedCampaignModal.goal.toLocaleString()}</div>
+                      <div className="stat-label-pro">Goal</div>
+                    </div>
+                    <div>
+                      <div className="stat-value-pro">{selectedCampaignModal.daysLeft}</div>
+                      <div className="stat-label-pro">Days Left</div>
+                    </div>
+                    <div>
+                      <div className="stat-value-pro">{selectedCampaignModal.donors}</div>
+                      <div className="stat-label-pro">Donors</div>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="modal-donate-btn-pro" onClick={() => {
+                  document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' });
+                  setSelectedCampaignModal(null);
+                }}>
+                  Donate to This Campaign
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Impact Cards Section - How Your Donation Helps */}
+      <section className="impact-cards-section-pro">
+        <div className="impact-cards-container-pro">
+          <div className="impact-cards-header-pro">
+            <h2>How You Can Bring Joy to Someone's World</h2>
+            <p>Every donation creates meaningful change. See the direct impact of your generosity.</p>
+          </div>
+
+          <div className="impact-cards-grid-pro">
+            {impactItems.map((item, index) => (
+              <div key={index} className="impact-card-item-pro">
+                <div className="impact-card-icon-pro">
+                  {index === 0 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                      <path d="M12 2l3 3h9v12H0V5h9l3-3z"/>
+                      <circle cx="8" cy="12" r="2"/>
+                      <circle cx="16" cy="12" r="2"/>
+                    </svg>
+                  )}
+                  {index === 1 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                      <path d="M12 2c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+                      <path d="M8 12l2 2 4-4"/>
+                    </svg>
+                  )}
+                  {index === 2 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                    </svg>
+                  )}
+                  {index === 3 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                      <circle cx="12" cy="12" r="10"/>
+                      <path d="M12 6v6l4 2"/>
+                    </svg>
+                  )}
+                  {index === 4 && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="48" height="48">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                  )}
+                </div>
+                
+                <h3 className="impact-card-amount-pro">${item.amount}</h3>
+                <p className="impact-card-description-pro">{item.impact}</p>
+                <button 
+                  className="impact-card-btn-pro"
+                  onClick={() => {
+                    handleAmountSelect(item.amount);
+                    document.getElementById('donation-form').scrollIntoView({ behavior: 'smooth' });
+                  }}
+                >
+                  Donate now
+                </button>
               </div>
             ))}
           </div>
@@ -507,63 +743,44 @@ function Donate() {
             </div>
           </div>
 
-          {/* Impact Section */}
-          <div className="donate-impact-section-pro">
-            <div className="impact-card-pro">
-              <h3>Measurable Impact</h3>
-              <p className="impact-intro-pro">Every contribution creates tangible, lasting change in our communities:</p>
-              <div className="impact-list-pro">
-                {impactItems.map((item, index) => (
-                  <div key={index} className="impact-item-pro">
-                    <img src={item.image} alt="" className="impact-icon-pro" />
-                    <div className="impact-details-pro">
-                      <span className="impact-amount-pro">${item.amount}</span>
-                      <p>{item.impact}</p>
-                    </div>
-                  </div>
-                ))}
+          {/* Trust Badges */}
+          <div className="trust-badges-pro">
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l8-4 8 4v14"/>
+                  <path d="M9 21v-8h6v8"/>
+                </svg>
+              </div>
+              <div className="trust-text">
+                <strong>Registered Charity</strong>
+                <span>ABN: 12 345 678 901</span>
               </div>
             </div>
-
-            {/* Trust Badges */}
-            <div className="trust-badges-pro">
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 21h18"/>
-                    <path d="M5 21V7l8-4 8 4v14"/>
-                    <path d="M9 21v-8h6v8"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>Registered Charity</strong>
-                  <span>ABN: 12 345 678 901</span>
-                </div>
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
               </div>
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22 4 12 14.01 9 11.01"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>Tax Deductible</strong>
-                  <span>All donations over $2</span>
-                </div>
+              <div className="trust-text">
+                <strong>Tax Deductible</strong>
+                <span>All donations over $2</span>
               </div>
-              <div className="trust-badge-pro">
-                <div className="trust-icon-pro">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="20" x2="18" y2="10"/>
-                    <line x1="12" y1="20" x2="12" y2="4"/>
-                    <line x1="6" y1="20" x2="6" y2="14"/>
-                  </svg>
-                </div>
-                <div className="trust-text">
-                  <strong>95% to Programs</strong>
-                  <span>Minimal overhead costs</span>
-                </div>
+            </div>
+            <div className="trust-badge-pro">
+              <div className="trust-icon-pro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+              </div>
+              <div className="trust-text">
+                <strong>95% to Programs</strong>
+                <span>Minimal overhead costs</span>
               </div>
             </div>
           </div>

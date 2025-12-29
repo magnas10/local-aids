@@ -1,0 +1,121 @@
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { createNotification } from '../../services/api';
+import './AdminPages.css';
+
+function AdminSettings() {
+  const { user } = useAuth();
+  const [activeSection, setActiveSection] = useState(null);
+  const [notificationData, setNotificationData] = useState({
+    title: '',
+    message: '',
+    type: 'info',
+    priority: 'normal',
+    targetAudience: 'all',
+    expiresAt: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSectionClick = (section) => {
+    setActiveSection(activeSection === section ? null : section);
+    setError('');
+    setSuccess('');
+  };
+
+  const handleNotificationSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const submitData = {
+        ...notificationData,
+        expiresAt: notificationData.expiresAt || null
+      };
+
+      await createNotification(submitData);
+      setSuccess('Notification sent successfully to all ' + 
+        (notificationData.targetAudience === 'all' ? 'users' : notificationData.targetAudience) + '!');
+      
+      // Reset form
+      setNotificationData({
+        title: '',
+        message: '',
+        type: 'info',
+        priority: 'normal',
+        targetAudience: 'all',
+        expiresAt: ''
+      });
+
+      // Clear success message after 5 seconds
+      setTimeout(() => setSuccess(''), 5000);
+    } catch (error) {
+      setError(error.message || 'Failed to send notification');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <div className="admin-error">
+        <h1>Access Denied</h1>
+        <p>You do not have permission to access this page.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-container">
+      <div className="admin-header">
+        <h1>⚙️ System Settings</h1>
+        <p>Configure platform settings, security, and system parameters.</p>
+      </div>
+
+      {/* Coming Soon Message */}
+      <div style={{ textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: '12px', marginBottom: '30px' }}>
+        <h2 style={{ color: '#6c757d', marginBottom: '20px' }}>🚧 Under Development</h2>
+        <p style={{ color: '#6c757d', fontSize: '1.1rem' }}>
+          System settings and configuration features are currently being developed.
+          <br />This will include security settings, notification preferences, and system configuration.
+        </p>
+      </div>
+
+      {/* Settings Categories */}
+      <div className="quick-actions">
+        <h3>⚙️ Settings Categories</h3>
+        <div className="actions-grid">
+          <button className="action-btn primary">
+            <span className="action-icon">🔐</span>
+            <span>Security Settings</span>
+          </button>
+          <button className="action-btn info">
+            <span className="action-icon">🔔</span>
+            <span>Notifications</span>
+          </button>
+          <button className="action-btn success">
+            <span className="action-icon">📧</span>
+            <span>Email Templates</span>
+          </button>
+          <button className="action-btn warning">
+            <span className="action-icon">🌐</span>
+            <span>Platform Settings</span>
+          </button>
+          <button className="action-btn secondary">
+            <span className="action-icon">👨‍💼</span>
+            <span>Admin Management</span>
+          </button>
+          <button className="action-btn danger">
+            <span className="action-icon">💾</span>
+            <span>Backup & Recovery</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default AdminSettings;

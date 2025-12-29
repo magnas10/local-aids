@@ -1,11 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './CallToAction.css';
 
 function CallToAction() {
+  const navigate = useNavigate();
   const features = [
-    { icon: '🤝', text: 'Connect with neighbors' },
-    { icon: '⚡', text: 'Quick & easy signup' },
-    { icon: '💯', text: 'Free forever' }
+    { icon: '•', text: 'Connect with neighbors' },
+    { icon: '•', text: 'Quick & easy signup' },
+    { icon: '✓', text: 'Free forever' }
   ];
 
   return (
@@ -15,7 +17,7 @@ function CallToAction() {
         <div className="cta-bg-pattern"></div>
         
         <div className="cta-content">
-          <span className="cta-badge">🚀 Join 50,000+ Australians</span>
+          <span className="cta-badge">• Join 50,000+ Australians</span>
           <h2 className="cta-title">Ready to Make a Difference<br/>in Your Community?</h2>
           <p className="cta-subtitle">
             Whether you want to volunteer your time or need a helping hand, 
@@ -32,7 +34,7 @@ function CallToAction() {
           </div>
 
           <div className="cta-buttons">
-            <button className="cta-btn primary">
+            <button className="cta-btn primary" onClick={() => navigate('/events')}>
               <span>Start Volunteering</span>
               <span className="btn-arrow">→</span>
             </button>

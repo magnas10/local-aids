@@ -149,12 +149,12 @@ function InsightsSection() {
           </div>
           <div className="feed-items">
             <div className="feed-item">
-              <span className="feed-icon">🛒</span>
+              <span className="feed-icon">•</span>
               <span>Sarah helped with grocery shopping in <strong>Melbourne</strong></span>
               <span className="feed-time">2 min ago</span>
             </div>
             <div className="feed-item">
-              <span className="feed-icon">🚗</span>
+              <span className="feed-icon">•</span>
               <span>New transport request in <strong>Sydney</strong></span>
               <span className="feed-time">5 min ago</span>
             </div>

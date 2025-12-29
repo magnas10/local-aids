@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getHelpRequests } from '../services/api';
 import './Pages.css';
 
 function Events() {
@@ -7,8 +8,75 @@ function Events() {
     type: 'all',
     urgency: 'all'
   });
+  const [helpRequests, setHelpRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const allEvents = [
+  // Fetch help requests on component mount
+  useEffect(() => {
+    const fetchHelpRequests = async () => {
+      try {
+        setLoading(true);
+        const response = await getHelpRequests({ showAsEvent: 'true' });
+        const transformedRequests = response.helpRequests.map(request => ({
+          id: `help-${request._id}`,
+          title: `${getHelpTypeLabel(request.helpType)} Assistance ${request.urgency === 'high' || request.urgency === 'urgent' ? '- ' + request.urgency.toUpperCase() : ''}`,
+          date: request.preferredDate || 'Flexible',
+          time: request.preferredTime || 'Flexible',
+          location: `${request.suburb}, ${request.state}`,
+          description: request.description,
+          attendees: 0,
+          type: 'help-request',
+          urgency: request.urgency,
+          distance: Math.floor(Math.random() * 20) + 1,
+          image: getImageForHelpType(request.helpType),
+          helpType: request.helpType,
+          isHelpRequest: true,
+          originalId: request._id,
+          status: request.status,
+          postedDate: new Date(request.createdAt)
+        }));
+        setHelpRequests(transformedRequests);
+      } catch (error) {
+        console.error('Failed to fetch help requests:', error);
+        setHelpRequests([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHelpRequests();
+  }, []);
+
+  // Helper functions
+  const getHelpTypeLabel = (helpType) => {
+    const labels = {
+      'transport': 'Transport',
+      'shopping': 'Shopping',
+      'companionship': 'Companionship',
+      'household': 'Household',
+      'meals': 'Meal',
+      'medical': 'Medical',
+      'tech': 'Technology',
+      'other': 'General'
+    };
+    return labels[helpType] || 'General';
+  };
+
+  const getImageForHelpType = (helpType) => {
+    const images = {
+      'transport': 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400&h=250&fit=crop',
+      'shopping': 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=250&fit=crop',
+      'companionship': 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=400&h=250&fit=crop',
+      'household': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop',
+      'meals': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=250&fit=crop',
+      'medical': 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=250&fit=crop',
+      'tech': 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=250&fit=crop',
+      'other': 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=400&h=250&fit=crop'
+    };
+    return images[helpType] || images['other'];
+  };
+
+  const staticEvents = [
     {
       id: 1,
       title: 'Community Health Workshop',
@@ -141,6 +209,9 @@ function Events() {
     }
   ];
 
+  // Combine static events and help requests
+  const allEvents = [...staticEvents, ...helpRequests];
+
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -180,9 +251,9 @@ function Events() {
 
   return (
     <div className="page-container">
-      <div className="page-header">
-        <h1>Volunteer Opportunities & Events</h1>
-        <p>Browse available requests and find opportunities to make a difference across Australia</p>
+      <div className="opportunities-header">
+        <h1>Make a Difference <span className="highlight-text">Today</span></h1>
+        <p>These are the most recent requests for help in your community. Each opportunity is a chance to positively impact someone's life.</p>
       </div>
 
       <section className="filters-container" aria-label="Filter events">
@@ -192,7 +263,6 @@ function Events() {
             id="distance-filter"
             value={filters.distance} 
             onChange={(e) => handleFilterChange('distance', e.target.value)}
-            aria-describedby="results-count"
           >
             <option value="all">All Distances</option>
             <option value="5">Within 5 km</option>
@@ -208,7 +278,6 @@ function Events() {
             id="type-filter"
             value={filters.type} 
             onChange={(e) => handleFilterChange('type', e.target.value)}
-            aria-describedby="results-count"
           >
             <option value="all">All Types</option>
             <option value="workshop">Workshop</option>
@@ -228,7 +297,6 @@ function Events() {
             id="urgency-filter"
             value={filters.urgency} 
             onChange={(e) => handleFilterChange('urgency', e.target.value)}
-            aria-describedby="results-count"
           >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent Only</option>
@@ -246,39 +314,97 @@ function Events() {
         </button>
       </section>
 
-      <p id="results-count" className="results-count" aria-live="polite">
+      <p className="results-count">
         Showing {filteredEvents.length} opportunities
       </p>
-
-      <div className="events-grid" role="list" aria-label="Event listings">
+      <div className="opportunities-grid" role="list" aria-label="Event listings">
         {filteredEvents.map(event => (
-          <article 
+          <div 
             key={event.id} 
-            className={`event-card ${event.urgency === 'urgent' ? 'urgent-card' : ''}`}
+            className="opportunity-card"
             role="listitem"
           >
-            <div className="event-image">
+            <div className="opportunity-image">
               <img src={event.image} alt={`${event.title} event`} />
-              {getUrgencyBadge(event.urgency)}
+              <div className="priority-badge-container">
+                {event.urgency === 'urgent' && (
+                  <span className="priority-badge high-priority">
+                    HIGH PRIORITY
+                  </span>
+                )}
+                <span className="category-badge">
+                  {getTypeBadge(event.type)}
+                </span>
+              </div>
             </div>
-            <div className="event-content">
-              <div className="event-card-header">
-                <div className="event-date-badge">
-                  <span><time>{event.date}</time></span>
+            <div className="opportunity-content">
+              <h3 className="opportunity-title">{event.title}</h3>
+              <p className="opportunity-description">{event.description}</p>
+              
+              <div className="location-info">
+                <div className="location-marker">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span className="location-text">{event.location.split(',')[0]}, {event.location.split(',')[1]}</span>
+                  <a href="#" className="view-map-link">View Map</a>
+                </div>
+                <div className="distance-info">{event.distance} km away</div>
+              </div>
+              
+              <div className="time-info">
+                <div className="time-duration">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12,6 12,12 16,14"/>
+                  </svg>
+                  <span>2 hours</span>
+                </div>
+                <div className="time-flexible">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                    <line x1="16" y1="2" x2="16" y2="6"/>
+                    <line x1="8" y1="2" x2="8" y2="6"/>
+                    <line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                  <span>{event.date}, {event.time}</span>
                 </div>
               </div>
-              <h3>{event.title}</h3>
-              <span className="event-type-badge">{getTypeBadge(event.type)}</span>
-              <p className="event-time"><span aria-hidden="true">🕐</span> <span className="sr-only">Time:</span> {event.time}</p>
-              <p className="event-location"><span aria-hidden="true">📍</span> <span className="sr-only">Location:</span> {event.location}</p>
-              <p className="event-distance"><span aria-hidden="true">📏</span> <span className="sr-only">Distance:</span> {event.distance} km away</p>
-              <p className="event-description">{event.description}</p>
-              <div className="event-footer">
-                <span className="attendees"><span aria-hidden="true">👥</span> <span className="sr-only">Attendees:</span> {event.attendees} attending</span>
-                <button className="event-btn" aria-label={`Register for ${event.title}`}>Register</button>
+              
+              <div className="volunteer-info">
+                <div className="volunteer-avatar">
+                  <img src={`https://i.pravatar.cc/40?img=${event.id}`} alt="Volunteer" />
+                </div>
+                <div className="volunteer-details">
+                  <div className="volunteer-name">Requesting Help</div>
+                </div>
+              </div>
+              
+              <div className="opportunity-actions">
+                {event.location && event.location !== 'Flexible' && (
+                  <a
+                    className="directions-btn"
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.location)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Get directions to this event"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 11H1l8-8v6h8l-8 8v-6z"/>
+                    </svg>
+                    Directions
+                  </a>
+                )}
+                <button className="volunteer-btn">
+                  Volunteer Now
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14m-7-7l7 7-7 7"/>
+                  </svg>
+                </button>
               </div>
             </div>
-          </article>
+          </div>
         ))}
       </div>
 

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Pages.css';
+import { contactAPI } from '../services/api';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -9,19 +10,135 @@ function Contact() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterError, setNewsletterError] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const heroImages = [
+    'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&h=1080&fit=crop&q=85'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  const validateForm = () => {
+    const errors = {};
+    
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email.trim())) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.subject) {
+      errors.subject = 'Please select a subject';
+    }
+    
+    if (!formData.message.trim()) {
+      errors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      errors.message = 'Message must be at least 10 characters';
+    }
+    
+    return errors;
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    // Clear validation error for this field when user starts typing
+    if (validationErrors[name]) {
+      setValidationErrors({
+        ...validationErrors,
+        [name]: ''
+      });
+    }
+    setError('');
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setError('');
+    setValidationErrors({});
+    
+    // Validate form
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      await contactAPI.submit({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject,
+        message: formData.message.trim()
+      });
+      
+      setSubmitted(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSubmitted(false), 6000);
+    } catch (err) {
+      setError(err.message || 'Failed to send message. Please try again later.');
+      console.error('Contact form error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    setNewsletterError('');
+    
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!newsletterEmail.trim()) {
+      setNewsletterError('Please enter your email address');
+      return;
+    }
+    if (!emailRegex.test(newsletterEmail.trim())) {
+      setNewsletterError('Please enter a valid email address');
+      return;
+    }
+    
+    setNewsletterLoading(true);
+    try {
+      // Subscribe to newsletter - can be implemented with your backend
+      await new Promise(resolve => setTimeout(resolve, 800)); // Mock delay
+      
+      setNewsletterSubmitted(true);
+      setNewsletterEmail('');
+      setTimeout(() => setNewsletterSubmitted(false), 5000);
+    } catch (err) {
+      setNewsletterError('Failed to subscribe. Please try again later.');
+      console.error('Newsletter error:', err);
+    } finally {
+      setNewsletterLoading(false);
+    }
   };
 
   const contactInfo = [
@@ -79,11 +196,14 @@ function Contact() {
     <div className="contact-page-pro">
       {/* Hero Section */}
       <section className="contact-hero-pro">
-        <div className="contact-hero-bg">
-          <img 
-            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=800&fit=crop&q=80" 
-            alt="Contact us"
-          />
+        <div className="contact-hero-carousel">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`contact-hero-slide ${index === currentSlide ? 'active' : ''}`}
+              style={{ backgroundImage: `url(${image})` }}
+            />
+          ))}
           <div className="contact-hero-overlay"></div>
         </div>
         <div className="contact-hero-content-pro">
@@ -93,16 +213,46 @@ function Contact() {
             </svg>
             Get in Touch
           </span>
-          <h1>We'd Love to<br/>Hear From You</h1>
-          <p>
-            Have questions, suggestions, or want to partner with us? 
-            Our team is here to help.
-          </p>
+          <h1>We'd Love to<br/><span className="highlight">Hear From You</span></h1>
+          <p>Have questions, suggestions, or want to partner with us? Our team is here to help.</p>
+          <div className="contact-hero-cta-section">
+            <button className="contact-hero-btn-primary" onClick={() => document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })}>
+              Send a Message
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </button>
+            <div className="contact-hero-stats">
+              <div className="hero-stat">
+                <span className="stat-number">24h</span>
+                <span className="stat-label">Response Time</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">10K+</span>
+                <span className="stat-label">Messages</span>
+              </div>
+              <div className="hero-stat">
+                <span className="stat-number">98%</span>
+                <span className="stat-label">Satisfaction</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Carousel Indicators */}
+        <div className="contact-carousel-indicators">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
 
       {/* Main Contact Section */}
-      <section className="contact-main-pro">
+      <section id="contact-form" className="contact-main-pro">
         <div className="contact-container-pro">
           {/* Contact Form */}
           <div className="contact-form-section-pro">
@@ -110,19 +260,33 @@ function Contact() {
               <h2>Send Us a Message</h2>
               
               {submitted && (
-                <div className="success-message-pro">
+                <div className="success-message-pro" role="alert">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
                     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                     <polyline points="22 4 12 14.01 9 11.01"/>
                   </svg>
-                  <p>Thank you! Your message has been sent. We'll get back to you soon.</p>
+                  <div>
+                    <p><strong>Thank you!</strong></p>
+                    <p>Your message has been sent. We'll get back to you soon.</p>
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="error-message-pro" role="alert">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                  <p>{error}</p>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="contact-form-pro">
                 <div className="form-row-pro">
                   <div className="form-group-pro">
-                    <label htmlFor="name">Your Name</label>
+                    <label htmlFor="name">Your Name *</label>
                     <input
                       type="text"
                       id="name"
@@ -130,11 +294,16 @@ function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="John Smith"
-                      required
+                      disabled={loading}
+                      aria-invalid={!!validationErrors.name}
+                      aria-describedby={validationErrors.name ? 'name-error' : undefined}
                     />
+                    {validationErrors.name && (
+                      <span className="form-error-pro" id="name-error">{validationErrors.name}</span>
+                    )}
                   </div>
                   <div className="form-group-pro">
-                    <label htmlFor="email">Email Address</label>
+                    <label htmlFor="email">Email Address *</label>
                     <input
                       type="email"
                       id="email"
@@ -142,19 +311,26 @@ function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="john@example.com"
-                      required
+                      disabled={loading}
+                      aria-invalid={!!validationErrors.email}
+                      aria-describedby={validationErrors.email ? 'email-error' : undefined}
                     />
+                    {validationErrors.email && (
+                      <span className="form-error-pro" id="email-error">{validationErrors.email}</span>
+                    )}
                   </div>
                 </div>
 
                 <div className="form-group-pro">
-                  <label htmlFor="subject">Subject</label>
+                  <label htmlFor="subject">Subject *</label>
                   <select
                     id="subject"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    required
+                    disabled={loading}
+                    aria-invalid={!!validationErrors.subject}
+                    aria-describedby={validationErrors.subject ? 'subject-error' : undefined}
                   >
                     <option value="">Select a topic</option>
                     <option value="general">General Inquiry</option>
@@ -164,10 +340,13 @@ function Contact() {
                     <option value="feedback">Feedback</option>
                     <option value="technical">Technical Support</option>
                   </select>
+                  {validationErrors.subject && (
+                    <span className="form-error-pro" id="subject-error">{validationErrors.subject}</span>
+                  )}
                 </div>
 
                 <div className="form-group-pro">
-                  <label htmlFor="message">Your Message</label>
+                  <label htmlFor="message">Your Message *</label>
                   <textarea
                     id="message"
                     name="message"
@@ -175,16 +354,35 @@ function Contact() {
                     onChange={handleChange}
                     placeholder="How can we help you?"
                     rows="6"
-                    required
+                    disabled={loading}
+                    aria-invalid={!!validationErrors.message}
+                    aria-describedby={validationErrors.message ? 'message-error' : undefined}
                   ></textarea>
+                  {validationErrors.message && (
+                    <span className="form-error-pro" id="message-error">{validationErrors.message}</span>
+                  )}
                 </div>
 
-                <button type="submit" className="contact-submit-btn-pro">
-                  Send Message
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                  </svg>
+                <button 
+                  type="submit" 
+                  className="contact-submit-btn-pro"
+                  disabled={loading}
+                  aria-busy={loading}
+                >
+                  {loading ? (
+                    <>
+                      <span className="spinner-mini"></span>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Message
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                      </svg>
+                    </>
+                  )}
                 </button>
               </form>
             </div>
@@ -277,18 +475,61 @@ function Contact() {
       {/* Newsletter Section */}
       <section className="contact-newsletter-pro">
         <div className="newsletter-container-pro">
+          {newsletterSubmitted && (
+            <div className="success-message-pro" role="alert" style={{ marginBottom: '30px', width: '100%' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              <div>
+                <p><strong>Thanks for subscribing!</strong></p>
+                <p>Check your email for confirmation.</p>
+              </div>
+            </div>
+          )}
+          
+          {newsletterError && (
+            <div className="error-message-pro" role="alert" style={{ marginBottom: '30px', width: '100%' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <p>{newsletterError}</p>
+            </div>
+          )}
+          
           <div className="newsletter-content">
             <h2>Stay Updated</h2>
             <p>Subscribe to our newsletter for the latest news and volunteer opportunities</p>
           </div>
-          <form className="newsletter-form-pro">
-            <input type="email" placeholder="Enter your email address" required />
-            <button type="submit">
-              Subscribe
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                <line x1="5" y1="12" x2="19" y2="12"/>
-                <polyline points="12 5 19 12 12 19"/>
-              </svg>
+          <form className="newsletter-form-pro" onSubmit={handleNewsletterSubmit}>
+            <input 
+              type="email" 
+              placeholder="Enter your email address"
+              value={newsletterEmail}
+              onChange={(e) => {
+                setNewsletterEmail(e.target.value);
+                setNewsletterError('');
+              }}
+              disabled={newsletterLoading}
+              required 
+            />
+            <button type="submit" disabled={newsletterLoading} aria-busy={newsletterLoading}>
+              {newsletterLoading ? (
+                <>
+                  <span className="spinner-mini"></span>
+                  Subscribing...
+                </>
+              ) : (
+                <>
+                  Subscribe
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </>
+              )}
             </button>
           </form>
         </div>

@@ -1,19 +1,35 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 function Footer() {
   const footerColumns = {
     platform: {
       title: 'Platform',
-      links: ['How It Works', 'Find Opportunities', 'Post a Request', 'Success Stories']
+      links: [
+        { text: 'How It Works', path: '/about' },
+        { text: 'Find Opportunities', path: '/events' },
+        { text: 'Post a Request', path: '/signup' },
+        { text: 'Success Stories', path: '/blog' }
+      ]
     },
     resources: {
       title: 'Resources',
-      links: ['Help Center', 'Blog', 'Community Guidelines', 'Safety Tips']
+      links: [
+        { text: 'Help Center', path: '/help-center' },
+        { text: 'Blog', path: '/blog' },
+        { text: 'Community Guidelines', path: '/community-guidelines' },
+        { text: 'Safety Tips', path: '/safety-tips' }
+      ]
     },
     company: {
       title: 'Company',
-      links: ['About Us', 'Careers', 'Press', 'Partners']
+      links: [
+        { text: 'About Us', path: '/about' },
+        { text: 'Careers', path: '/contact' },
+        { text: 'Press', path: '/contact' },
+        { text: 'Partners', path: '/partners' }
+      ]
     }
   };
 
@@ -72,7 +88,7 @@ function Footer() {
               <ul>
                 {column.links.map((link, i) => (
                   <li key={i}>
-                    <a href="#" className="footer-link">{link}</a>
+                    <Link to={link.path} className="footer-link">{link.text}</Link>
                   </li>
                 ))}
               </ul>

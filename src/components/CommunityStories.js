@@ -67,13 +67,13 @@ function CommunityStories() {
                     <span>{story.volunteer}</span>
                   </div>
                   <div className="meta-item">
-                    <span className="meta-icon">⏱️</span>
+                    <span className="meta-icon">•</span>
                     <span>{story.duration}</span>
                   </div>
                 </div>
                 <div className="story-footer">
                   <span className="impact-badge">
-                    <span className="impact-icon">🎯</span>
+                    <span className="impact-icon">•</span>
                     {story.impact}
                   </span>
                   <button className="read-story-btn">Read Story →</button>

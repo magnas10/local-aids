@@ -1,277 +1,480 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { uploadAvatar, deleteAvatar } from '../services/avatarAPI';
+import AvatarUpload from '../components/AvatarUpload';
 import './Pages.css';
+import './ProfessionalProfile.css';
 
 function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [settingsType, setSettingsType] = useState('');
+  const [editFormData, setEditFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef(null);
+  const { user, isLoggedIn, updateUser } = useAuth();
+  const navigate = useNavigate();
 
-  const user = {
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    phone: '+61 412 345 678',
-    location: 'Melbourne, Victoria, Australia',
-    joinDate: 'January 2024',
-    role: 'Senior Volunteer',
-    title: 'Community Health Advocate',
-    bio: 'Passionate about making a difference in my community. Active volunteer and advocate for health awareness. Dedicated to supporting individuals affected by HIV/AIDS through compassionate care and education.',
-    website: 'www.johndoe-volunteer.com',
-    linkedin: 'linkedin.com/in/johndoe',
-    verified: true,
-    badges: ['Top Volunteer', 'Community Leader', 'First Responder', '100+ Hours'],
-    skills: ['Health Education', 'Patient Support', 'Event Planning', 'Counseling', 'First Aid', 'Transport'],
-    languages: ['English', 'Spanish'],
-    availability: 'Weekends & Evenings',
-    stats: {
-      eventsAttended: 47,
-      hoursVolunteered: 156,
-      donations: 12,
-      peopleHelped: 89,
-      rating: 4.9,
-      reviews: 23
-    },
-    recentActivity: [
-      { type: 'event', title: 'Community Health Workshop', date: 'Nov 20, 2025', icon: '📚' },
-      { type: 'volunteer', title: 'Transport to Medical Appointment', date: 'Nov 18, 2025', icon: '🚗' },
-      { type: 'donation', title: 'Donated $50 to Food Bank', date: 'Nov 15, 2025', icon: '💚' },
-      { type: 'event', title: 'Volunteer Training Session', date: 'Nov 10, 2025', icon: '🎓' },
-    ],
-    certifications: [
-      { name: 'First Aid Certificate', issuer: 'Red Cross Australia', date: 'Valid until Dec 2026' },
-      { name: 'Mental Health First Aid', issuer: 'MHFA Australia', date: 'Valid until Mar 2026' },
-      { name: 'Community Support Training', issuer: 'Local AIDS', date: 'Completed Jan 2024' },
-    ]
+  // Use actual user data from context with fallback values - memoized to update when user changes
+  const profileData = useMemo(() => {
+    if (!user) return null;
+    return {
+      name: user.name || 'User',
+      email: user.email || '',
+      phone: user.phone || 'Not provided',
+      location: user.address ? `${user.address.city || ''}, ${user.address.state || ''}, ${user.address.country || ''}`.replace(/^,\s*|,\s*$/g, '') || 'Location not provided' : 'Location not provided',
+      joinDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Recently joined',
+      role: user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member',
+      title: user.bio || 'Community Member',
+      bio: user.bio || 'No bio provided yet. Update your profile to tell others about yourself.',
+      website: user.website || '',
+      linkedin: user.linkedin || '',
+      verified: user.isVerified || false,
+      badges: user.badges || [],
+      skills: user.skills || [],
+      languages: user.languages || ['English'],
+      availability: user.availability || 'Not specified',
+      avatar: user.avatar || null,
+      stats: {
+        eventsAttended: 0,
+        hoursVolunteered: 0,
+        donations: 0,
+        peopleHelped: 0,
+        rating: 5.0,
+        reviews: 0
+      },
+      recentActivity: [],
+      certifications: []
+    };
+  }, [user]); // This will recalculate when user changes
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoggedIn || !user) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, user, navigate]);
+
+  // Don't render if not logged in or if profileData is not ready
+  if (!isLoggedIn || !user || !profileData) {
+    return <div>Loading...</div>;
+  }
+
+  // Initialize edit form data when modal opens
+  const handleEditProfile = () => {
+    console.log('Opening edit modal with user data:', user);
+    setEditFormData({
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      bio: user?.bio || '',
+      address: {
+        city: user?.address?.city || '',
+        state: user?.address?.state || '',
+        country: user?.address?.country || ''
+      }
+    });
+    setShowEditModal(true);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setEditFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
+      }));
+    } else {
+      setEditFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Handle opening settings modal
+  const handleOpenSettings = (type) => {
+    setSettingsType(type);
+    setShowSettingsModal(true);
+  };
+
+  // Save profile changes
+  const handleSaveProfile = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    
+    try {
+      const token = localStorage.getItem('token');
+      console.log('Sending profile update with data:', editFormData);
+      
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editFormData)
+      });
+      
+      console.log('Response status:', response.status);
+      const data = await response.json();
+      console.log('Response data:', data);
+      
+      if (response.ok) {
+        console.log('Profile update successful:', data);
+        
+        // Update user in context - this will trigger profileData to recalculate
+        if (updateUser && data.user) {
+          updateUser(data.user);
+          console.log('Updated user in context:', data.user);
+        } else {
+          // Fallback: update localStorage and reload
+          localStorage.setItem('user', JSON.stringify(data.user || editFormData));
+          window.location.reload();
+        }
+        
+        setShowEditModal(false);
+        alert('Profile updated successfully!');
+      } else {
+        console.error('Profile update failed:', data);
+        // Show the specific error message from the server
+        const errorMessage = data.message || data.errors?.[0]?.msg || 'Failed to update profile';
+        alert(errorMessage);
+      }
+    } catch (error) {
+      console.error('Network error updating profile:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
-    <div className="profile-page">
-      {/* Cover Photo */}
-      <div className="profile-cover">
-        <div className="cover-overlay"></div>
-        <button className="cover-edit-btn" aria-label="Edit cover photo">
-          📷 Edit Cover
-        </button>
-      </div>
-
-      {/* Profile Header */}
-      <div className="profile-header-section">
-        <div className="profile-header-container">
-          <div className="profile-avatar-large">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt={user.name} />
-            <button className="avatar-edit-btn" aria-label="Edit profile photo">📷</button>
-            {user.verified && <span className="verified-badge" title="Verified Volunteer">✓</span>}
-          </div>
-          <div className="profile-header-info">
-            <div className="profile-name-row">
-              <h1>{user.name}</h1>
-              <span className="profile-status online">● Online</span>
+    <div className="professional-profile-page">
+      {/* Professional Header */}
+      <div className="profile-professional-header">
+        <div className="profile-container">
+          <div className="profile-main-info">
+            <div className="profile-avatar-section">
+              <AvatarUpload 
+                user={user} 
+                updateUser={updateUser} 
+                profileData={profileData} 
+              />
+              <div className="profile-verification">
+                {profileData.verified && <span className="verified-badge">✓ Verified</span>}
+              </div>
             </div>
-            <p className="profile-title">{user.title}</p>
-            <p className="profile-location">📍 {user.location}</p>
-            <div className="profile-badges">
-              {user.badges.map((badge, index) => (
-                <span key={index} className="badge-tag">{badge}</span>
-              ))}
+            
+            <div className="profile-details">
+              <div className="profile-name-section">
+                <h1 className="profile-name">{profileData.name}</h1>
+                <span className="profile-role">{profileData.role}</span>
+                <div className="profile-status-indicator">
+                  <span className="status-dot active"></span>
+                  <span className="status-text">Active Member</span>
+                </div>
+              </div>
+              
+              <div className="profile-meta">
+                <div className="meta-item">
+                  <i className="icon-location">📍</i>
+                  <span>{profileData.location}</span>
+                </div>
+                <div className="meta-item">
+                  <i className="icon-calendar">📅</i>
+                  <span>Member since {profileData.joinDate}</span>
+                </div>
+                <div className="meta-item">
+                  <i className="icon-email">📧</i>
+                  <span>{profileData.email}</span>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="profile-header-actions">
-            <button className="btn-primary">Edit Profile</button>
-            <button className="btn-secondary">Share Profile</button>
-            <button className="btn-icon" aria-label="Settings">⚙️</button>
+            
+            <div className="profile-actions">
+              <button className="btn-primary-pro" onClick={handleEditProfile}>
+                <i className="icon-edit">✏️</i>
+                Edit Profile
+              </button>
+              <button className="btn-secondary-pro">
+                <i className="icon-share">📤</i>
+                Share
+              </button>
+              <button className="btn-tertiary-pro">
+                <i className="icon-download">⬇️</i>
+                Export
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Profile Stats Bar */}
-      <div className="profile-stats-bar">
-        <div className="stats-bar-container">
-          <div className="stat-box">
-            <span className="stat-value">{user.stats.eventsAttended}</span>
-            <span className="stat-title">Events</span>
-          </div>
-          <div className="stat-box">
-            <span className="stat-value">{user.stats.hoursVolunteered}</span>
-            <span className="stat-title">Hours</span>
-          </div>
-          <div className="stat-box">
-            <span className="stat-value">{user.stats.peopleHelped}</span>
-            <span className="stat-title">People Helped</span>
-          </div>
-          <div className="stat-box">
-            <span className="stat-value">${user.stats.donations * 50}</span>
-            <span className="stat-title">Donated</span>
-          </div>
-          <div className="stat-box highlight">
-            <span className="stat-value">⭐ {user.stats.rating}</span>
-            <span className="stat-title">{user.stats.reviews} Reviews</span>
+      {/* Professional Stats */}
+      <div className="profile-professional-stats">
+        <div className="profile-container">
+          <div className="stats-grid-professional">
+            <div className="stat-card-pro">
+              <div className="stat-icon">🎯</div>
+              <div className="stat-content">
+                <h3>{profileData.stats.eventsAttended}</h3>
+                <p>Events Attended</p>
+              </div>
+            </div>
+            <div className="stat-card-pro">
+              <div className="stat-icon">⏰</div>
+              <div className="stat-content">
+                <h3>{profileData.stats.hoursVolunteered}</h3>
+                <p>Hours Contributed</p>
+              </div>
+            </div>
+            <div className="stat-card-pro">
+              <div className="stat-icon">👥</div>
+              <div className="stat-content">
+                <h3>{profileData.stats.peopleHelped}</h3>
+                <p>People Helped</p>
+              </div>
+            </div>
+            <div className="stat-card-pro">
+              <div className="stat-icon">💰</div>
+              <div className="stat-content">
+                <h3>${profileData.stats.donations * 50}</h3>
+                <p>Total Contributions</p>
+              </div>
+            </div>
+            <div className="stat-card-pro featured">
+              <div className="stat-icon">⭐</div>
+              <div className="stat-content">
+                <h3>{profileData.stats.rating}</h3>
+                <p>Community Rating</p>
+                <small>{profileData.stats.reviews} reviews</small>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="profile-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'activity' ? 'active' : ''}`}
-          onClick={() => setActiveTab('activity')}
-        >
-          Activity
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'certifications' ? 'active' : ''}`}
-          onClick={() => setActiveTab('certifications')}
-        >
-          Certifications
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          Settings
-        </button>
+      {/* Professional Navigation */}
+      <div className="profile-navigation-pro">
+        <div className="profile-container">
+          <nav className="nav-tabs-pro">
+            <button 
+              className={`nav-tab-pro ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              <i className="tab-icon">📊</i>
+              Overview
+            </button>
+            <button 
+              className={`nav-tab-pro ${activeTab === 'activity' ? 'active' : ''}`}
+              onClick={() => setActiveTab('activity')}
+            >
+              <i className="tab-icon">📈</i>
+              Activity
+            </button>
+            <button 
+              className={`nav-tab-pro ${activeTab === 'certifications' ? 'active' : ''}`}
+              onClick={() => setActiveTab('certifications')}
+            >
+              <i className="tab-icon">🏆</i>
+              Achievements
+            </button>
+            <button 
+              className={`nav-tab-pro ${activeTab === 'settings' ? 'active' : ''}`}
+              onClick={() => setActiveTab('settings')}
+            >
+              <i className="tab-icon">⚙️</i>
+              Settings
+            </button>
+          </nav>
+        </div>
       </div>
 
-      {/* Profile Content */}
-      <div className="profile-main-content">
-        {activeTab === 'overview' && (
-          <div className="profile-grid">
-            {/* Left Column */}
-            <div className="profile-left-column">
-              {/* About Card */}
-              <div className="profile-card-section">
-                <h3>About</h3>
-                <p className="about-text">{user.bio}</p>
-              </div>
-
-              {/* Contact Card */}
-              <div className="profile-card-section">
-                <h3>Contact Information</h3>
-                <div className="contact-list">
-                  <div className="contact-item">
-                    <span className="contact-icon">✉️</span>
-                    <div>
-                      <label>Email</label>
-                      <p>{user.email}</p>
+      {/* Professional Content */}
+      <div className="profile-content-professional">
+        <div className="profile-container">
+          {activeTab === 'overview' && (
+            <div className="overview-professional">
+              <div className="content-grid-pro">
+                {/* Left Column */}
+                <div className="content-main-pro">
+                  {/* About Section */}
+                  <div className="card-professional">
+                    <div className="card-header-pro">
+                      <h3>About</h3>
+                      <button className="edit-section-btn">✏️</button>
+                    </div>
+                    <div className="card-content-pro">
+                      <p className="about-description">{profileData.bio}</p>
                     </div>
                   </div>
-                  <div className="contact-item">
-                    <span className="contact-icon">📱</span>
-                    <div>
-                      <label>Phone</label>
-                      <p>{user.phone}</p>
+
+                  {/* Contact Information */}
+                  <div className="card-professional">
+                    <div className="card-header-pro">
+                      <h3>Contact Information</h3>
+                      <button className="edit-section-btn">✏️</button>
                     </div>
-                  </div>
-                  <div className="contact-item">
-                    <span className="contact-icon">🌐</span>
-                    <div>
-                      <label>Website</label>
-                      <p>{user.website}</p>
-                    </div>
-                  </div>
-                  <div className="contact-item">
-                    <span className="contact-icon">💼</span>
-                    <div>
-                      <label>LinkedIn</label>
-                      <p>{user.linkedin}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Skills Card */}
-              <div className="profile-card-section">
-                <h3>Skills & Expertise</h3>
-                <div className="skills-list">
-                  {user.skills.map((skill, index) => (
-                    <span key={index} className="skill-tag">{skill}</span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Languages Card */}
-              <div className="profile-card-section">
-                <h3>Languages</h3>
-                <div className="languages-list">
-                  {user.languages.map((lang, index) => (
-                    <span key={index} className="language-tag">🌍 {lang}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column */}
-            <div className="profile-right-column">
-              {/* Quick Info Card */}
-              <div className="profile-card-section">
-                <h3>Quick Info</h3>
-                <div className="quick-info-list">
-                  <div className="quick-info-item">
-                    <span className="info-label">Role</span>
-                    <span className="info-value role-badge">{user.role}</span>
-                  </div>
-                  <div className="quick-info-item">
-                    <span className="info-label">Member Since</span>
-                    <span className="info-value">{user.joinDate}</span>
-                  </div>
-                  <div className="quick-info-item">
-                    <span className="info-label">Availability</span>
-                    <span className="info-value">{user.availability}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Activity Card */}
-              <div className="profile-card-section">
-                <h3>Recent Activity</h3>
-                <div className="activity-timeline">
-                  {user.recentActivity.map((activity, index) => (
-                    <div key={index} className="activity-item">
-                      <span className="activity-icon">{activity.icon}</span>
-                      <div className="activity-content">
-                        <p className="activity-title">{activity.title}</p>
-                        <span className="activity-date">{activity.date}</span>
+                    <div className="card-content-pro">
+                      <div className="contact-grid-pro">
+                        <div className="contact-item-pro">
+                          <div className="contact-icon-pro">📧</div>
+                          <div className="contact-details">
+                            <label>Email Address</label>
+                            <span>{profileData.email}</span>
+                          </div>
+                        </div>
+                        <div className="contact-item-pro">
+                          <div className="contact-icon-pro">📱</div>
+                          <div className="contact-details">
+                            <label>Phone Number</label>
+                            <span>{profileData.phone}</span>
+                          </div>
+                        </div>
+                        <div className="contact-item-pro">
+                          <div className="contact-icon-pro">🌐</div>
+                          <div className="contact-details">
+                            <label>Website</label>
+                            <span>{profileData.website || 'Not provided'}</span>
+                          </div>
+                        </div>
+                        <div className="contact-item-pro">
+                          <div className="contact-icon-pro">💼</div>
+                          <div className="contact-details">
+                            <label>LinkedIn</label>
+                            <span>{profileData.linkedin || 'Not provided'}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-                <button className="view-all-btn">View All Activity →</button>
-              </div>
+                  </div>
 
-              {/* Impact Summary */}
-              <div className="profile-card-section impact-card">
-                <h3>🏆 Impact Summary</h3>
-                <div className="impact-stats">
-                  <div className="impact-item">
-                    <span className="impact-number">{user.stats.peopleHelped}</span>
-                    <span className="impact-label">Lives Touched</span>
-                  </div>
-                  <div className="impact-item">
-                    <span className="impact-number">{user.stats.hoursVolunteered}</span>
-                    <span className="impact-label">Hours Given</span>
+                  {/* Skills & Expertise */}
+                  <div className="card-professional">
+                    <div className="card-header-pro">
+                      <h3>Skills & Expertise</h3>
+                      <button className="add-skill-btn">+ Add Skill</button>
+                    </div>
+                    <div className="card-content-pro">
+                      <div className="skills-grid-pro">
+                        {profileData.skills.length > 0 ? (
+                          profileData.skills.map((skill, index) => (
+                            <span key={index} className="skill-badge-pro">{skill}</span>
+                          ))
+                        ) : (
+                          <p className="empty-state">No skills added yet. Add your first skill to showcase your expertise.</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <p className="impact-message">Thank you for making a difference!</p>
+
+                {/* Sidebar */}
+                <div className="content-sidebar-pro">
+                  {/* Quick Overview */}
+                  <div className="card-professional">
+                    <div className="card-header-pro">
+                      <h3>Profile Overview</h3>
+                    </div>
+                    <div className="card-content-pro">
+                      <div className="overview-items">
+                        <div className="overview-item">
+                          <span className="overview-label">Role</span>
+                          <span className="overview-value role-badge-pro">{profileData.role}</span>
+                        </div>
+                        <div className="overview-item">
+                          <span className="overview-label">Availability</span>
+                          <span className="overview-value">{profileData.availability}</span>
+                        </div>
+                        <div className="overview-item">
+                          <span className="overview-label">Languages</span>
+                          <div className="languages-pro">
+                            {profileData.languages.map((lang, index) => (
+                              <span key={index} className="language-badge-pro">{lang}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Activity */}
+                  <div className="card-professional">
+                    <div className="card-header-pro">
+                      <h3>Recent Activity</h3>
+                      <button className="view-all-btn-pro">View All</button>
+                    </div>
+                    <div className="card-content-pro">
+                      <div className="activity-list-pro">
+                        {profileData.recentActivity.length > 0 ? (
+                          profileData.recentActivity.slice(0, 5).map((activity, index) => (
+                            <div key={index} className="activity-item-pro">
+                              <div className="activity-icon-pro">{activity.icon}</div>
+                              <div className="activity-details">
+                                <p className="activity-title-pro">{activity.title}</p>
+                                <span className="activity-date-pro">{activity.date}</span>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="empty-activity">
+                            <p>No recent activity</p>
+                            <small>Start volunteering to see your impact here!</small>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Impact Summary */}
+                  <div className="card-professional impact-card-pro">
+                    <div className="card-header-pro">
+                      <h3>🌟 Impact Summary</h3>
+                    </div>
+                    <div className="card-content-pro">
+                      <div className="impact-metrics">
+                        <div className="impact-metric">
+                          <span className="impact-number">{profileData.stats.peopleHelped}</span>
+                          <span className="impact-label">Lives Touched</span>
+                        </div>
+                        <div className="impact-metric">
+                          <span className="impact-number">{profileData.stats.hoursVolunteered}</span>
+                          <span className="impact-label">Hours Contributed</span>
+                        </div>
+                      </div>
+                      <p className="impact-message">Thank you for making a meaningful difference in our community!</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
         {activeTab === 'activity' && (
           <div className="activity-full-list">
             <h2>All Activity</h2>
             <div className="activity-timeline-full">
-              {user.recentActivity.concat(user.recentActivity).map((activity, index) => (
-                <div key={index} className="activity-item-full">
-                  <span className="activity-icon-full">{activity.icon}</span>
-                  <div className="activity-content-full">
-                    <p className="activity-title-full">{activity.title}</p>
-                    <span className="activity-date-full">{activity.date}</span>
+              {profileData.recentActivity.length > 0 ? (
+                profileData.recentActivity.map((activity, index) => (
+                  <div key={index} className="activity-item-full">
+                    <span className="activity-icon-full">{activity.icon}</span>
+                    <div className="activity-content-full">
+                      <p className="activity-title-full">{activity.title}</p>
+                      <span className="activity-date-full">{activity.date}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>No activity recorded yet. Start volunteering to see your activity here!</p>
+              )}
             </div>
           </div>
         )}
@@ -280,19 +483,21 @@ function Profile() {
           <div className="certifications-section">
             <h2>Certifications & Training</h2>
             <div className="certifications-grid">
-              {user.certifications.map((cert, index) => (
-                <div key={index} className="certification-card">
-                  <div className="cert-icon">🎖️</div>
-                  <h4>{cert.name}</h4>
-                  <p className="cert-issuer">{cert.issuer}</p>
-                  <span className="cert-date">{cert.date}</span>
+              {profileData.certifications.length > 0 ? (
+                profileData.certifications.map((cert, index) => (
+                  <div key={index} className="certification-card">
+                    <div className="cert-icon">🏆</div>
+                    <h4>{cert.name}</h4>
+                    <p className="cert-issuer">{cert.issuer}</p>
+                    <span className="cert-date">{cert.date}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="no-certifications">
+                  <p>No certifications added yet.</p>
+                  <button className="btn-primary">Add Certification</button>
                 </div>
-              ))}
-              <div className="certification-card add-cert">
-                <div className="cert-icon">➕</div>
-                <h4>Add Certification</h4>
-                <p className="cert-issuer">Upload your credentials</p>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -304,27 +509,284 @@ function Profile() {
               <div className="settings-card">
                 <h4>🔔 Notifications</h4>
                 <p>Manage your notification preferences</p>
-                <button className="settings-btn">Configure</button>
+                <button className="settings-btn" onClick={() => handleOpenSettings('notifications')}>Configure</button>
               </div>
               <div className="settings-card">
                 <h4>🔒 Privacy</h4>
                 <p>Control who can see your profile</p>
-                <button className="settings-btn">Configure</button>
+                <button className="settings-btn" onClick={() => handleOpenSettings('privacy')}>Configure</button>
               </div>
               <div className="settings-card">
                 <h4>🔑 Security</h4>
                 <p>Password and authentication</p>
-                <button className="settings-btn">Configure</button>
+                <button className="settings-btn" onClick={() => handleOpenSettings('security')}>Configure</button>
               </div>
               <div className="settings-card">
                 <h4>📧 Email Preferences</h4>
                 <p>Manage email subscriptions</p>
-                <button className="settings-btn">Configure</button>
+                <button className="settings-btn" onClick={() => handleOpenSettings('email')}>Configure</button>
               </div>
             </div>
           </div>
         )}
       </div>
+    </div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Edit Profile</h3>
+              <button className="modal-close-btn" onClick={() => setShowEditModal(false)}>×</button>
+            </div>
+            
+            <form onSubmit={handleSaveProfile} className="edit-profile-form">
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={editFormData.name || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={editFormData.email || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={editFormData.phone || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="bio">Bio</label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  value={editFormData.bio || ''}
+                  onChange={handleInputChange}
+                  rows="4"
+                  placeholder="Tell others about yourself..."
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city">City</label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="address.city"
+                    value={editFormData.address?.city || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="state">State</label>
+                  <input
+                    type="text"
+                    id="state"
+                    name="address.state"
+                    value={editFormData.address?.state || ''}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="country">Country</label>
+                <input
+                  type="text"
+                  id="country"
+                  name="address.country"
+                  value={editFormData.address?.country || ''}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className="modal-actions">
+                <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={saving}>
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>
+                {settingsType === 'notifications' && '🔔 Notification Settings'}
+                {settingsType === 'privacy' && '🔒 Privacy Settings'}
+                {settingsType === 'security' && '🔑 Security Settings'}
+                {settingsType === 'email' && '📧 Email Preferences'}
+              </h3>
+              <button className="modal-close-btn" onClick={() => setShowSettingsModal(false)}>×</button>
+            </div>
+            
+            <div className="settings-modal-content">
+              {settingsType === 'notifications' && (
+                <div className="settings-form">
+                  <h4>Notification Preferences</h4>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Email notifications for new messages</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Event reminders</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Weekly activity summary</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" />
+                      <span>Push notifications</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {settingsType === 'privacy' && (
+                <div className="settings-form">
+                  <h4>Privacy Controls</h4>
+                  <div className="setting-item">
+                    <label>Profile Visibility</label>
+                    <select className="form-control">
+                      <option value="public">Public - Anyone can view</option>
+                      <option value="members">Members Only</option>
+                      <option value="private">Private - Only you</option>
+                    </select>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Show my activity on my profile</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Allow others to message me</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" />
+                      <span>Show my email on my profile</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {settingsType === 'security' && (
+                <div className="settings-form">
+                  <h4>Security Settings</h4>
+                  <div className="form-group">
+                    <label htmlFor="current-password">Current Password</label>
+                    <input type="password" id="current-password" className="form-control" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="new-password">New Password</label>
+                    <input type="password" id="new-password" className="form-control" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" className="form-control" />
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" />
+                      <span>Enable two-factor authentication</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {settingsType === 'email' && (
+                <div className="settings-form">
+                  <h4>Email Subscriptions</h4>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Newsletter and updates</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Event announcements</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" defaultChecked />
+                      <span>Community stories</span>
+                    </label>
+                  </div>
+                  <div className="setting-item">
+                    <label>
+                      <input type="checkbox" />
+                      <span>Partner offers and promotions</span>
+                    </label>
+                  </div>
+                  <div className="form-group">
+                    <label>Email Frequency</label>
+                    <select className="form-control">
+                      <option value="daily">Daily</option>
+                      <option value="weekly" selected>Weekly</option>
+                      <option value="monthly">Monthly</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              <div className="modal-actions">
+                <button type="button" className="btn-secondary" onClick={() => setShowSettingsModal(false)}>Cancel</button>
+                <button type="button" className="btn-primary" onClick={() => {
+                  alert('Settings saved successfully!');
+                  setShowSettingsModal(false);
+                }}>
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
