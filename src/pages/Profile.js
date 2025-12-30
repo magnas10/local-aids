@@ -37,7 +37,7 @@ function Profile() {
       skills: user.skills || [],
       languages: user.languages || ['English'],
       availability: user.availability || 'Not specified',
-      avatar: user.avatar || null,
+      avatar: user.profileImage || user.avatar || null,
       stats: {
         eventsAttended: 0,
         hoursVolunteered: 0,

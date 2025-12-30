@@ -1,7 +1,7 @@
 // Avatar upload utility functions
 import { authAPI } from './api';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = '/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {

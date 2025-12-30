@@ -82,7 +82,7 @@ function AvatarUpload({ user, updateUser, profileData }) {
       <img 
         src={
           profileData.avatar 
-            ? `http://localhost:5001${profileData.avatar}` 
+            ? (profileData.avatar.startsWith('http') ? profileData.avatar : `http://localhost:5001${profileData.avatar}`)
             : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
         } 
         alt={profileData.name} 
