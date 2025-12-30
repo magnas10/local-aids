@@ -10,6 +10,7 @@ function AdminNavigation() {
     { path: '/admin/dashboard', label: '📊 Dashboard' },
     { path: '/admin/users', label: '👥 Users' },
     { path: '/admin/requests', label: '🆘 Requests' },
+    { path: '/admin/gallery', label: '🖼️ Gallery' },
     { path: '/admin/reports', label: '📋 Reports' },
     { path: '/admin/content', label: '📝 Content' },
     { path: '/admin/settings', label: '⚙️ Settings' }

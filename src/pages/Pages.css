@@ -9553,22 +9553,28 @@
 }
 
 .partners-page-pro .page-cta {
-  background: linear-gradient(135deg, #f5c75d 0%, #d4a017 100%);
+  position: relative;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(30, 41, 59, 0.6) 100%),
+              url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=600&fit=crop&q=85');
+  background-size: cover;
+  background-position: center;
   padding: 80px 20px;
   text-align: center;
-  color: #0f172a;
+  color: white;
 }
 
 .partners-page-pro .cta-content h2 {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 15px;
+  color: white;
 }
 
 .partners-page-pro .cta-content p {
   font-size: 1.2rem;
   opacity: 0.95;
   margin-bottom: 30px;
+  color: white;
 }
 
 .partners-page-pro .cta-buttons {

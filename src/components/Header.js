@@ -163,6 +163,13 @@ function Header() {
         >
           <span>Events</span>
         </Link>
+        <Link 
+          to="/gallery" 
+          className={`nav-link ${location.pathname === '/gallery' ? 'active' : ''}`}
+          aria-current={location.pathname === '/gallery' ? 'page' : undefined}
+        >
+          <span>Gallery</span>
+        </Link>
         {/* <Link 
           to="/my-requests" 
           className={`nav-link ${location.pathname === '/my-requests' ? 'active' : ''}`}

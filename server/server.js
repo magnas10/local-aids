@@ -7,6 +7,30 @@ const sequelize = require('./config/database');
 // Load environment variables
 dotenv.config();
 
+// Import models to set up associations
+const User = require('./models/User');
+const GalleryItem = require('./models/GalleryItem');
+const Event = require('./models/Event');
+const Donation = require('./models/Donation');
+const Message = require('./models/Message');
+const HelpRequest = require('./models/HelpRequest');
+
+// Set up associations
+GalleryItem.belongsTo(User, {
+  foreignKey: 'uploadedBy',
+  as: 'uploader'
+});
+
+GalleryItem.belongsTo(User, {
+  foreignKey: 'approvedBy',
+  as: 'approver'
+});
+
+User.hasMany(GalleryItem, {
+  foreignKey: 'uploadedBy',
+  as: 'uploadedGalleryItems'
+});
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');

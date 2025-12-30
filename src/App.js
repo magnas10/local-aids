@@ -9,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminNavigation from './components/AdminNavigation';
 import Home from './pages/Home';
 import Events from './pages/Events';
+import Gallery from './pages/Gallery';
 import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import VolunteerDashboard from './pages/VolunteerDashboard';
@@ -34,6 +35,7 @@ import HowItWorks from './pages/HowItWorks';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUserManagement from './pages/admin/AdminUserManagement';
 import AdminRequestManagement from './pages/admin/AdminRequestManagement';
+import AdminGallery from './pages/admin/AdminGallery';
 import AdminReports from './pages/admin/AdminReports';
 import AdminContent from './pages/admin/AdminContent';
 import AdminSettings from './pages/admin/AdminSettings';
@@ -60,6 +62,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/gallery" element={<Gallery />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/volunteer-dashboard" element={<ProtectedRoute requireRole="volunteer"><VolunteerDashboard /></ProtectedRoute>} />
@@ -99,6 +102,12 @@ function App() {
                 <AdminRoute>
                   <AdminNavigation />
                   <AdminRequestManagement />
+                </AdminRoute>
+              } />
+              <Route path="/admin/gallery" element={
+                <AdminRoute>
+                  <AdminNavigation />
+                  <AdminGallery />
                 </AdminRoute>
               } />
               <Route path="/admin/reports" element={

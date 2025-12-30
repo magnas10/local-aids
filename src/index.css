@@ -2,16 +2,20 @@
 
 /* Base Reset - Complementary to App.css */
 :root {
+  --teal: #4db3a2;
+  /* Teal Primary */
+  --teal-strong: #3d8b7a;
+  /* Darker Teal */
+  --teal-light: #e6f7f4;
   --gold: #f5c75d;
-  /* Champagne Gold */
+  /* Gold Primary */
   --gold-strong: #d4a017;
-  /* Metallic Gold */
-  --gold-light: #fff5e1;
+  /* Darker Gold */
   --white: #ffffff;
   --black: #0f172a;
   /* Sophisticated Midnight */
-  --primary: #3b82f6;
-  --primary-dark: #1d4ed8;
+  --primary: #4db3a2;
+  --primary-dark: #3d8b7a;
   --on-primary: #ffffff;
 }
 

@@ -37,7 +37,37 @@ const GalleryItem = sequelize.define('GalleryItem', {
   featured: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
+  },
+  status: {
+    type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+    defaultValue: 'pending'
+  },
+  rejectionReason: {
+    type: DataTypes.TEXT
+  },
+  approvedBy: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  },
+  approvedAt: {
+    type: DataTypes.DATE
   }
 });
+
+// Define associations
+GalleryItem.associate = (models) => {
+  GalleryItem.belongsTo(models.User, {
+    foreignKey: 'uploadedBy',
+    as: 'uploader'
+  });
+  
+  GalleryItem.belongsTo(models.User, {
+    foreignKey: 'approvedBy',
+    as: 'approver'
+  });
+};
 
 module.exports = GalleryItem;

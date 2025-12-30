@@ -357,7 +357,11 @@ export const contactAPI = {
 export const galleryAPI = {
   getAll: async (params = {}) => {
     const queryString = new URLSearchParams(params).toString();
-    const response = await fetch(`${API_BASE_URL}/gallery?${queryString}`);
+    const token = getAuthToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    
+    const response = await fetch(`${API_BASE_URL}/gallery?${queryString}`, { headers });
     return handleResponse(response);
   },
 
@@ -373,12 +377,44 @@ export const galleryAPI = {
 
   upload: async (formData) => {
     const token = getAuthToken();
+    console.log('galleryAPI.upload called', {
+      hasToken: !!token,
+      tokenPreview: token ? token.substring(0, 20) + '...' : 'none',
+      formDataEntries: Array.from(formData.entries()).map(([key, value]) => ({
+        key,
+        valueType: typeof value,
+        isFile: value instanceof File,
+        fileName: value instanceof File ? value.name : undefined
+      }))
+    });
+    
+    if (!token) {
+      throw new Error('Not logged in. Please login to upload images.');
+    }
+    
     const response = await fetch(`${API_BASE_URL}/gallery`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
       },
       body: formData, // FormData for file upload
+    });
+    
+    console.log('Upload response status:', response.status);
+    return handleResponse(response);
+  },
+
+  approve: async (id) => {
+    const response = await authFetch(`/gallery/${id}/approve`, {
+      method: 'PUT',
+    });
+    return handleResponse(response);
+  },
+
+  reject: async (id, reason) => {
+    const response = await authFetch(`/gallery/${id}/reject`, {
+      method: 'PUT',
+      body: JSON.stringify({ reason }),
     });
     return handleResponse(response);
   },

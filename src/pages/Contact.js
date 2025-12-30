@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './Pages.css';
 import './ContactPage.css';
 import { contactAPI } from '../services/api';
@@ -185,7 +185,7 @@ function Contact() {
         <div 
           className="contact-hero-background"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=85)'
+            backgroundImage: 'url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85)'
           }}
         >
           <div className="contact-hero-overlay"></div>

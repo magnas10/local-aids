@@ -250,54 +250,67 @@ function Events() {
   };
 
   return (
-    <div className="page-container">
-      <div className="opportunities-header">
-        <h1>Make a Difference <span className="highlight-text">Today</span></h1>
-        <p>These are the most recent requests for help in your community. Each opportunity is a chance to positively impact someone's life.</p>
-      </div>
-
-      <section className="filters-container" aria-label="Filter events">
-        <div className="filter-group">
-          <label htmlFor="distance-filter">Distance</label>
-          <select 
-            id="distance-filter"
-            value={filters.distance} 
-            onChange={(e) => handleFilterChange('distance', e.target.value)}
-          >
-            <option value="all">All Distances</option>
-            <option value="5">Within 5 km</option>
-            <option value="10">Within 10 km</option>
-            <option value="15">Within 15 km</option>
-            <option value="25">Within 25 km</option>
-          </select>
+    <div className="page-container events-page">
+      {/* Hero Section */}
+      <section className="events-hero">
+        <div className="hero-overlay"></div>
+        <div className="hero-container">
+          <div className="hero-content">
+            <span className="hero-badge">Community Opportunities</span>
+            <h1 className="hero-title">
+              Make a Difference <span className="highlight">Today</span>
+            </h1>
+            <p className="hero-description">
+              Join our community initiatives and help create positive change. Each opportunity is a chance to impact someone's life and strengthen our community bonds.
+            </p>
+          </div>
         </div>
+      </section>
 
-        <div className="filter-group">
-          <label htmlFor="type-filter">Type</label>
-          <select 
-            id="type-filter"
-            value={filters.type} 
-            onChange={(e) => handleFilterChange('type', e.target.value)}
-          >
-            <option value="all">All Types</option>
-            <option value="workshop">Workshop</option>
-            <option value="training">Training</option>
-            <option value="volunteer">Volunteer</option>
-            <option value="care">Care & Support</option>
-            <option value="outreach">Outreach</option>
-            <option value="health">Health Services</option>
-            <option value="fundraising">Fundraising</option>
-            <option value="support">Support Group</option>
-          </select>
-        </div>
+      {/* Filters Section */}
+      <div className="events-container">
+        <section className="filters-section" aria-label="Filter events">
+          <div className="filter-group">
+            <label htmlFor="distance-filter">📍 Distance</label>
+            <select 
+              id="distance-filter"
+              value={filters.distance} 
+              onChange={(e) => handleFilterChange('distance', e.target.value)}
+            >
+              <option value="all">All Distances</option>
+              <option value="5">Within 5 km</option>
+              <option value="10">Within 10 km</option>
+              <option value="15">Within 15 km</option>
+              <option value="25">Within 25 km</option>
+            </select>
+          </div>
 
-        <div className="filter-group">
-          <label htmlFor="urgency-filter">Urgency</label>
-          <select 
-            id="urgency-filter"
-            value={filters.urgency} 
-            onChange={(e) => handleFilterChange('urgency', e.target.value)}
-          >
+          <div className="filter-group">
+            <label htmlFor="type-filter">🎯 Type</label>
+            <select 
+              id="type-filter"
+              value={filters.type} 
+              onChange={(e) => handleFilterChange('type', e.target.value)}
+            >
+              <option value="all">All Types</option>
+              <option value="workshop">Workshop</option>
+              <option value="training">Training</option>
+              <option value="volunteer">Volunteer</option>
+              <option value="care">Care & Support</option>
+              <option value="outreach">Outreach</option>
+              <option value="health">Health Services</option>
+              <option value="fundraising">Fundraising</option>
+              <option value="support">Support Group</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label htmlFor="urgency-filter">⚡ Urgency</label>
+            <select 
+              id="urgency-filter"
+              value={filters.urgency} 
+              onChange={(e) => handleFilterChange('urgency', e.target.value)}
+            >
             <option value="all">All Priorities</option>
             <option value="urgent">Urgent Only</option>
             <option value="high">High Priority</option>
@@ -310,85 +323,95 @@ function Events() {
           onClick={() => setFilters({ distance: 'all', type: 'all', urgency: 'all' })}
           aria-label="Clear all filters"
         >
-          Clear Filters
+          ✕ Clear Filters
         </button>
       </section>
 
-      <p className="results-count">
-        Showing {filteredEvents.length} opportunities
-      </p>
-      <div className="opportunities-grid" role="list" aria-label="Event listings">
+      <div className="results-info">
+        <p className="results-count">
+          <strong>{filteredEvents.length}</strong> opportunities available
+        </p>
+      </div>
+
+      {loading ? (
+        <div className="loading-state">
+          <div className="spinner"></div>
+          <p>Loading opportunities...</p>
+        </div>
+      ) : (
+        <div className="events-grid" role="list" aria-label="Event listings">
         {filteredEvents.map(event => (
           <div 
             key={event.id} 
-            className="opportunity-card"
+            className="event-card"
             role="listitem"
           >
-            <div className="opportunity-image">
+            <div className="event-image">
               <img src={event.image} alt={`${event.title} event`} />
-              <div className="priority-badge-container">
+              <div className="event-badges">
                 {event.urgency === 'urgent' && (
-                  <span className="priority-badge high-priority">
-                    HIGH PRIORITY
+                  <span className="priority-badge urgent">
+                    ⚡ URGENT
                   </span>
                 )}
-                <span className="category-badge">
+                {event.urgency === 'high' && (
+                  <span className="priority-badge high">
+                    ⚠️ HIGH PRIORITY
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="event-content">
+              <div className="event-header">
+                <span className="event-type-badge">
                   {getTypeBadge(event.type)}
                 </span>
               </div>
-            </div>
-            <div className="opportunity-content">
-              <h3 className="opportunity-title">{event.title}</h3>
-              <p className="opportunity-description">{event.description}</p>
+              <h3 className="event-title">{event.title}</h3>
+              <p className="event-description">{event.description}</p>
               
-              <div className="location-info">
-                <div className="location-marker">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                  </svg>
-                  <span className="location-text">{event.location.split(',')[0]}, {event.location.split(',')[1]}</span>
-                  <a href="#" className="view-map-link">View Map</a>
-                </div>
-                <div className="distance-info">{event.distance} km away</div>
-              </div>
-              
-              <div className="time-info">
-                <div className="time-duration">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <polyline points="12,6 12,12 16,14"/>
-                  </svg>
-                  <span>2 hours</span>
-                </div>
-                <div className="time-flexible">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="event-details">
+                <div className="detail-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                     <line x1="16" y1="2" x2="16" y2="6"/>
                     <line x1="8" y1="2" x2="8" y2="6"/>
                     <line x1="3" y1="10" x2="21" y2="10"/>
                   </svg>
-                  <span>{event.date}, {event.time}</span>
+                  <span>{event.date}</span>
+                </div>
+                <div className="detail-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12,6 12,12 16,14"/>
+                  </svg>
+                  <span>{event.time}</span>
+                </div>
+                <div className="detail-item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  <span>{event.location}</span>
+                </div>
+                <div className="detail-item distance">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                  <span>{event.distance} km away</span>
                 </div>
               </div>
               
-              <div className="volunteer-info">
-                <div className="volunteer-avatar">
-                  <img src={`https://i.pravatar.cc/40?img=${event.id}`} alt="Volunteer" />
-                </div>
-                <div className="volunteer-details">
-                  <div className="volunteer-name">Requesting Help</div>
-                </div>
-              </div>
-              
-              <div className="opportunity-actions">
+              <div className="event-actions">
                 {event.location && event.location !== 'Flexible' && (
                   <a
-                    className="directions-btn"
+                    className="btn-secondary-outline"
                     href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.location)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Get directions to this event"
+                    title="Get directions"
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M9 11H1l8-8v6h8l-8 8v-6z"/>
@@ -396,7 +419,7 @@ function Events() {
                     Directions
                   </a>
                 )}
-                <button className="volunteer-btn">
+                <button className="btn-primary-event">
                   Volunteer Now
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14m-7-7l7 7-7 7"/>
@@ -406,13 +429,495 @@ function Events() {
             </div>
           </div>
         ))}
-      </div>
-
-      {filteredEvents.length === 0 && (
-        <div className="no-results" role="status" aria-live="polite">
-          <p>No events match your filters. Try adjusting your search criteria.</p>
         </div>
       )}
+
+      {filteredEvents.length === 0 && !loading && (
+        <div className="no-results" role="status" aria-live="polite">
+          <div className="no-results-icon">🔍</div>
+          <h3>No events found</h3>
+          <p>No events match your current filters. Try adjusting your search criteria.</p>
+          <button 
+            className="btn-primary-event"
+            onClick={() => setFilters({ distance: 'all', type: 'all', urgency: 'all' })}
+          >
+            Clear All Filters
+          </button>
+        </div>
+      )}
+      </div>
+
+      {/* Add Professional Styling */}
+      <style jsx="true">{`
+        .events-page {
+          min-height: 100vh;
+          background-color: #ffffff;
+        }
+
+        /* Hero Section */
+        .events-hero {
+          position: relative;
+          min-height: 65vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, 
+            rgba(15, 23, 42, 0.65) 0%,
+            rgba(15, 23, 42, 0.55) 50%,
+            rgba(15, 23, 42, 0.65) 100%
+          ),
+          url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=1080&fit=crop&q=85');
+          background-size: cover;
+          background-position: center;
+          background-attachment: scroll;
+          overflow: hidden;
+        }
+
+        .hero-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(135deg,
+            rgba(0, 0, 0, 0.25) 0%,
+            rgba(0, 0, 0, 0.15) 50%,
+            rgba(0, 0, 0, 0.25) 100%
+          );
+          z-index: 1;
+        }
+
+        .hero-container {
+          position: relative;
+          z-index: 2;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 80px 40px;
+          width: 100%;
+        }
+
+        .hero-content {
+          max-width: 700px;
+          text-align: left;
+        }
+
+        .hero-badge {
+          display: inline-block;
+          background: rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(12px);
+          color: white;
+          padding: 8px 24px;
+          border-radius: 50px;
+          font-family: 'Outfit', sans-serif;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          margin-bottom: 30px;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .hero-title {
+          font-family: 'Outfit', sans-serif;
+          font-size: 4.5rem;
+          font-weight: 800;
+          color: white;
+          margin-bottom: 24px;
+          line-height: 1.1;
+          letter-spacing: -2px;
+          text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-title .highlight {
+          background: linear-gradient(90deg, #4db3a2 0%, #3d8b7a 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .hero-description {
+          font-family: 'Inter', sans-serif;
+          font-size: 1.25rem;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 0;
+          line-height: 1.7;
+          max-width: 600px;
+        }
+
+        /* Events Container */
+        .events-container {
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 60px 40px 80px 40px;
+        }
+
+        /* Filters Section */
+        .filters-section {
+          display: flex;
+          gap: 15px;
+          flex-wrap: wrap;
+          margin-bottom: 40px;
+          padding: 30px;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-group {
+          flex: 1;
+          min-width: 200px;
+        }
+
+        .filter-group label {
+          display: block;
+          margin-bottom: 10px;
+          font-weight: 600;
+          color: #0f172a;
+          font-family: 'Outfit', sans-serif;
+          font-size: 0.95rem;
+        }
+
+        .filter-group select {
+          width: 100%;
+          padding: 12px 16px;
+          border: 2px solid #e5e5e5;
+          border-radius: 12px;
+          font-size: 1rem;
+          font-family: 'Inter', sans-serif;
+          color: #525252;
+          background: white;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+
+        .filter-group select:focus {
+          outline: none;
+          border-color: #4db3a2;
+          box-shadow: 0 0 0 3px rgba(77, 179, 162, 0.1);
+        }
+
+        .clear-filters-btn {
+          padding: 12px 24px;
+          background: #f5f5f5;
+          color: #737373;
+          border: 2px solid #e5e5e5;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: 600;
+          font-family: 'Outfit', sans-serif;
+          transition: all 0.3s;
+          align-self: flex-end;
+        }
+
+        .clear-filters-btn:hover {
+          background: #e5e5e5;
+          border-color: #d4d4d4;
+          transform: translateY(-2px);
+        }
+
+        .results-info {
+          margin-bottom: 30px;
+        }
+
+        .results-count {
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.1rem;
+          color: #737373;
+        }
+
+        .results-count strong {
+          color: #0f172a;
+          font-size: 1.3rem;
+        }
+
+        /* Events Grid */
+        .events-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+          gap: 30px;
+          margin-bottom: 60px;
+        }
+
+        .event-card {
+          background: white;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          cursor: pointer;
+        }
+
+        .event-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .event-image {
+          position: relative;
+          height: 240px;
+          overflow: hidden;
+        }
+
+        .event-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s;
+        }
+
+        .event-card:hover .event-image img {
+          transform: scale(1.05);
+        }
+
+        .event-badges {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .priority-badge {
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          font-family: 'Outfit', sans-serif;
+          backdrop-filter: blur(8px);
+        }
+
+        .priority-badge.urgent {
+          background: rgba(239, 68, 68, 0.95);
+          color: white;
+          animation: pulse 2s infinite;
+        }
+
+        .priority-badge.high {
+          background: rgba(251, 191, 36, 0.95);
+          color: #0f172a;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.8; }
+        }
+
+        .event-content {
+          padding: 25px;
+        }
+
+        .event-header {
+          margin-bottom: 15px;
+        }
+
+        .event-type-badge {
+          display: inline-block;
+          background: linear-gradient(135deg, #4db3a2 0%, #3d8b7a 100%);
+          color: white;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          font-family: 'Outfit', sans-serif;
+        }
+
+        .event-title {
+          margin: 0 0 15px 0;
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.35rem;
+          font-weight: 700;
+          color: #0f172a;
+          line-height: 1.3;
+        }
+
+        .event-description {
+          color: #737373;
+          line-height: 1.7;
+          margin-bottom: 20px;
+          font-size: 0.95rem;
+        }
+
+        .event-details {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 25px;
+          padding: 20px;
+          background: #f8fafc;
+          border-radius: 12px;
+        }
+
+        .detail-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: #525252;
+          font-size: 0.9rem;
+        }
+
+        .detail-item svg {
+          color: #4db3a2;
+          flex-shrink: 0;
+        }
+
+        .detail-item.distance {
+          color: #3d8b7a;
+          font-weight: 600;
+        }
+
+        .event-actions {
+          display: flex;
+          gap: 12px;
+          padding-top: 20px;
+          border-top: 2px solid #f1f5f9;
+        }
+
+        .btn-secondary-outline {
+          flex: 1;
+          padding: 12px 20px;
+          background: white;
+          color: #525252;
+          border: 2px solid #e5e5e5;
+          border-radius: 50px;
+          cursor: pointer;
+          font-weight: 600;
+          font-family: 'Outfit', sans-serif;
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          text-decoration: none;
+        }
+
+        .btn-secondary-outline:hover {
+          background: #fafafa;
+          border-color: #d4d4d4;
+          transform: translateY(-2px);
+        }
+
+        .btn-primary-event {
+          flex: 2;
+          padding: 12px 24px;
+          background: linear-gradient(135deg, #4db3a2 0%, #3d8b7a 100%);
+          color: white;
+          border: none;
+          border-radius: 50px;
+          cursor: pointer;
+          font-weight: 600;
+          font-family: 'Outfit', sans-serif;
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .btn-primary-event:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(77, 179, 162, 0.3);
+        }
+
+        /* Loading State */
+        .loading-state {
+          text-align: center;
+          padding: 80px 20px;
+        }
+
+        .spinner {
+          border: 4px solid #f3f4f6;
+          border-top: 4px solid #4db3a2;
+          border-radius: 50%;
+          width: 60px;
+          height: 60px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .loading-state p {
+          color: #737373;
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.1rem;
+        }
+
+        /* No Results */
+        .no-results {
+          text-align: center;
+          padding: 80px 20px;
+        }
+
+        .no-results-icon {
+          font-size: 5rem;
+          margin-bottom: 20px;
+          opacity: 0.5;
+        }
+
+        .no-results h3 {
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.8rem;
+          color: #0f172a;
+          margin-bottom: 15px;
+        }
+
+        .no-results p {
+          color: #737373;
+          font-size: 1.1rem;
+          margin-bottom: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .hero-title {
+            font-size: 3rem;
+          }
+
+          .hero-description {
+            font-size: 1.1rem;
+          }
+
+          .hero-container {
+            padding: 60px 20px;
+          }
+
+          .events-container {
+            padding: 40px 20px 60px 20px;
+          }
+
+          .events-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+          }
+
+          .filters-section {
+            padding: 20px;
+          }
+
+          .filter-group {
+            min-width: 100%;
+          }
+
+          .clear-filters-btn {
+            width: 100%;
+          }
+
+          .event-actions {
+            flex-direction: column;
+          }
+
+          .btn-secondary-outline,
+          .btn-primary-event {
+            width: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 }

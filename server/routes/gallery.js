@@ -4,7 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult } = require('express-validator');
 const GalleryItem = require('../models/GalleryItem');
-const { protect, admin } = require('../middleware/auth');
+const User = require('../models/User');
+const { protect, admin, optionalAuth } = require('../middleware/auth');
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({
@@ -35,34 +36,58 @@ const upload = multer({
 });
 
 // @route   GET /api/gallery
-// @desc    Get all gallery items
-// @access  Public
-router.get('/', async (req, res) => {
+// @desc    Get all gallery items (approved only for public, all for admin)
+// @access  Public/Admin
+router.get('/', optionalAuth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-    const { category, featured } = req.query;
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = (page - 1) * limit;
+    const { category, status } = req.query;
 
-    const query = { isPublic: true };
-    if (category) query.category = category;
-    if (featured === 'true') query.isFeatured = true;
+    const where = {};
+    
+    // Only show approved images to non-admin users
+    if (!req.user || req.user.role !== 'admin') {
+      where.status = 'approved';
+    } else if (status) {
+      // Admin can filter by status
+      where.status = status;
+    }
+    
+    if (category && category !== 'all') {
+      where.category = category;
+    }
 
-    const items = await GalleryItem.find(query)
-      .populate('uploadedBy', 'name')
-      .populate('event', 'title')
-      .sort({ order: 1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    const items = await GalleryItem.findAll({
+      where,
+      include: [
+        {
+          model: User,
+          as: 'uploader',
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: User,
+          as: 'approver',
+          attributes: ['id', 'name'],
+          required: false
+        }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit,
+      offset
+    });
 
-    const total = await GalleryItem.countDocuments(query);
+    const total = await GalleryItem.count({ where });
 
     res.json({
-      items,
+      data: items,
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
-        totalItems: total
+        totalItems: total,
+        itemsPerPage: limit
       }
     });
   } catch (error) {
@@ -111,8 +136,8 @@ router.get('/:id', async (req, res) => {
 
 // @route   POST /api/gallery
 // @desc    Upload a new gallery item
-// @access  Private/Admin
-router.post('/', protect, admin, upload.single('image'), [
+// @access  Private (Any authenticated user)
+router.post('/', protect, upload.single('image'), [
   body('title').trim().notEmpty().withMessage('Title is required')
 ], async (req, res) => {
   try {
@@ -125,26 +150,30 @@ router.post('/', protect, admin, upload.single('image'), [
       return res.status(400).json({ message: 'Image file is required' });
     }
 
-    const { title, description, category, event, tags, isPublic, isFeatured } = req.body;
+    const { title, description, category, tags } = req.body;
 
-    const item = new GalleryItem({
+    const item = await GalleryItem.create({
       title,
       description,
       imageUrl: `/uploads/gallery/${req.file.filename}`,
-      category: category || 'other',
-      event: event || null,
-      tags: tags ? tags.split(',').map(t => t.trim()) : [],
+      category: category || 'general',
+      tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : [],
       uploadedBy: req.user.id,
-      isPublic: isPublic !== 'false',
-      isFeatured: isFeatured === 'true'
+      status: 'pending', // All uploads start as pending
+      featured: false
     });
 
-    await item.save();
-    await item.populate('uploadedBy', 'name');
+    const itemWithUser = await GalleryItem.findByPk(item.id, {
+      include: [{
+        model: User,
+        as: 'uploader',
+        attributes: ['id', 'name']
+      }]
+    });
 
     res.status(201).json({
-      message: 'Image uploaded successfully',
-      item
+      message: 'Image uploaded successfully and pending approval',
+      item: itemWithUser
     });
   } catch (error) {
     console.error('Upload gallery item error:', error);
@@ -157,33 +186,116 @@ router.post('/', protect, admin, upload.single('image'), [
 // @access  Private/Admin
 router.put('/:id', protect, admin, async (req, res) => {
   try {
-    const { title, description, category, tags, isPublic, isFeatured, order } = req.body;
+    const { title, description, category, tags, featured } = req.body;
 
-    const updateFields = {};
-    if (title) updateFields.title = title;
-    if (description !== undefined) updateFields.description = description;
-    if (category) updateFields.category = category;
-    if (tags) updateFields.tags = tags;
-    if (isPublic !== undefined) updateFields.isPublic = isPublic;
-    if (isFeatured !== undefined) updateFields.isFeatured = isFeatured;
-    if (order !== undefined) updateFields.order = order;
-
-    const item = await GalleryItem.findByIdAndUpdate(
-      req.params.id,
-      { $set: updateFields },
-      { new: true }
-    ).populate('uploadedBy', 'name');
-
+    const item = await GalleryItem.findByPk(req.params.id);
+    
     if (!item) {
       return res.status(404).json({ message: 'Gallery item not found' });
     }
 
+    // Update fields
+    if (title) item.title = title;
+    if (description !== undefined) item.description = description;
+    if (category) item.category = category;
+    if (tags) item.tags = Array.isArray(tags) ? tags : JSON.parse(tags);
+    if (featured !== undefined) item.featured = featured;
+
+    await item.save();
+
+    const updatedItem = await GalleryItem.findByPk(item.id, {
+      include: [{
+        model: User,
+        as: 'uploader',
+        attributes: ['id', 'name']
+      }]
+    });
+
     res.json({
       message: 'Gallery item updated successfully',
-      item
+      item: updatedItem
     });
   } catch (error) {
     console.error('Update gallery item error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PUT /api/gallery/:id/approve
+// @desc    Approve a gallery item
+// @access  Private/Admin
+router.put('/:id/approve', protect, admin, async (req, res) => {
+  try {
+    const item = await GalleryItem.findByPk(req.params.id);
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Gallery item not found' });
+    }
+
+    item.status = 'approved';
+    item.approvedBy = req.user.id;
+    item.approvedAt = new Date();
+    await item.save();
+
+    const updatedItem = await GalleryItem.findByPk(item.id, {
+      include: [
+        {
+          model: User,
+          as: 'uploader',
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: User,
+          as: 'approver',
+          attributes: ['id', 'name']
+        }
+      ]
+    });
+
+    res.json({
+      message: 'Gallery item approved successfully',
+      item: updatedItem
+    });
+  } catch (error) {
+    console.error('Approve gallery item error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PUT /api/gallery/:id/reject
+// @desc    Reject a gallery item
+// @access  Private/Admin
+router.put('/:id/reject', protect, admin, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const item = await GalleryItem.findByPk(req.params.id);
+    
+    if (!item) {
+      return res.status(404).json({ message: 'Gallery item not found' });
+    }
+
+    item.status = 'rejected';
+    item.rejectionReason = reason || 'No reason provided';
+    item.approvedBy = req.user.id;
+    item.approvedAt = new Date();
+    await item.save();
+
+    const updatedItem = await GalleryItem.findByPk(item.id, {
+      include: [
+        {
+          model: User,
+          as: 'uploader',
+          attributes: ['id', 'name', 'email']
+        }
+      ]
+    });
+
+    res.json({
+      message: 'Gallery item rejected',
+      item: updatedItem
+    });
+  } catch (error) {
+    console.error('Reject gallery item error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -193,13 +305,14 @@ router.put('/:id', protect, admin, async (req, res) => {
 // @access  Private/Admin
 router.delete('/:id', protect, admin, async (req, res) => {
   try {
-    const item = await GalleryItem.findByIdAndDelete(req.params.id);
+    const item = await GalleryItem.findByPk(req.params.id);
 
     if (!item) {
       return res.status(404).json({ message: 'Gallery item not found' });
     }
 
     // TODO: Delete the actual file from uploads folder
+    await item.destroy();
 
     res.json({ message: 'Gallery item deleted successfully' });
   } catch (error) {

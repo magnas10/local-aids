@@ -12,10 +12,10 @@ function About() {
 
   const team = [
     {
-      name: 'Sarah Johnson',
+      name: 'Sangam Devkota',
       role: 'Founder & Chief Executive Officer',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&q=80',
-      bio: 'With 18 years of experience in community development and nonprofit leadership, Sarah founded Local AIDS to address critical service gaps. Her vision transformed volunteer engagement into a scalable, impact-driven platform serving thousands.'
+      image: '/uploads/avatars/avatar-1765767199420-41260076.jpg',
+      bio: 'With extensive experience in technology-driven community platforms and project leadership, Sangam Devkota founded LocalAid to address critical gaps in community support services. His vision focuses on transforming volunteer engagement into a secure, scalable, and impact-driven digital platform that connects people in need with local volunteers. Under his leadership, LocalAid is designed to strengthen communities through efficient, ethical, and inclusive use of technology.'
     },
     {
       name: 'Michael Chen',
