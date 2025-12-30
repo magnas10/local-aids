@@ -19,7 +19,7 @@ const seedData = async () => {
     // Create admin user
     const adminUser = await User.create({
       name: 'Admin User',
-      email: 'admin@localaid.org',
+      email: 'admin@localaids.org.au',
       password: 'admin123', // hooks will hash it
       role: 'admin',
       isActive: true,
@@ -110,7 +110,7 @@ const seedData = async () => {
     console.log('Created sample partners');
 
     console.log('\n=== Seed Data Complete ===');
-    console.log('Admin login: admin@localaid.org / admin123');
+    console.log('Admin login: admin@localaids.org.au / admin123');
     console.log('Volunteer login: volunteer@example.com / password123');
     console.log('User login: jane@example.com / password123');
 

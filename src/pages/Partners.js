@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './Pages.css';
 import { partnersAPI } from '../services/api';
 
 function Partners() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const heroImages = [
-    'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1920&h=1080&fit=crop&q=85'
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
-
   const partners = [
     {
       id: 1,
@@ -114,14 +98,12 @@ function Partners() {
     <div className="partners-page-pro">
       {/* Hero Section */}
       <section className="partners-hero-pro">
-        <div className="partners-hero-carousel">
-          {heroImages.map((image, index) => (
-            <div
-              key={index}
-              className={`partners-hero-slide ${index === currentSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${image})` }}
-            />
-          ))}
+        <div 
+          className="partners-hero-background"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1920&h=1080&fit=crop&q=85)'
+          }}
+        >
           <div className="partners-hero-overlay"></div>
         </div>
         <div className="partners-hero-content-pro">
@@ -161,17 +143,6 @@ function Partners() {
               </div>
             </div>
           </div>
-        </div>
-        {/* Carousel Indicators */}
-        <div className="partners-carousel-indicators">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              className={`indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
         </div>
       </section>
 

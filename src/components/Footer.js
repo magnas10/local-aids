@@ -7,9 +7,9 @@ function Footer() {
     platform: {
       title: 'Platform',
       links: [
-        { text: 'How It Works', path: '/about' },
+        { text: 'How It Works', path: '/how-it-works' },
         { text: 'Find Opportunities', path: '/events' },
-        { text: 'Post a Request', path: '/signup' },
+        { text: 'Post a Request', path: '/request-help' },
         { text: 'Success Stories', path: '/blog' }
       ]
     },
@@ -26,8 +26,8 @@ function Footer() {
       title: 'Company',
       links: [
         { text: 'About Us', path: '/about' },
-        { text: 'Careers', path: '/contact' },
-        { text: 'Press', path: '/contact' },
+        { text: 'Careers', path: '/careers' },
+        { text: 'Press', path: '/press' },
         { text: 'Partners', path: '/partners' }
       ]
     }

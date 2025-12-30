@@ -132,9 +132,36 @@ function AdminRequestManagement() {
 
   return (
     <div className="admin-container">
-      <div className="admin-header">
-        <h1>🆘 Help Request Management</h1>
-        <p>Monitor and manage all help requests on the platform.</p>
+      <div className="admin-hero" style={{ background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)' }}>
+        <div className="admin-hero-content">
+          <div className="admin-badge" style={{ color: '#ffc107' }}>🆘 REQUEST MANAGEMENT</div>
+          <h1 className="admin-hero-title" style={{ color: '#ffffff', fontSize: '3.5rem', fontWeight: '800' }}>
+            Help <span className="highlight" style={{ color: '#ffc107' }}>Requests</span>
+          </h1>
+          <p className="admin-hero-subtitle" style={{ color: '#ffffff', fontSize: '1.3rem' }}>
+            Monitor and manage all help requests on the platform.
+          </p>
+          <div className="admin-hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredRequests.length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>TOTAL REQUESTS</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredRequests.filter(r => r.status === 'pending').length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>PENDING</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredRequests.filter(r => r.status === 'completed').length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>COMPLETED</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {error && (

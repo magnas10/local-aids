@@ -14,25 +14,10 @@ function Contact() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
   const [newsletterLoading, setNewsletterLoading] = useState(false);
   const [newsletterError, setNewsletterError] = useState('');
-
-  const heroImages = [
-    'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&h=1080&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&h=1080&fit=crop&q=85'
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
 
   const validateForm = () => {
     const errors = {};
@@ -197,14 +182,12 @@ function Contact() {
     <div className="contact-page-pro">
       {/* Hero Section */}
       <section className="contact-hero-pro">
-        <div className="contact-hero-carousel">
-          {heroImages.map((image, index) => (
-            <div
-              key={index}
-              className={`contact-hero-slide ${index === currentSlide ? 'active' : ''}`}
-              style={{ backgroundImage: `url(${image})` }}
-            />
-          ))}
+        <div 
+          className="contact-hero-background"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&h=1080&fit=crop&q=85)'
+          }}
+        >
           <div className="contact-hero-overlay"></div>
         </div>
         <div className="contact-hero-content-pro">
@@ -238,17 +221,6 @@ function Contact() {
               </div>
             </div>
           </div>
-        </div>
-        {/* Carousel Indicators */}
-        <div className="contact-carousel-indicators">
-          {heroImages.map((_, index) => (
-            <button
-              key={index}
-              className={`indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => setCurrentSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
         </div>
       </section>
 

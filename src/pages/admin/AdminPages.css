@@ -1,32 +1,220 @@
 /* Admin Pages Styling */
 
 .admin-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   background: #f8f9fa;
   min-height: 100vh;
 }
 
-.admin-header {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: white;
-  padding: 30px;
-  border-radius: 12px;
-  margin-bottom: 30px;
+/* Hero Section */
+.admin-hero {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(255, 193, 7, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.admin-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-hero-content h1,
+.admin-hero-content p,
+.admin-hero-content div {
+  color: #ffffff !important;
+}
+
+.admin-badge {
+  display: inline-block;
+  background: rgba(255, 193, 7, 0.25);
+  color: #ffc107 !important;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(255, 193, 7, 0.5);
+}
+
+.admin-hero h1,
+.admin-hero p,
+.admin-hero div,
+.admin-hero span,
+.admin-hero-content *,
+.admin-hero-title,
+.admin-hero-subtitle,
+.hero-stat-value,
+.hero-stat-label {
+  color: #ffffff !important;
+}
+
+.admin-hero-title {
+  font-size: 3.5rem !important;
+  font-weight: 800 !important;
+  margin: 0 0 20px 0 !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  text-shadow: none !important;
+}
+
+.admin-hero-title .highlight {
+  color: #ffc107 !important;
+  position: relative;
+}
+
+.admin-hero-subtitle {
+  font-size: 1.3rem !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  margin: 0 0 50px 0 !important;
+  font-weight: 400 !important;
+  text-shadow: none !important;
+}
+
+.admin-hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 40px;
+}
+
+.hero-stat {
   text-align: center;
 }
 
-.admin-header h1 {
-  margin: 0 0 10px 0;
-  font-size: 2.5rem;
-  font-weight: 700;
+.hero-stat-value {
+  font-size: 3rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  line-height: 1 !important;
+  margin-bottom: 10px !important;
+  text-shadow: none !important;
 }
 
-.admin-header p {
-  margin: 0;
-  opacity: 0.9;
-  font-size: 1.1rem;
+.hero-stat-label {
+  font-size: 0.9rem !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  letter-spacing: 1px !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+/* Admin Stats Grid */
+.admin-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin: 40px;
+  padding: 0 20px;
+}
+
+.admin-stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.admin-stat-card.users {
+  border-left-color: #20b2aa;
+}
+
+.admin-stat-card.volunteers {
+  border-left-color: #28a745;
+}
+
+.admin-stat-card.requests {
+  border-left-color: #ffc107;
+}
+
+.admin-stat-card.completed {
+  border-left-color: #17a2b8;
+}
+
+.admin-stat-card.donations {
+  border-left-color: #ff6b6b;
+}
+
+.admin-stat-card.events {
+  border-left-color: #6c5ce7;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.stat-title {
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-icon {
+  font-size: 1.8rem;
+  opacity: 0.3;
+}
+
+.stat-value {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.stat-change {
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stat-change.positive {
+  color: #28a745;
+}
+
+.stat-change.negative {
+  color: #dc3545;
+}
+
+.stat-change::before {
+  content: '↑';
+}
+
+.stat-change.negative::before {
+  content: '↓';
 }
 
 .admin-error {

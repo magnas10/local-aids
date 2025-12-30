@@ -1,71 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { getAllUsers, getHelpRequests } from '../../services/api';
 import './AdminPages.css';
 
 function AdminDashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState({
-    totalUsers: 1247,
-    activeVolunteers: 89,
-    pendingRequests: 23,
-    completedRequests: 156,
+    totalUsers: 0,
+    activeVolunteers: 0,
+    pendingRequests: 0,
+    completedRequests: 0,
     totalDonations: 12450,
     activeEvents: 8
   });
 
-  const [recentActivity, setRecentActivity] = useState([
-    {
-      id: 1,
-      type: 'user_registered',
-      message: 'New volunteer registered',
-      timestamp: '2 hours ago',
-      user: 'John Smith'
-    },
-    {
-      id: 2,
-      type: 'donation_received',
-      message: 'Donation received: $250',
-      timestamp: '5 hours ago',
-      user: 'Anonymous'
-    },
-    {
-      id: 3,
-      type: 'event_created',
-      message: 'New event: Health Workshop',
-      timestamp: '1 day ago',
-      user: 'Admin'
-    },
-    {
-      id: 4,
-      type: 'request_completed',
-      message: 'Help request completed',
-      timestamp: '2 days ago',
-      user: 'Sarah Wilson'
-    },
-    {
-      id: 5,
-      type: 'story_shared',
-      message: 'New community story shared',
-      timestamp: '3 days ago',
-      user: 'Mike Johnson'
-    }
-  ]);
+  const [loading, setLoading] = useState(true);
+  const [recentActivity, setRecentActivity] = useState([]);
 
-  const [systemAlerts, setSystemAlerts] = useState([
-    {
-      id: 1,
-      type: 'warning',
-      message: 'High number of pending help requests',
-      action: 'Review pending requests'
-    },
-    {
-      id: 2,
-      type: 'info',
-      message: 'Monthly report ready for download',
-      action: 'Download report'
+  const [systemAlerts, setSystemAlerts] = useState([]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      
+      console.log('Fetching dashboard data...');
+      console.log('Current token:', localStorage.getItem('token'));
+      
+      // Fetch users
+      console.log('Fetching users...');
+      const usersResponse = await getAllUsers();
+      console.log('Users response:', usersResponse);
+      const usersData = usersResponse.users || usersResponse || [];
+      console.log('Users data:', usersData);
+      
+      // Fetch help requests
+      console.log('Fetching help requests...');
+      const requestsResponse = await getHelpRequests();
+      console.log('Requests response:', requestsResponse);
+      const requestsData = Array.isArray(requestsResponse) ? requestsResponse : requestsResponse.helpRequests || [];
+      console.log('Requests data:', requestsData);
+      
+      // Calculate stats
+      const volunteers = usersData.filter(u => u.role === 'volunteer');
+      const activeVolunteers = volunteers.filter(u => u.isActive || u.status === 'active');
+      const pending = requestsData.filter(r => r.status === 'pending');
+      const completed = requestsData.filter(r => r.status === 'completed');
+      
+      const newStats = {
+        totalUsers: usersData.length,
+        activeVolunteers: activeVolunteers.length,
+        pendingRequests: pending.length,
+        completedRequests: completed.length,
+        totalDonations: 12450,
+        activeEvents: 8
+      };
+      console.log('Setting new stats:', newStats);
+      setStats(newStats);
+      
+      // Set system alerts
+      const alerts = [];
+      if (pending.length > 5) {
+        alerts.push({
+          id: 1,
+          type: 'warning',
+          message: 'High number of pending help requests',
+          action: 'Review pending requests'
+        });
+      }
+      setSystemAlerts(alerts);
+      
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack
+      });
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
   if (!user || user.role !== 'admin') {
     return (
@@ -79,10 +97,35 @@ function AdminDashboard() {
 
   return (
     <div className="admin-container">
-      <div className="admin-header">
-        <div className="admin-welcome">
-          <h1>Admin Dashboard</h1>
-          <p>Welcome back, {user.name}! Here's your platform overview.</p>
+      <div className="admin-hero" style={{ background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)' }}>
+        <div className="admin-hero-content">
+          <div className="admin-badge" style={{ color: '#ffc107' }}>🔐 ADMIN CONTROL CENTER</div>
+          <h1 className="admin-hero-title" style={{ color: '#ffffff', fontSize: '3.5rem', fontWeight: '800' }}>
+            Platform <span className="highlight" style={{ color: '#ffc107' }}>Overview</span>
+          </h1>
+          <p className="admin-hero-subtitle" style={{ color: '#ffffff', fontSize: '1.3rem' }}>
+            Welcome back, {user.name}! Here's your platform performance.
+          </p>
+          <div className="admin-hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {stats.totalUsers.toLocaleString()}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>TOTAL USERS</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {stats.activeVolunteers}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>VOLUNTEERS</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {stats.completedRequests}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>REQUESTS COMPLETED</div>
+            </div>
+          </div>
         </div>
       </div>
 

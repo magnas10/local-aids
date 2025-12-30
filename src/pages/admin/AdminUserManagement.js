@@ -102,9 +102,36 @@ function AdminUserManagement() {
 
   return (
     <div className="admin-container">
-      <div className="admin-header">
-        <h1>👥 User Management</h1>
-        <p>Manage all platform users, volunteers, and their permissions.</p>
+      <div className="admin-hero" style={{ background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)' }}>
+        <div className="admin-hero-content">
+          <div className="admin-badge" style={{ color: '#ffc107' }}>👥 USER MANAGEMENT</div>
+          <h1 className="admin-hero-title" style={{ color: '#ffffff', fontSize: '3.5rem', fontWeight: '800' }}>
+            User <span className="highlight" style={{ color: '#ffc107' }}>Management</span>
+          </h1>
+          <p className="admin-hero-subtitle" style={{ color: '#ffffff', fontSize: '1.3rem' }}>
+            Manage all platform users, volunteers, and their permissions.
+          </p>
+          <div className="admin-hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredUsers.length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>TOTAL USERS</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredUsers.filter(u => u.role === 'volunteer').length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>VOLUNTEERS</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value" style={{ color: '#ffffff', fontSize: '3rem', fontWeight: '800' }}>
+                {filteredUsers.filter(u => u.isActive || u.status === 'active').length}
+              </div>
+              <div className="hero-stat-label" style={{ color: '#ffffff' }}>ACTIVE USERS</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {error && (

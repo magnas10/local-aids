@@ -142,8 +142,6 @@ function HeroSection() {
           ))}
         </div>
       </div>
-
-      {/* Request Help Modal retained for other pages/components if needed */}
     </section>
   );
 }

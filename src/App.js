@@ -28,6 +28,7 @@ import HelpCenter from './pages/HelpCenter';
 import RequestHelp from './pages/RequestHelp';
 import MyRequests from './pages/MyRequests';
 import TestLogin from './pages/TestLogin';
+import HowItWorks from './pages/HowItWorks';
 
 // Admin Components
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -66,6 +67,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/about" element={<About />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/donate" element={<Donate />} />
               <Route path="/contact" element={<Contact />} />
               

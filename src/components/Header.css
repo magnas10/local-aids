@@ -3,8 +3,8 @@
   position: absolute;
   top: -40px;
   left: 0;
-  background: var(--primary, #20b2aa);
-  color: white;
+  background: var(--primary);
+  color: #0f172a;
   padding: 10px 20px;
   z-index: 10000;
   font-weight: 600;
@@ -42,7 +42,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid rgba(32, 178, 170, 0.1);
+  border-bottom: 1px solid rgba(212, 160, 23, 0.1);
   transition: all 0.3s ease;
 }
 
@@ -78,7 +78,7 @@
 
 .logo:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 4px 8px rgba(32, 178, 170, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(212, 160, 23, 0.3));
 }
 
 .logo-icon {
@@ -124,7 +124,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(32, 178, 170, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -177,10 +177,12 @@
   0% {
     box-shadow: 0 2px 8px rgba(238, 90, 90, 0.4);
   }
+
   50% {
     box-shadow: 0 2px 12px rgba(238, 90, 90, 0.6);
     transform: scale(1.05);
   }
+
   100% {
     box-shadow: 0 2px 8px rgba(238, 90, 90, 0.4);
   }
@@ -240,23 +242,23 @@
 }
 
 .login-btn:hover {
-  border-color: #20b2aa;
-  color: #20b2aa;
-  background: rgba(32, 178, 170, 0.05);
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(212, 160, 23, 0.05);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.2);
+  box-shadow: 0 4px 12px rgba(212, 160, 23, 0.2);
 }
 
 .signin-btn {
-  background: linear-gradient(135deg, #20b2aa, #16a085, #0D6B66);
-  color: white;
+  background: var(--gradient-primary);
+  color: #0f172a;
   border: none;
   padding: 12px 28px;
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(32, 178, 170, 0.3);
+  box-shadow: 0 4px 16px rgba(212, 160, 23, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -309,13 +311,13 @@
 }
 
 .nav-link:hover {
-  background: var(--bg-gray, #f0f5f5);
-  color: var(--primary, #20b2aa);
+  background: var(--bg-gray, #fffcf0);
+  color: var(--primary);
 }
 
 .nav-link.active {
-  color: var(--primary, #20b2aa);
-  background: var(--primary-bg, #e8f8f6);
+  color: var(--primary);
+  background: var(--primary-bg);
   font-weight: 600;
 }
 
@@ -328,15 +330,15 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #20b2aa, #16a085, #0D6B66);
+  background: var(--gradient-primary);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(32, 178, 170, 0.3);
-  color: white;
+  box-shadow: 0 4px 16px rgba(212, 160, 23, 0.3);
+  color: #0f172a;
   position: relative;
   overflow: hidden;
 }
@@ -385,7 +387,7 @@
   padding: 12px 0;
   z-index: 1000;
   animation: dropdownFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(32, 178, 170, 0.1);
+  border: 1px solid rgba(212, 160, 23, 0.1);
 }
 
 @keyframes dropdownFade {
@@ -393,6 +395,7 @@
     opacity: 0;
     transform: translateY(-15px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -568,10 +571,12 @@
   0% {
     box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
   }
+
   50% {
     box-shadow: 0 2px 12px rgba(255, 68, 68, 0.6);
     transform: scale(1.1);
   }
+
   100% {
     box-shadow: 0 2px 8px rgba(255, 68, 68, 0.4);
   }
