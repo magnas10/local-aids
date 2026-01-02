@@ -34,8 +34,27 @@ const User = sequelize.define('User', {
   phone: {
     type: DataTypes.STRING
   },
+  bio: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   address: {
-    type: DataTypes.STRING
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: {}
+  },
+  skills: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: []
+  },
+  website: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  linkedin: {
+    type: DataTypes.STRING,
+    allowNull: true
   },
   profileImage: {
     type: DataTypes.STRING,

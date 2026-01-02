@@ -839,3 +839,307 @@
   margin: 0 0 16px 0;
   font-size: 16px;
 }
+
+/* ========================================
+   PROFILE EDIT MODAL - DEDICATED STYLES
+   ======================================== */
+
+.profile-edit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 16px;
+}
+
+.profile-edit-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 550px;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: profileModalSlideIn 0.25s ease-out;
+}
+
+@keyframes profileModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.profile-edit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.profile-edit-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.profile-edit-modal-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.profile-edit-modal-close:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.profile-edit-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.profile-edit-form {
+  padding: 24px;
+}
+
+.profile-edit-field {
+  margin-bottom: 20px;
+}
+
+.profile-edit-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.profile-edit-field input,
+.profile-edit-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+
+.profile-edit-field input:focus,
+.profile-edit-field textarea:focus {
+  outline: none;
+  border-color: #20b2aa;
+  box-shadow: 0 0 0 3px rgba(32, 178, 170, 0.15);
+}
+
+.profile-edit-field input::placeholder,
+.profile-edit-field textarea::placeholder {
+  color: #9ca3af;
+}
+
+.profile-edit-field textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.profile-edit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profile-edit-row .profile-edit-field {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+  .profile-edit-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-edit-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  margin-top: 8px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.profile-edit-cancel,
+.profile-edit-save {
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.profile-edit-cancel {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.profile-edit-cancel:hover {
+  background: #e5e7eb;
+}
+
+.profile-edit-save {
+  background: #20b2aa;
+  color: white;
+}
+
+.profile-edit-save:hover:not(:disabled) {
+  background: #1a9891;
+}
+
+.profile-edit-save:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   SKILL MODAL & SKILL BADGES
+   ======================================== */
+
+.skill-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: profileModalSlideIn 0.25s ease-out;
+}
+
+.skill-modal-body {
+  padding: 24px;
+}
+
+.skill-suggestions {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.skill-suggestions p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 12px 0;
+}
+
+.suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestion-tag {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.suggestion-tag:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+/* Skill badge with remove button */
+.skill-badge-pro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+  color: #00695c;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.skill-badge-pro:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 105, 92, 0.2);
+}
+
+.skill-remove-btn {
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  color: #00695c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.skill-remove-btn:hover {
+  background: #ef4444;
+  color: white;
+}
+
+/* Skills grid */
+.skills-grid-pro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Add skill button */
+.add-skill-btn {
+  background: #20b2aa;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.add-skill-btn:hover {
+  background: #1a9891;
+  transform: translateY(-1px);
+}

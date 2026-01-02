@@ -10,6 +10,8 @@ function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showSkillModal, setShowSkillModal] = useState(false);
+  const [newSkill, setNewSkill] = useState('');
   const [settingsType, setSettingsType] = useState('');
   const [editFormData, setEditFormData] = useState({});
   const [saving, setSaving] = useState(false);
@@ -58,23 +60,97 @@ function Profile() {
     }
   }, [isLoggedIn, user, navigate]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showEditModal || showSettingsModal || showSkillModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showEditModal, showSettingsModal, showSkillModal]);
+
   // Don't render if not logged in or if profileData is not ready
   if (!isLoggedIn || !user || !profileData) {
     return <div>Loading...</div>;
   }
 
+  // Add a new skill
+  const handleAddSkill = async () => {
+    if (!newSkill.trim()) return;
+    
+    const currentSkills = user?.skills || [];
+    if (currentSkills.includes(newSkill.trim())) {
+      alert('This skill already exists!');
+      return;
+    }
+    
+    const updatedSkills = [...currentSkills, newSkill.trim()];
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ skills: updatedSkills })
+      });
+      
+      const data = await response.json();
+      if (response.ok && updateUser) {
+        updateUser(data.user);
+        setNewSkill('');
+        setShowSkillModal(false);
+      }
+    } catch (error) {
+      console.error('Error adding skill:', error);
+    }
+  };
+
+  // Remove a skill
+  const handleRemoveSkill = async (skillToRemove) => {
+    const currentSkills = user?.skills || [];
+    const updatedSkills = currentSkills.filter(skill => skill !== skillToRemove);
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('/api/users/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ skills: updatedSkills })
+      });
+      
+      const data = await response.json();
+      if (response.ok && updateUser) {
+        updateUser(data.user);
+      }
+    } catch (error) {
+      console.error('Error removing skill:', error);
+    }
+  };
+
   // Initialize edit form data when modal opens
   const handleEditProfile = () => {
     console.log('Opening edit modal with user data:', user);
+    const addressData = user?.address || {};
     setEditFormData({
       name: user?.name || '',
       email: user?.email || '',
       phone: user?.phone || '',
       bio: user?.bio || '',
+      website: user?.website || '',
+      linkedin: user?.linkedin || '',
       address: {
-        city: user?.address?.city || '',
-        state: user?.address?.state || '',
-        country: user?.address?.country || ''
+        city: addressData.city || '',
+        state: addressData.state || '',
+        country: addressData.country || ''
       }
     });
     setShowEditModal(true);
@@ -83,12 +159,14 @@ function Profile() {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log('Input change:', name, value);
+    
     if (name.startsWith('address.')) {
       const addressField = name.split('.')[1];
       setEditFormData(prev => ({
         ...prev,
         address: {
-          ...prev.address,
+          ...(prev.address || {}),
           [addressField]: value
         }
       }));
@@ -133,25 +211,39 @@ function Profile() {
         
         // Update user in context - this will trigger profileData to recalculate
         if (updateUser && data.user) {
-          updateUser(data.user);
+          await updateUser(data.user);
           console.log('Updated user in context:', data.user);
+          setShowEditModal(false);
+          
+          // Show success message
+          const successMsg = document.createElement('div');
+          successMsg.className = 'success-toast';
+          successMsg.innerHTML = '✓ Profile updated successfully!';
+          document.body.appendChild(successMsg);
+          setTimeout(() => successMsg.remove(), 3000);
         } else {
           // Fallback: update localStorage and reload
-          localStorage.setItem('user', JSON.stringify(data.user || editFormData));
+          localStorage.setItem('user', JSON.stringify(data.user));
+          setShowEditModal(false);
           window.location.reload();
         }
-        
-        setShowEditModal(false);
-        alert('Profile updated successfully!');
       } else {
         console.error('Profile update failed:', data);
         // Show the specific error message from the server
         const errorMessage = data.message || data.errors?.[0]?.msg || 'Failed to update profile';
-        alert(errorMessage);
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'error-toast';
+        errorMsg.innerHTML = `✗ ${errorMessage}`;
+        document.body.appendChild(errorMsg);
+        setTimeout(() => errorMsg.remove(), 4000);
       }
     } catch (error) {
       console.error('Network error updating profile:', error);
-      alert('Network error. Please check your connection and try again.');
+      const errorMsg = document.createElement('div');
+      errorMsg.className = 'error-toast';
+      errorMsg.innerHTML = '✗ Network error. Please check your connection and try again.';
+      document.body.appendChild(errorMsg);
+      setTimeout(() => errorMsg.remove(), 4000);
     } finally {
       setSaving(false);
     }
@@ -361,13 +453,20 @@ function Profile() {
                   <div className="card-professional">
                     <div className="card-header-pro">
                       <h3>Skills & Expertise</h3>
-                      <button className="add-skill-btn">+ Add Skill</button>
+                      <button className="add-skill-btn" onClick={() => setShowSkillModal(true)}>+ Add Skill</button>
                     </div>
                     <div className="card-content-pro">
                       <div className="skills-grid-pro">
                         {profileData.skills.length > 0 ? (
                           profileData.skills.map((skill, index) => (
-                            <span key={index} className="skill-badge-pro">{skill}</span>
+                            <span key={index} className="skill-badge-pro">
+                              {skill}
+                              <button 
+                                className="skill-remove-btn" 
+                                onClick={() => handleRemoveSkill(skill)}
+                                title="Remove skill"
+                              >×</button>
+                            </span>
                           ))
                         ) : (
                           <p className="empty-state">No skills added yet. Add your first skill to showcase your expertise.</p>
@@ -534,103 +633,175 @@ function Profile() {
 
       {/* Edit Profile Modal */}
       {showEditModal && (
-        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="profile-edit-modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="profile-edit-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-edit-modal-header">
               <h3>Edit Profile</h3>
-              <button className="modal-close-btn" onClick={() => setShowEditModal(false)}>×</button>
+              <button className="profile-edit-modal-close" onClick={() => setShowEditModal(false)}>×</button>
             </div>
             
-            <form onSubmit={handleSaveProfile} className="edit-profile-form">
-              <div className="form-group">
-                <label htmlFor="name">Full Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={editFormData.name || ''}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={editFormData.email || ''}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="phone">Phone</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={editFormData.phone || ''}
-                  onChange={handleInputChange}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="bio">Bio</label>
-                <textarea
-                  id="bio"
-                  name="bio"
-                  value={editFormData.bio || ''}
-                  onChange={handleInputChange}
-                  rows="4"
-                  placeholder="Tell others about yourself..."
-                />
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="city">City</label>
+            <div className="profile-edit-modal-body">
+              <form onSubmit={handleSaveProfile} className="profile-edit-form">
+                <div className="profile-edit-field">
+                  <label htmlFor="name">Full Name</label>
                   <input
                     type="text"
-                    id="city"
-                    name="address.city"
-                    value={editFormData.address?.city || ''}
+                    id="name"
+                    name="name"
+                    value={editFormData.name || ''}
+                  onChange={handleInputChange}
+                  required
+                />
+                </div>
+              
+                <div className="profile-edit-field">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={editFormData.email || ''}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              
+                <div className="profile-edit-field">
+                  <label htmlFor="phone">Phone</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={editFormData.phone || ''}
                     onChange={handleInputChange}
                   />
                 </div>
+              
+                <div className="profile-edit-field">
+                  <label htmlFor="bio">Bio</label>
+                  <textarea
+                    id="bio"
+                    name="bio"
+                    value={editFormData.bio || ''}
+                    onChange={handleInputChange}
+                    rows="4"
+                    placeholder="Tell others about yourself..."
+                  />
+                </div>
+              
+                <div className="profile-edit-row">
+                  <div className="profile-edit-field">
+                    <label htmlFor="city">City</label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="address.city"
+                      value={editFormData.address?.city || ''}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 
-                <div className="form-group">
-                  <label htmlFor="state">State</label>
+                  <div className="profile-edit-field">
+                    <label htmlFor="state">State</label>
+                    <input
+                      type="text"
+                      id="state"
+                      name="address.state"
+                      value={editFormData.address?.state || ''}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+              
+                <div className="profile-edit-field">
+                  <label htmlFor="country">Country</label>
                   <input
                     type="text"
-                    id="state"
-                    name="address.state"
-                    value={editFormData.address?.state || ''}
+                    id="country"
+                    name="address.country"
+                    value={editFormData.address?.country || ''}
                     onChange={handleInputChange}
                   />
                 </div>
-              </div>
+
+                <div className="profile-edit-field">
+                  <label htmlFor="website">Website</label>
+                  <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={editFormData.website || ''}
+                    onChange={handleInputChange}
+                    placeholder="yourwebsite.com"
+                  />
+                </div>
+
+                <div className="profile-edit-field">
+                  <label htmlFor="linkedin">LinkedIn</label>
+                  <input
+                    type="text"
+                    id="linkedin"
+                    name="linkedin"
+                    value={editFormData.linkedin || ''}
+                    onChange={handleInputChange}
+                    placeholder="linkedin.com/in/yourprofile"
+                  />
+                </div>
               
-              <div className="form-group">
-                <label htmlFor="country">Country</label>
+                <div className="profile-edit-actions">
+                  <button type="button" className="profile-edit-cancel" onClick={() => setShowEditModal(false)}>Cancel</button>
+                  <button type="submit" className="profile-edit-save" disabled={saving}>
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Skill Modal */}
+      {showSkillModal && (
+        <div className="profile-edit-modal-overlay" onClick={() => setShowSkillModal(false)}>
+          <div className="skill-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="profile-edit-modal-header">
+              <h3>Add New Skill</h3>
+              <button className="profile-edit-modal-close" onClick={() => setShowSkillModal(false)}>×</button>
+            </div>
+            <div className="skill-modal-body">
+              <div className="profile-edit-field">
+                <label htmlFor="newSkill">Skill Name</label>
                 <input
                   type="text"
-                  id="country"
-                  name="address.country"
-                  value={editFormData.address?.country || ''}
-                  onChange={handleInputChange}
+                  id="newSkill"
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                  placeholder="e.g., First Aid, Teaching, Cooking..."
+                  onKeyPress={(e) => e.key === 'Enter' && handleAddSkill()}
+                  autoFocus
                 />
               </div>
-              
-              <div className="modal-actions">
-                <button type="button" className="btn-secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={saving}>
-                  {saving ? 'Saving...' : 'Save Changes'}
+              <div className="skill-suggestions">
+                <p>Popular skills:</p>
+                <div className="suggestion-tags">
+                  {['First Aid', 'Teaching', 'Cooking', 'Driving', 'Counseling', 'IT Support', 'Event Planning', 'Fundraising'].map(skill => (
+                    <button 
+                      key={skill} 
+                      className="suggestion-tag"
+                      onClick={() => setNewSkill(skill)}
+                    >
+                      {skill}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="profile-edit-actions">
+                <button type="button" className="profile-edit-cancel" onClick={() => setShowSkillModal(false)}>Cancel</button>
+                <button type="button" className="profile-edit-save" onClick={handleAddSkill} disabled={!newSkill.trim()}>
+                  Add Skill
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

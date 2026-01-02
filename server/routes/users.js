@@ -97,7 +97,10 @@ router.put('/profile', protect, [
   body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
   body('email').optional().isEmail().withMessage('Please enter a valid email'),
   body('phone').optional().trim(),
-  body('bio').optional().isLength({ max: 500 }).withMessage('Bio cannot exceed 500 characters')
+  body('bio').optional().isLength({ max: 500 }).withMessage('Bio cannot exceed 500 characters'),
+  body('skills').optional().isArray().withMessage('Skills must be an array'),
+  body('website').optional().trim(),
+  body('linkedin').optional().trim()
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -105,7 +108,7 @@ router.put('/profile', protect, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, phone, bio, address, avatar } = req.body;
+    const { name, email, phone, bio, address, skills, website, linkedin, avatar } = req.body;
 
     // Check if email is being changed and if it's already taken
     if (email && email.toLowerCase() !== req.user.email) {
@@ -119,9 +122,11 @@ router.put('/profile', protect, [
     if (name) user.name = name;
     if (email) user.email = email.toLowerCase();
     if (phone !== undefined) user.phone = phone;
-    // if (bio) // bio not in model, ignoring for now or adding to model? Assuming user model doesn't have bio yet based on my rewrite
+    if (bio !== undefined) user.bio = bio;
     if (address) user.address = address;
-    // avatar path update is complex logic related to upload, ignoring 'avatar' body param for direct path setting usually
+    if (skills !== undefined) user.skills = skills;
+    if (website !== undefined) user.website = website;
+    if (linkedin !== undefined) user.linkedin = linkedin;
 
     await user.save();
 
