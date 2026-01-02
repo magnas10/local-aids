@@ -30,7 +30,12 @@ function Events() {
       try {
         setLoading(true);
         const response = await getHelpRequests({ showAsEvent: 'true' });
-        const transformedRequests = response.helpRequests.map(request => ({
+        // Only show approved requests in events (pending remain hidden until admin approves)
+        const activeRequests = response.helpRequests.filter(
+          request => request.status === 'approved'
+        );
+        
+        const transformedRequests = activeRequests.map(request => ({
           id: `help-${request._id}`,
           title: `${getHelpTypeLabel(request.helpType)} Assistance`,
           date: request.preferredDate || 'Flexible',
@@ -428,20 +433,6 @@ function Events() {
               Join meaningful events, volunteer opportunities, and community initiatives. 
               Every action creates positive change.
             </p>
-            <div className="hero-stats">
-              <div className="stat-item">
-                <div className="stat-number">{allEvents.length}</div>
-                <div className="stat-label">Active Opportunities</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">{allEvents.filter(e => e.urgency === 'urgent' || e.urgency === 'high').length}</div>
-                <div className="stat-label">Urgent Needs</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">{allEvents.reduce((sum, e) => sum + (e.attendees || 0), 0)}</div>
-                <div className="stat-label">People Helping</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -583,9 +574,15 @@ function Events() {
               return (
                 <article 
                   key={event.id} 
-                  className={`event-card-modern ${viewMode}`}
+                  className={`event-card-modern ${viewMode} ${event.urgency === 'urgent' || event.urgency === 'high' ? 'urgent-priority' : ''}`}
                   onClick={() => setSelectedEvent(event)}
                 >
+                  {(event.urgency === 'urgent' || event.urgency === 'high') && (
+                    <div className="urgent-indicator">
+                      <span className="urgent-pulse"></span>
+                      <span className="urgent-text">🚨 {event.urgency === 'urgent' ? 'URGENT' : 'HIGH PRIORITY'}</span>
+                    </div>
+                  )}
                   <div className="event-image-wrapper">
                     <img src={event.image} alt={event.title} className="event-image-modern" />
                     <div className="event-image-badges">
@@ -691,19 +688,6 @@ function Events() {
                           <path d="M5 12h14m-7-7l7 7-7 7"/>
                         </svg>
                       </button>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-                        >
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                          </svg>
-                        </a>
-                      )}
                     </div>
                   </div>
                 </article>

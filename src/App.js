@@ -84,7 +84,11 @@ function App() {
               <Route path="/safety-tips" element={<SafetyTips />} />
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/request-help" element={<RequestHelp />} />
-              <Route path="/my-requests" element={<MyRequests />} />
+              <Route path="/my-requests" element={
+                <ProtectedRoute>
+                  <MyRequests />
+                </ProtectedRoute>
+              } />
               <Route path="/test-login" element={<TestLogin />} />
               
               {/* Admin Routes */}

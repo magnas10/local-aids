@@ -1,0 +1,24 @@
+🗺️  Google Maps API Key Setup for Address Autocomplete
+=====================================================
+
+To enable real address suggestions in the Request Help form:
+
+1. Get a Google Maps API Key:
+   - Visit: https://console.cloud.google.com/
+   - Create a new project (or select existing)
+   - Enable "Places API" for your project
+   - Create credentials (API Key)
+   - Restrict the key to "Places API" for security
+
+2. Add your API key to the code:
+   - Open: src/pages/RequestHelp.js
+   - Find line ~113: script.src = \`https://maps.googleapis.com/maps/api/js?key=AIzaSyBYour_API_Key_Here&libraries=places\`;
+   - Replace 'AIzaSyBYour_API_Key_Here' with your actual API key
+
+3. Test it:
+   - Go to /request-help
+   - Start typing an address like "Russell Street"
+   - You'll see real Australian address suggestions!
+
+Note: The form works without the API key (manual entry), but with it,
+users get auto-complete suggestions and auto-filled suburb/state/postcode.

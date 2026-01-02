@@ -92,7 +92,7 @@ const HelpRequest = sequelize.define('HelpRequest', {
     type: DataTypes.STRING,
     defaultValue: 'pending',
     validate: {
-      isIn: [['pending', 'matched', 'in-progress', 'completed', 'cancelled']]
+      isIn: [['pending', 'approved', 'rejected', 'matched', 'in-progress', 'completed', 'cancelled']]
     }
   },
   assignedVolunteerId: {
@@ -102,6 +102,15 @@ const HelpRequest = sequelize.define('HelpRequest', {
       model: 'Users',
       key: 'id'
     }
+  },
+  createdBy: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'Users',
+      key: 'id'
+    },
+    comment: 'User ID of the person who created this request'
   },
   showAsEvent: {
     type: DataTypes.BOOLEAN,

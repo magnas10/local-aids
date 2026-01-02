@@ -49,7 +49,7 @@ function AdminRequestManagement() {
 
       switch (action) {
         case 'approve':
-          await updateHelpRequestStatus(requestId, 'matched');
+          await updateHelpRequestStatus(requestId, 'approved');
           break;
         case 'reject':
           await updateHelpRequestStatus(requestId, 'rejected');
@@ -64,7 +64,7 @@ function AdminRequestManagement() {
           await updateHelpRequestStatus(requestId, 'cancelled');
           break;
         case 'delete':
-          if (window.confirm('Are you sure you want to delete this request? This action cannot be undone.')) {
+          if (window.confirm('Are you sure you want to permanently delete this request? The user will be notified via direct message.')) {
             await deleteHelpRequest(requestId);
           } else {
             setActionLoading(false);
@@ -100,7 +100,10 @@ function AdminRequestManagement() {
     switch (status) {
       case 'open': return '#007bff';
       case 'pending': return '#ffc107';
+      case 'approved': return '#28a745';
+      case 'rejected': return '#dc3545';
       case 'accepted': return '#17a2b8';
+      case 'matched': return '#17a2b8';
       case 'completed': return '#28a745';
       case 'cancelled': return '#dc3545';
       default: return '#6c757d';
@@ -217,9 +220,11 @@ function AdminRequestManagement() {
                 style={{ marginLeft: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
               >
                 <option value="all">All Status</option>
-                <option value="open">Open</option>
-                <option value="pending">Pending</option>
-                <option value="accepted">Accepted</option>
+                <option value="pending">Pending Approval</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="matched">Matched</option>
+                <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
               </select>
@@ -332,8 +337,41 @@ function AdminRequestManagement() {
                   <td>
                     <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
                       {request.status === 'pending' && (
+                        <>
+                          <button
+                            onClick={() => handleRequestAction(request.id, 'approve')}
+                            style={{
+                              padding: '4px 8px',
+                              fontSize: '0.8rem',
+                              background: '#28a745',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '3px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            ✓ Approve
+                          </button>
+                          <button
+                            onClick={() => handleRequestAction(request.id, 'reject')}
+                            style={{
+                              padding: '4px 8px',
+                              fontSize: '0.8rem',
+                              background: '#dc3545',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '3px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            ✗ Reject
+                          </button>
+                        </>
+                      )}
+
+                      {(request.status === 'approved' || request.status === 'matched') && request.status !== 'completed' && (
                         <button
-                          onClick={() => handleRequestAction(request.id, 'approve')}
+                          onClick={() => handleRequestAction(request.id, 'complete')}
                           style={{
                             padding: '4px 8px',
                             fontSize: '0.8rem',
@@ -344,7 +382,7 @@ function AdminRequestManagement() {
                             cursor: 'pointer'
                           }}
                         >
-                          Approve
+                          ✓ Mark Complete
                         </button>
                       )}
 

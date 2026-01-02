@@ -5,6 +5,132 @@
   background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
 }
 
+/* Urgent Post Styling - Matching Homepage Design */
+.event-card-modern.urgent-priority {
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(255, 192, 203, 0.15) 0%, 
+    rgba(255, 182, 193, 0.12) 50%, 
+    rgba(255, 192, 203, 0.08) 100%);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  box-shadow: 0 10px 40px rgba(255, 107, 107, 0.15);
+  animation: urgentCardPulse 3s ease-in-out infinite;
+  overflow: visible;
+}
+
+@keyframes urgentCardPulse {
+  0%, 100% { 
+    box-shadow: 0 10px 40px rgba(255, 107, 107, 0.15);
+  }
+  50% { 
+    box-shadow: 0 10px 40px rgba(255, 107, 107, 0.25);
+  }
+}
+
+.event-card-modern.urgent-priority:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(255, 107, 107, 0.25);
+}
+
+/* Urgent Badge - Top Right Position */
+.urgent-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: white;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5);
+  animation: urgentBadgePulse 1.5s ease-in-out infinite, urgentBlink 1.5s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.urgent-indicator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: badgeShine 3s ease-in-out infinite;
+}
+
+@keyframes badgeShine {
+  0%, 100% { left: -100%; }
+  50% { left: 100%; }
+}
+
+@keyframes urgentBadgePulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.7);
+  }
+}
+
+@keyframes urgentBlink {
+  0%, 49%, 100% {
+    opacity: 1;
+  }
+  50%, 99% {
+    opacity: 0.7;
+  }
+}
+
+.urgent-pulse {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  animation: dotPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+}
+
+.urgent-text {
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+/* Remove extra border effects - keep it clean like homepage */
+.event-card-modern.urgent-priority::before,
+.event-card-modern.urgent-priority::after {
+  display: none;
+}
+
+/* Image overlay for urgent cards */
+.event-card-modern.urgent-priority .event-image-wrapper {
+  position: relative;
+}
+
 /* Hero Section */
 .events-hero-modern {
   position: relative;
@@ -114,17 +240,17 @@
 .stat-item {
   text-align: center;
   padding: 1.5rem 2rem;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
   border-radius: 16px;
   border: 2px solid rgba(251, 191, 36, 0.4);
   min-width: 150px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .stat-item:hover {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
   border-color: rgba(251, 191, 36, 0.6);
@@ -134,15 +260,13 @@
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  color: #fbbf24;
-  text-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);
+  color: #000000;
 }
 
 .stat-label {
   font-size: 0.95rem;
-  color: white;
+  color: #000000;
   font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -338,7 +462,8 @@
 }
 
 .events-container-modern.grid {
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 380px));
+  justify-content: center;
 }
 
 .events-container-modern.list {
@@ -625,6 +750,7 @@
 .event-actions-modern {
   display: flex;
   gap: 0.75rem;
+  margin-top: auto;
 }
 
 .btn-directions-outline {
@@ -635,24 +761,48 @@
   gap: 0.5rem;
   padding: 0.875rem 1.25rem;
   background: white;
-  color: #374151;
+  color: #1f2937;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-directions-outline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-directions-outline:hover::before {
+  opacity: 1;
 }
 
 .btn-directions-outline:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  border-color: #48b3a5;
+  color: #48b3a5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(72, 179, 165, 0.15);
 }
 
 .btn-directions-outline svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.btn-directions-outline:hover svg {
+  transform: translateX(2px);
 }
 
 .btn-volunteer-modern {
@@ -661,26 +811,54 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
+  padding: 0.875rem 1.75rem;
   background: linear-gradient(135deg, #48b3a5 0%, #26a69a 100%);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(72, 179, 165, 0.2);
+}
+
+.btn-volunteer-modern::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #26a69a 0%, #1e8b82 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-volunteer-modern:hover::before {
+  opacity: 1;
 }
 
 .btn-volunteer-modern:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(72, 179, 165, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(72, 179, 165, 0.35);
 }
 
 .btn-volunteer-modern svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.btn-volunteer-modern:hover svg {
+  transform: translateX(3px);
+}
+
+.btn-volunteer-modern span {
+  position: relative;
+  z-index: 1;
 }
 
 .event-details-grid {

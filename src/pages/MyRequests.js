@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { getHelpRequests, deleteHelpRequest, updateHelpRequest, submitHelpRequest } from '../services/api';
 import './Pages.css';
+import './MyRequestsSecurity.css';
 
 function MyRequests() {
+  const { user, isLoggedIn } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -32,14 +35,23 @@ function MyRequests() {
   });
 
   useEffect(() => {
-    fetchMyRequests();
-  }, []);
+    if (user) {
+      fetchMyRequests();
+    }
+  }, [user]);
 
   const fetchMyRequests = async () => {
     try {
       setLoading(true);
       const response = await getHelpRequests();
-      setRequests(response.helpRequests || []);
+      console.log('All help requests:', response);
+      console.log('Current user:', user);
+      // Filter to show only user's own requests
+      const userRequests = (response.helpRequests || []).filter(req => 
+        req.email === user.email || (req.createdBy && req.createdBy === user.id)
+      );
+      console.log('Filtered user requests:', userRequests);
+      setRequests(userRequests);
     } catch (error) {
       console.error('Failed to fetch help requests:', error);
       setError('Failed to load help requests');
@@ -158,22 +170,18 @@ function MyRequests() {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setError('Please enter your email address');
-      return;
-    }
-
+    
     setDeleteLoading(true);
     setError('');
 
     try {
-      await deleteHelpRequest(selectedRequest._id, email);
+      await deleteHelpRequest(selectedRequest._id);
       setSuccess('Help request deleted successfully');
       await fetchMyRequests();
       closeDeleteModal();
       setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
-      setError(error.message || 'Failed to delete help request');
+      setError(error.message || 'Failed to delete help request. You may not have permission.');
     } finally {
       setDeleteLoading(false);
     }
@@ -201,6 +209,14 @@ function MyRequests() {
         {statusLabels[status] || 'Unknown'}
       </span>
     );
+  };
+
+  // Check if user can delete this request
+  const canDelete = (request) => {
+    // Admin can delete any request
+    if (user.role === 'admin') return true;
+    // Owner can delete pending or cancelled requests
+    return request.status === 'pending' || request.status === 'cancelled';
   };
 
   const getUrgencyBadge = (urgency) => {
@@ -232,11 +248,37 @@ function MyRequests() {
     return emojis[helpType] || '';
   };
 
+  // Show loading if user not loaded yet
+  if (!user) {
+    return (
+      <div className="page-container">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-container">
       <div className="page-header">
         <h1>My Help Requests</h1>
-        <p>Manage your help requests. You can view and delete requests that haven't been matched yet.</p>
+        <p>Manage your help requests securely. Only you {user.role === 'admin' && 'and admins'} can delete your requests.</p>
+      </div>
+
+      {/* Security Notice */}
+      <div className="security-notice">
+        <div className="security-icon">🔒</div>
+        <div className="security-content">
+          <h3>Your Data is Protected</h3>
+          <p>You can only view and manage your own help requests. Requests that have been matched with volunteers cannot be deleted to protect the volunteer's commitment.</p>
+          <div className="security-features">
+            <span className="security-feature">Secure Access</span>
+            <span className="security-feature">Privacy Protected</span>
+            <span className="security-feature">Your Data Only</span>
+          </div>
+        </div>
       </div>
 
       {success && (
@@ -315,21 +357,43 @@ function MyRequests() {
                       </div>
                     </div>
 
-                    <div className="request-actions">
+                    <div className="request-actions" style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
                       <button 
                         onClick={() => openEditModal(request)}
                         className="btn btn-sm btn-outline"
                         disabled={request.status !== 'pending'}
+                        title={request.status !== 'pending' ? 'Can only edit pending requests' : 'Edit this request'}
+                        style={{ padding: '8px 16px', fontSize: '14px' }}
                       >
-                        Edit
+                        ✏️ Edit
                       </button>
-                      <button 
-                        onClick={() => openDeleteModal(request)}
-                        className="btn btn-sm btn-danger"
-                        disabled={request.status !== 'pending'}
-                      >
-                        Delete
-                      </button>
+                      {canDelete(request) ? (
+                        <button 
+                          onClick={() => openDeleteModal(request)}
+                          className="btn btn-sm btn-danger"
+                          title="Delete this request"
+                          style={{ 
+                            padding: '8px 16px', 
+                            fontSize: '14px',
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          🗑️ Delete
+                        </button>
+                      ) : (
+                        <button 
+                          className="btn btn-sm btn-outline"
+                          disabled
+                          title="Cannot delete active or completed requests"
+                          style={{ padding: '8px 16px', fontSize: '14px', opacity: 0.6 }}
+                        >
+                          🔒 Protected
+                        </button>
+                      )}
                     </div>
 
                     <div className="request-footer">
@@ -534,28 +598,22 @@ function MyRequests() {
               <h3>Delete Help Request</h3>
             </div>
             <div className="modal-body">
-              <p>Are you sure you want to delete this help request?</p>
-              <p><strong>Type:</strong> {selectedRequest?.helpType}</p>
-              <p><strong>Description:</strong> {selectedRequest?.description}</p>
+              <p className="warning-text">⚠️ Are you sure you want to delete this help request? This action cannot be undone.</p>
+              <div className="request-summary">
+                <p><strong>Type:</strong> {selectedRequest?.helpType}</p>
+                <p><strong>Description:</strong> {selectedRequest?.description}</p>
+                <p><strong>Status:</strong> {selectedRequest?.status}</p>
+              </div>
+              
+              {error && <div className="alert alert-error">{error}</div>}
               
               <form onSubmit={handleDelete}>
-                <div className="form-group">
-                  <label>Confirm with your email address:</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="form-control"
-                    required
-                  />
-                </div>
                 <div className="modal-footer">
-                  <button type="button" onClick={closeDeleteModal} className="btn btn-secondary">
+                  <button type="button" onClick={closeDeleteModal} className="btn btn-secondary" disabled={deleteLoading}>
                     Cancel
                   </button>
                   <button type="submit" disabled={deleteLoading} className="btn btn-danger">
-                    {deleteLoading ? 'Deleting...' : 'Delete Request'}
+                    {deleteLoading ? 'Deleting...' : 'Yes, Delete Request'}
                   </button>
                 </div>
               </form>
