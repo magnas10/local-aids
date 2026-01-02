@@ -31,6 +31,9 @@ import RequestHelp from './pages/RequestHelp';
 import MyRequests from './pages/MyRequests';
 import TestLogin from './pages/TestLogin';
 import HowItWorks from './pages/HowItWorks';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Cookies from './pages/Cookies';
 
 // Admin Components
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -84,6 +87,9 @@ function App() {
               <Route path="/safety-tips" element={<SafetyTips />} />
               <Route path="/help-center" element={<HelpCenter />} />
               <Route path="/request-help" element={<RequestHelp />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/cookies" element={<Cookies />} />
               <Route path="/my-requests" element={
                 <ProtectedRoute>
                   <MyRequests />

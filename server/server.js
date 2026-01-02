@@ -61,6 +61,7 @@ const galleryRoutes = require('./routes/gallery');
 const partnerRoutes = require('./routes/partners');
 const helpRequestRoutes = require('./routes/helpRequests');
 const notificationRoutes = require('./routes/notifications');
+const newsletterRoutes = require('./routes/newsletter');
 
 const app = express();
 
@@ -86,6 +87,7 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/help-requests', helpRequestRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

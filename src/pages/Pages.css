@@ -13725,3 +13725,234 @@
     margin-left: 0;
   }
 }
+
+/* =========================
+   LEGAL PAGES STYLES
+   ========================= */
+.legal-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.legal-section {
+  margin-bottom: 40px;
+}
+
+.legal-section h2 {
+  color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #20b2aa;
+}
+
+.legal-section h3 {
+  color: #34495e;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 25px 0 15px 0;
+}
+
+.legal-section p {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.legal-section ul {
+  margin: 15px 0;
+  padding-left: 25px;
+}
+
+.legal-section ul li {
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.legal-section strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Cookie Types Grid */
+.cookie-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.cookie-type-card {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 25px;
+  transition: all 0.3s ease;
+}
+
+.cookie-type-card:hover {
+  border-color: #e67e22;
+  box-shadow: 0 4px 15px rgba(230, 126, 34, 0.1);
+  transform: translateY(-2px);
+}
+
+.cookie-type-card h3 {
+  color: #2c3e50;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.cookie-type-card p {
+  color: #666;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.cookie-type-card ul {
+  padding-left: 20px;
+  margin: 10px 0;
+}
+
+.cookie-type-card ul li {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-required {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Steps Grid for How It Works */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.step-card {
+  background: white;
+  border-radius: 16px;
+  padding: 35px 25px;
+  text-align: center;
+  position: relative;
+  border: 2px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: #20b2aa;
+}
+
+.step-number {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #20b2aa;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(32, 178, 170, 0.3);
+}
+
+.step-icon {
+  font-size: 3rem;
+  margin: 20px 0 15px;
+}
+
+.step-card h3 {
+  color: #2c3e50;
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.step-card p {
+  color: #666;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 35px;
+  margin-top: 40px;
+}
+
+.feature-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.benefits-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  color: #555;
+  line-height: 1.6;
+}
+
+.benefits-list li svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .legal-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .legal-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .cookie-types-grid,
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card {
+    padding: 40px 20px 25px;
+  }
+}

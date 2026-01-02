@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 
 function Footer() {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+
   const footerColumns = {
     platform: {
       title: 'Platform',
@@ -33,6 +37,40 @@ function Footer() {
     }
   };
 
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage({ type: '', text: '' });
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ type: 'success', text: data.message });
+        setEmail('');
+      } else {
+        setMessage({ type: 'error', text: data.message || 'Subscription failed. Please try again.' });
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setMessage({ type: 'error', text: 'Network error. Please try again later.' });
+    } finally {
+      setIsSubmitting(false);
+      // Clear message after 5 seconds
+      setTimeout(() => {
+        setMessage({ type: '', text: '' });
+      }, 5000);
+    }
+  };
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -42,10 +80,37 @@ function Footer() {
             <h3>Stay Connected</h3>
             <p>Get updates on community impact and volunteer opportunities</p>
           </div>
-          <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-            <input type="email" placeholder="Enter your email" />
-            <button type="submit">Subscribe</button>
-          </form>
+          <div style={{ flex: 1, maxWidth: '450px' }}>
+            <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isSubmitting}
+              />
+              <button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Subscribing...' : 'Subscribe'}
+              </button>
+            </form>
+            {message.text && (
+              <div 
+                style={{
+                  marginTop: '10px',
+                  padding: '10px 15px',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  backgroundColor: message.type === 'success' ? 'rgba(46, 213, 115, 0.15)' : 'rgba(255, 71, 87, 0.15)',
+                  color: message.type === 'success' ? '#2ed573' : '#ff4757',
+                  border: `1px solid ${message.type === 'success' ? 'rgba(46, 213, 115, 0.3)' : 'rgba(255, 71, 87, 0.3)'}`,
+                  textAlign: 'left'
+                }}
+              >
+                {message.text}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main Footer Content */}

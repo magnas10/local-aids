@@ -365,18 +365,6 @@ function Opportunities() {
                 {/* Action Buttons */}
                 <div className="opp-actions">
                   <button 
-                    className="opp-btn-secondary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openMapModal(opportunity, true);
-                    }}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-                    </svg>
-                    Directions
-                  </button>
-                  <button 
                     className="opp-btn-primary"
                     onClick={(e) => handleVolunteerNow(opportunity, e)}
                   >

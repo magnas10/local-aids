@@ -61,8 +61,6 @@ router.post('/', protect, admin, validators, async (req, res) => {
 ### Schema Structure (server/models/*.js)
 - All models use Sequelize with built-in validation
 - User roles: `user`, `volunteer`, `admin`
-  - **Note**: As of latest update, `user` and `volunteer` roles have unified access - they can both seek help and volunteer
-  - Only `admin` role has special restricted access
 - Common fields: `createdAt`, `updatedAt` (auto-added by timestamps)
 - Models: User, Event, Donation, Message, Contact, GalleryItem, Partner
 
