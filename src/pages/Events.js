@@ -30,13 +30,11 @@ function Events() {
       try {
         setLoading(true);
         const response = await getHelpRequests({ showAsEvent: 'true' });
-        // Only show approved requests in events (pending remain hidden until admin approves)
-        const activeRequests = response.helpRequests.filter(
-          request => request.status === 'approved'
-        );
+        // Backend already filters to only return approved requests when showAsEvent=true
+        const helpRequestsData = response.helpRequests || [];
         
-        const transformedRequests = activeRequests.map(request => ({
-          id: `help-${request._id}`,
+        const transformedRequests = helpRequestsData.map(request => ({
+          id: `help-${request.id}`,
           title: `${getHelpTypeLabel(request.helpType)} Assistance`,
           date: request.preferredDate || 'Flexible',
           time: request.preferredTime || 'Flexible',
@@ -49,8 +47,8 @@ function Events() {
           image: getImageForHelpType(request.helpType),
           helpType: request.helpType,
           isHelpRequest: true,
-          originalId: request._id,
-          status: request.status,
+          originalId: request.id,
+          status: request.status || 'approved',
           postedDate: new Date(request.createdAt),
           organizer: 'Community Member',
           category: getHelpTypeLabel(request.helpType)

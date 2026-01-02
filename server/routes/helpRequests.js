@@ -117,7 +117,8 @@ router.get('/', optionalAuth, async (req, res) => {
 
     let attributes = undefined;
     if (!isAdmin) {
-      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'createdAt'];
+      // Include status field so frontend knows which requests are approved
+      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'status', 'createdAt'];
     }
 
     const { count, rows: helpRequests } = await HelpRequest.findAndCountAll({

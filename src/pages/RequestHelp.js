@@ -110,42 +110,89 @@ function RequestHelp() {
 
   // Load Google Maps Script
   useEffect(() => {
-    if (!window.google) {
-      const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-      if (!apiKey) {
-        console.warn('Google Maps API key not configured');
-        return;
-      }
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setMapsLoaded(true);
-      script.onerror = () => {
-        console.warn('Google Maps failed to load, using manual address entry');
-        setMapsLoaded(false);
-      };
-      document.head.appendChild(script);
-    } else {
+    // Check if Google Maps is already loaded and working
+    if (window.google?.maps?.places) {
       setMapsLoaded(true);
+      return;
     }
+    
+    // Check if script tag already exists (prevents duplicate loading)
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (existingScript) {
+      // Script exists but API may not be ready yet, wait for it
+      const checkGoogleMaps = setInterval(() => {
+        if (window.google?.maps?.places) {
+          setMapsLoaded(true);
+          clearInterval(checkGoogleMaps);
+        }
+      }, 100);
+      // Timeout after 5 seconds
+      setTimeout(() => {
+        clearInterval(checkGoogleMaps);
+        if (!window.google?.maps?.places) {
+          console.warn('Google Maps failed to initialize, using manual address entry');
+          setMapsLoaded(false);
+        }
+      }, 5000);
+      return;
+    }
+    
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    if (!apiKey) {
+      console.warn('Google Maps API key not configured');
+      setMapsLoaded(false);
+      return;
+    }
+    
+    // Create and load the script
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initGoogleMaps`;
+    script.async = true;
+    script.defer = true;
+    
+    // Define callback function
+    window.initGoogleMaps = () => {
+      setMapsLoaded(true);
+      delete window.initGoogleMaps;
+    };
+    
+    script.onerror = () => {
+      console.warn('Google Maps failed to load, using manual address entry');
+      setMapsLoaded(false);
+      delete window.initGoogleMaps;
+    };
+    
+    document.head.appendChild(script);
   }, []);
 
   // Initialize Google Places Autocomplete
   useEffect(() => {
-    if (mapsLoaded && addressInputRef.current && !autocompleteRef.current && window.google?.maps?.places) {
-      try {
-        autocompleteRef.current = new window.google.maps.places.Autocomplete(
-          addressInputRef.current,
-          {
-            types: ['address'],
-            componentRestrictions: { country: 'au' }
-          }
-        );
+    if (!mapsLoaded || !addressInputRef.current || autocompleteRef.current) {
+      return;
+    }
+    
+    // Ensure Google Maps API is fully loaded
+    if (!window.google?.maps?.places?.Autocomplete) {
+      console.warn('Google Places API not available');
+      return;
+    }
+    
+    try {
+      autocompleteRef.current = new window.google.maps.places.Autocomplete(
+        addressInputRef.current,
+        {
+          types: ['address'],
+          componentRestrictions: { country: 'au' }
+        }
+      );
 
-        autocompleteRef.current.setFields(['address_components', 'formatted_address']);
+      // Use setOptions instead of deprecated setFields
+      autocompleteRef.current.setOptions({
+        fields: ['address_components', 'formatted_address']
+      });
 
-        autocompleteRef.current.addListener('place_changed', () => {
+      autocompleteRef.current.addListener('place_changed', () => {
+        try {
           const place = autocompleteRef.current.getPlace();
           
           if (place && place.address_components) {
@@ -191,10 +238,13 @@ function RequestHelp() {
               return newErrors;
             });
           }
-        });
-      } catch (error) {
-        console.error('Error initializing Google Places Autocomplete:', error);
-      }
+        } catch (err) {
+          console.error('Error processing place selection:', err);
+        }
+      });
+    } catch (error) {
+      console.error('Error initializing Google Places Autocomplete:', error);
+      setMapsLoaded(false);
     }
   }, [mapsLoaded]);
 
