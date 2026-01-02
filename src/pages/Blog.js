@@ -48,7 +48,7 @@ function Blog() {
     {
       id: 5,
       title: 'Creating Safe Spaces: Our Commitment to Community Safety',
-      excerpt: 'Learn about the comprehensive safety measures and guidelines that make Local AIDS a trusted platform for everyone.',
+      excerpt: 'Learn about the comprehensive safety measures and guidelines that make Local Aid a trusted platform for everyone.',
       image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&h=600&fit=crop&q=80',
       author: 'Sarah Mitchell',
       date: 'November 20, 2025',

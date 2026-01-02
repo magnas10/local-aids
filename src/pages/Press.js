@@ -10,45 +10,45 @@ function Press() {
   const pressReleases = [
     {
       date: 'December 15, 2025',
-      title: 'Local AIDS Achieves Significant Growth Milestone with 10,000 Active Volunteers',
-      summary: 'SYDNEY, AUSTRALIA – Local AIDS celebrates a landmark achievement in community engagement and volunteer mobilization. The organization has successfully onboarded its 10,000th registered volunteer, demonstrating unprecedented growth in peer-to-peer support infrastructure. This milestone reflects expanding public commitment to healthcare accessibility and community-led assistance across multiple Australian regions. The achievement underscores the effectiveness of the platform\'s volunteer matching technology and community outreach initiatives.',
+      title: 'Local Aid Achieves Significant Growth Milestone with 10,000 Active Volunteers',
+      summary: 'SYDNEY, AUSTRALIA – Local Aid celebrates a landmark achievement in community engagement and volunteer mobilization. The organization has successfully onboarded its 10,000th registered volunteer, demonstrating unprecedented growth in peer-to-peer support infrastructure. This milestone reflects expanding public commitment to healthcare accessibility and community-led assistance across multiple Australian regions. The achievement underscores the effectiveness of the platform\'s volunteer matching technology and community outreach initiatives.',
       link: '#',
-      fullContent: 'The 10,000-volunteer milestone represents a 250% increase from the organization\'s inaugural year. Through strategic expansion efforts and improved volunteer recruitment pathways, Local AIDS has established a robust network of trained support providers. The organization attributes this growth to enhanced digital onboarding processes, comprehensive volunteer training programs, and increased awareness of peer support services within target communities.'
+      fullContent: 'The 10,000-volunteer milestone represents a 250% increase from the organization\'s inaugural year. Through strategic expansion efforts and improved volunteer recruitment pathways, Local Aid has established a robust network of trained support providers. The organization attributes this growth to enhanced digital onboarding processes, comprehensive volunteer training programs, and increased awareness of peer support services within target communities.'
     },
     {
       date: 'November 28, 2025',
       title: 'Strategic Healthcare Partnership Strengthens Medical Support Services',
-      summary: 'MELBOURNE, AUSTRALIA – Local AIDS announces a strategic collaboration with leading regional healthcare networks to enhance medical support service delivery. This partnership expands transportation coordination capabilities, improves specialist appointment accessibility, and establishes integrated referral pathways for vulnerable populations requiring enhanced healthcare support.',
+      summary: 'MELBOURNE, AUSTRALIA – Local Aid announces a strategic collaboration with leading regional healthcare networks to enhance medical support service delivery. This partnership expands transportation coordination capabilities, improves specialist appointment accessibility, and establishes integrated referral pathways for vulnerable populations requiring enhanced healthcare support.',
       link: '#',
-      fullContent: 'The partnership integrates Local AIDS volunteer coordination with established healthcare provider networks, creating seamless support pathways for patients requiring non-emergency medical transportation and appointment assistance. Healthcare providers gain access to vetted volunteer coordinators, while Local AIDS expands its service capacity to serve patients across multiple healthcare systems. Initial partnership metrics indicate a 35% improvement in appointment adherence rates for patients utilizing volunteer transportation services.'
+      fullContent: 'The partnership integrates Local Aid volunteer coordination with established healthcare provider networks, creating seamless support pathways for patients requiring non-emergency medical transportation and appointment assistance. Healthcare providers gain access to vetted volunteer coordinators, while Local Aid expands its service capacity to serve patients across multiple healthcare systems. Initial partnership metrics indicate a 35% improvement in appointment adherence rates for patients utilizing volunteer transportation services.'
     },
     {
       date: 'November 10, 2025',
       title: 'Launch of Rapid Response Emergency Assistance Initiative',
-      summary: 'BRISBANE, AUSTRALIA – Local AIDS introduces an expanded emergency assistance program designed to provide time-critical support for acute community needs. The initiative establishes expedited volunteer deployment protocols, crisis communication systems, and specialized training for emergency support providers, addressing critical service gaps during acute situations.',
+      summary: 'BRISBANE, AUSTRALIA – Local Aid introduces an expanded emergency assistance program designed to provide time-critical support for acute community needs. The initiative establishes expedited volunteer deployment protocols, crisis communication systems, and specialized training for emergency support providers, addressing critical service gaps during acute situations.',
       link: '#',
       fullContent: 'The Rapid Response program enables emergency deployment of trained volunteers within 2-4 hours of request submission. Program protocols include crisis situation assessment, safety protocols for emergency responders, and specialized support for clients experiencing acute health events, housing instability, or emergency service needs. The initiative includes partnerships with emergency services agencies and specialized training certification for participating volunteers.'
     },
     {
       date: 'October 25, 2025',
       title: 'Advanced Matching Algorithm Elevates Service Quality and User Satisfaction',
-      summary: 'PERTH, AUSTRALIA – Local AIDS releases proprietary technology development data demonstrating significant improvements in volunteer-client compatibility assessment. The advanced matching algorithm utilizes behavioral analytics, service preference assessment, and community location optimization to improve service outcomes and user experience metrics.',
+      summary: 'PERTH, AUSTRALIA – Local Aid releases proprietary technology development data demonstrating significant improvements in volunteer-client compatibility assessment. The advanced matching algorithm utilizes behavioral analytics, service preference assessment, and community location optimization to improve service outcomes and user experience metrics.',
       link: '#',
       fullContent: 'The proprietary matching technology incorporates machine learning algorithms trained on historical service satisfaction data, volunteer performance metrics, and client feedback patterns. Implementation results demonstrate a 42% improvement in client satisfaction ratings, a 38% reduction in service cancellations, and a 31% increase in volunteer retention rates. The technology enables personalized volunteer recommendations based on client-specific needs and volunteer expertise profiles.'
     },
     {
       date: 'September 30, 2025',
       title: 'Annual Impact Assessment: Demonstrable Growth in Community Support Coverage',
-      summary: 'ADELAIDE, AUSTRALIA – Local AIDS releases its 2025 comprehensive impact assessment, documenting significant expansion in service delivery across multiple geographic regions. The report highlights community members assisted, service delivery statistics, volunteer engagement metrics, and organizational effectiveness indicators reflecting substantial organizational growth.',
+      summary: 'ADELAIDE, AUSTRALIA – Local Aid releases its 2025 comprehensive impact assessment, documenting significant expansion in service delivery across multiple geographic regions. The report highlights community members assisted, service delivery statistics, volunteer engagement metrics, and organizational effectiveness indicators reflecting substantial organizational growth.',
       link: '#',
       fullContent: 'The 2025 Impact Report documents 127% year-over-year growth in service requests, 89% client satisfaction ratings, and expanded geographic coverage into five additional regional areas. The report includes detailed outcome metrics for medical transportation services (estimated 18,500+ medical appointments facilitated), shopping assistance services (estimated 12,300+ shopping expeditions completed), and specialized support services. Community feedback demonstrates strong confidence in service quality and volunteer professionalism.'
     },
     {
       date: 'August 15, 2025',
       title: 'Recognition of Organizational Excellence in Social Welfare Innovation',
-      summary: 'CANBERRA, AUSTRALIA – Local AIDS receives the 2025 Community Excellence Award from the National Social Welfare Association, recognizing outstanding contributions to community development and social impact. The award validates the organization\'s evidence-based approach to peer support programming and community-led healthcare accessibility initiatives.',
+      summary: 'CANBERRA, AUSTRALIA – Local Aid receives the 2025 Community Excellence Award from the National Social Welfare Association, recognizing outstanding contributions to community development and social impact. The award validates the organization\'s evidence-based approach to peer support programming and community-led healthcare accessibility initiatives.',
       link: '#',
-      fullContent: 'The Community Excellence Award recognizes organizations demonstrating exceptional impact in social welfare innovation, community development, and sustainable social change. Award selection criteria include documented community impact, organizational effectiveness, innovative service delivery models, and stakeholder engagement quality. The Local AIDS organization was selected from a competitive applicant pool of 280+ organizations across Australia, representing the top 3% of recognized social welfare innovators.'
+      fullContent: 'The Community Excellence Award recognizes organizations demonstrating exceptional impact in social welfare innovation, community development, and sustainable social change. Award selection criteria include documented community impact, organizational effectiveness, innovative service delivery models, and stakeholder engagement quality. The Local Aid organization was selected from a competitive applicant pool of 280+ organizations across Australia, representing the top 3% of recognized social welfare innovators.'
     }
   ];
 
@@ -90,37 +90,37 @@ function Press() {
       outlet: 'Australian Community Weekly',
       title: 'Peer-to-Peer Support Models: Reshaping Community Healthcare Accessibility',
       date: 'December 2025',
-      description: 'Feature article examining how Local AIDS and similar organizations are transforming healthcare accessibility through peer-to-peer support models and community-driven service delivery.'
+      description: 'Feature article examining how Local Aid and similar organizations are transforming healthcare accessibility through peer-to-peer support models and community-driven service delivery.'
     },
     {
       outlet: 'Tech for Social Good Magazine',
       title: 'Digital Platforms Revolutionizing Volunteer Coordination and Community Engagement',
       date: 'November 2025',
-      description: 'Technology focused coverage of Local AIDS matching algorithms, volunteer coordination systems, and digital innovation in community support service delivery.'
+      description: 'Technology focused coverage of Local Aid matching algorithms, volunteer coordination systems, and digital innovation in community support service delivery.'
     },
     {
       outlet: 'Healthcare Innovation Today',
       title: 'Technology-Enabled Solutions in Healthcare Support Service Delivery',
       date: 'October 2025',
-      description: 'Healthcare industry analysis featuring Local AIDS as a case study in technology-enabled service delivery and healthcare accessibility innovation.'
+      description: 'Healthcare industry analysis featuring Local Aid as a case study in technology-enabled service delivery and healthcare accessibility innovation.'
     },
     {
       outlet: 'National Charity Review',
       title: 'Evidence-Based Nonprofits: Measuring Impact in Community Support Services',
       date: 'September 2025',
-      description: 'Editorial coverage highlighting Local AIDS impact measurement methodologies and evidence-based approaches to nonprofit community service delivery.'
+      description: 'Editorial coverage highlighting Local Aid impact measurement methodologies and evidence-based approaches to nonprofit community service delivery.'
     },
     {
       outlet: 'Social Impact Quarterly',
       title: 'Scalable Models for Sustainable Community Support Networks',
       date: 'August 2025',
-      description: 'Long-form analysis of Local AIDS organizational scaling strategies, sustainability models, and replication potential for community support networks.'
+      description: 'Long-form analysis of Local Aid organizational scaling strategies, sustainability models, and replication potential for community support networks.'
     },
     {
       outlet: 'Australian Health & Wellness Report',
       title: 'Community-Led Initiatives: Addressing Service Gaps in Healthcare Access',
       date: 'July 2025',
-      description: 'Health sector coverage of Local AIDS role in addressing critical healthcare access gaps and community-led health support initiatives.'
+      description: 'Health sector coverage of Local Aid role in addressing critical healthcare access gaps and community-led health support initiatives.'
     }
   ];
 
@@ -131,7 +131,7 @@ function Press() {
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1>Media Center</h1>
-          <p>Press releases, news coverage, and official media resources for Local AIDS</p>
+          <p>Press releases, news coverage, and official media resources for Local Aid</p>
         </div>
       </section>
 
@@ -235,17 +235,17 @@ function Press() {
 
         {/* Organization Overview Section */}
         <section className="organization-overview-section">
-          <h2>About Local AIDS</h2>
+          <h2>About Local Aid</h2>
           <div className="overview-content">
             <p>
-              Local AIDS is a community-driven platform connecting volunteers with individuals requiring healthcare support, 
+              Local Aid is a community-driven platform connecting volunteers with individuals requiring healthcare support, 
               transportation assistance, and community services across Australia. Founded in 2022, the organization has established 
               a peer-to-peer support model addressing critical service gaps in healthcare accessibility and community-led assistance.
             </p>
             <p>
               The platform leverages proprietary matching technology to connect trained volunteers with community members requiring 
               support services including medical transportation, shopping assistance, appointment coordination, and specialized assistance 
-              for vulnerable populations. Local AIDS operates as a registered nonprofit organization committed to evidence-based social 
+              for vulnerable populations. Local Aid operates as a registered nonprofit organization committed to evidence-based social 
               impact and sustainable community development.
             </p>
             <h3>Our Commitment to Excellence</h3>

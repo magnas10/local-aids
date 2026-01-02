@@ -137,7 +137,7 @@ function Header() {
       
       <nav className="nav" role="navigation" aria-label="Main navigation">
         {/* Logo */}
-        <Link to="/" className="logo" aria-label="Local AIDS Home">
+        <Link to="/" className="logo" aria-label="Local Aid Home">
           <img 
             src="/local-aid-logo.png" 
             alt="Local Aid Logo" 

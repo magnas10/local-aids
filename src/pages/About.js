@@ -79,7 +79,7 @@ function About() {
   ];
 
   const milestones = [
-    { year: '2018', event: 'Founded Local AIDS with mission to serve vulnerable populations. Launched with core team of 5 and pioneering vision.' },
+    { year: '2018', event: 'Founded Local Aid with mission to serve vulnerable populations. Launched with core team of 5 and pioneering vision.' },
     { year: '2019', event: 'Developed and launched proprietary digital platform connecting volunteers with those in need. First 500 matches completed.' },
     { year: '2020', event: 'Expanded service offerings and established first partnerships. Grew volunteer network to 200+ active members.' },
     { year: '2022', event: 'Achieved 5,000+ successful matches and 1,000+ trained active volunteers across expanding service areas.' },

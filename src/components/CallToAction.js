@@ -21,7 +21,7 @@ function CallToAction() {
           <h2 className="cta-title">Ready to Make a Difference<br/>in Your Community?</h2>
           <p className="cta-subtitle">
             Whether you want to volunteer your time or need a helping hand, 
-            Local AIDS connects you with your community.
+            Local Aid connects you with your community.
           </p>
 
           <div className="cta-features">

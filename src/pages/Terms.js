@@ -21,14 +21,14 @@ function Terms() {
           <div className="legal-section">
             <h2>1. Acceptance of Terms</h2>
             <p>
-              By accessing and using Local AIDS ("the Platform"), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to these Terms of Service, please do not use the Platform.
+              By accessing and using Local Aid ("the Platform"), you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to these Terms of Service, please do not use the Platform.
             </p>
           </div>
 
           <div className="legal-section">
             <h2>2. Description of Service</h2>
             <p>
-              Local AIDS is a community-driven platform that connects individuals seeking assistance with volunteers willing to help. We facilitate connections but do not directly provide services or guarantee the quality, safety, or legality of interactions between users.
+              Local Aid is a community-driven platform that connects individuals seeking assistance with volunteers willing to help. We facilitate connections but do not directly provide services or guarantee the quality, safety, or legality of interactions between users.
             </p>
           </div>
 
@@ -63,10 +63,10 @@ function Terms() {
           <div className="legal-section">
             <h2>5. Content and Intellectual Property</h2>
             <p>
-              Users retain ownership of content they post. By posting content, you grant Local AIDS a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content on the Platform.
+              Users retain ownership of content they post. By posting content, you grant Local Aid a non-exclusive, worldwide, royalty-free license to use, display, and distribute your content on the Platform.
             </p>
             <p>
-              All Platform software, design, logos, and trademarks are the property of Local AIDS and are protected by intellectual property laws.
+              All Platform software, design, logos, and trademarks are the property of Local Aid and are protected by intellectual property laws.
             </p>
           </div>
 
@@ -80,7 +80,7 @@ function Terms() {
           <div className="legal-section">
             <h2>7. Liability and Disclaimers</h2>
             <p>
-              <strong>THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</strong> Local AIDS:
+              <strong>THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND.</strong> Local Aid:
             </p>
             <ul>
               <li>Does not guarantee the accuracy or reliability of user-generated content</li>
@@ -114,14 +114,14 @@ function Terms() {
           <div className="legal-section">
             <h2>10. Modifications to Terms</h2>
             <p>
-              Local AIDS reserves the right to modify these Terms of Service at any time. We will notify users of significant changes via email or Platform notification. Continued use after modifications constitutes acceptance of the new terms.
+              Local Aid reserves the right to modify these Terms of Service at any time. We will notify users of significant changes via email or Platform notification. Continued use after modifications constitutes acceptance of the new terms.
             </p>
           </div>
 
           <div className="legal-section">
             <h2>11. Dispute Resolution</h2>
             <p>
-              Any disputes arising from these Terms will be resolved through binding arbitration in accordance with the laws of the jurisdiction where Local AIDS operates. Users waive the right to participate in class-action lawsuits.
+              Any disputes arising from these Terms will be resolved through binding arbitration in accordance with the laws of the jurisdiction where Local Aid operates. Users waive the right to participate in class-action lawsuits.
             </p>
           </div>
 
@@ -131,8 +131,8 @@ function Terms() {
               If you have questions about these Terms of Service, please contact us at:
             </p>
             <p>
-              <strong>Email:</strong> legal@localaids.com<br />
-              <strong>Address:</strong> Local AIDS Legal Department, [Your Address]
+              <strong>Email:</strong> legal@localaid.com<br />
+              <strong>Address:</strong> Local Aid Legal Department, [Your Address]
             </p>
           </div>
 

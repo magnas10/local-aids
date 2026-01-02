@@ -139,7 +139,7 @@ function Events() {
       urgency: 'normal',
       distance: 8,
       image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop',
-      organizer: 'Local AIDS Foundation',
+      organizer: 'Local Aid Foundation',
       category: 'Fundraising'
     },
     {

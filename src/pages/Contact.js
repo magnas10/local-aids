@@ -169,7 +169,7 @@ function Contact() {
       answer: 'Click on "Request Help" button, describe what you need, and we\'ll match you with volunteers.'
     },
     {
-      question: 'Is there a cost to use Local AIDS?',
+      question: 'Is there a cost to use Local Aid?',
       answer: 'No! Our platform is completely free for both volunteers and those seeking help.'
     },
     {
@@ -407,7 +407,7 @@ function Contact() {
           />
           <div className="map-overlay-pro">
             <div className="map-info-card">
-              <h3>Local AIDS Headquarters</h3>
+              <h3>Local Aid Headquarters</h3>
               <p>123 Community Street, Melbourne VIC 3000</p>
               <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" className="directions-btn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">

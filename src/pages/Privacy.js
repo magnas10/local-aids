@@ -24,7 +24,7 @@ function Privacy() {
           <div className="legal-section">
             <h2>1. Introduction</h2>
             <p>
-              Local AIDS ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read this policy carefully.
+              Local Aid ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Please read this policy carefully.
             </p>
           </div>
 
@@ -116,7 +116,7 @@ function Privacy() {
               <li><strong>Object:</strong> Object to certain data processing activities</li>
             </ul>
             <p>
-              To exercise these rights, contact us at privacy@localaids.com or through your account settings.
+              To exercise these rights, contact us at privacy@localaid.com or through your account settings.
             </p>
           </div>
 
@@ -144,7 +144,7 @@ function Privacy() {
           <div className="legal-section">
             <h2>10. Children's Privacy</h2>
             <p>
-              Local AIDS is not intended for users under 18 years of age. We do not knowingly collect information from children. If we discover we have collected data from a child, we will delete it promptly.
+              Local Aid is not intended for users under 18 years of age. We do not knowingly collect information from children. If we discover we have collected data from a child, we will delete it promptly.
             </p>
           </div>
 
@@ -168,8 +168,8 @@ function Privacy() {
               If you have questions or concerns about this Privacy Policy or our data practices, please contact us:
             </p>
             <p>
-              <strong>Email:</strong> privacy@localaids.com<br />
-              <strong>Mail:</strong> Local AIDS Privacy Team, [Your Address]<br />
+              <strong>Email:</strong> privacy@localaid.com<br />
+              <strong>Mail:</strong> Local Aid Privacy Team, [Your Address]<br />
               <strong>Phone:</strong> [Your Phone Number]
             </p>
           </div>

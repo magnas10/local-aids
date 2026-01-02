@@ -68,7 +68,7 @@ function Login() {
       <div className="auth-container">
         <div className="auth-card" role="main">
           <h1>Welcome Back</h1>
-          <p>Sign in to continue to Local AIDS</p>
+          <p>Sign in to continue to Local Aid</p>
           
           {/* Password Format Reminder */}
           <div style={{

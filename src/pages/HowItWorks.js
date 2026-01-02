@@ -121,7 +121,7 @@ function HowItWorks() {
     <div className="how-it-works-page">
       {/* Hero Section */}
       <section className="hero-section" style={{ 
-        backgroundImage: 'linear-gradient(rgba(32, 178, 170, 0.9), rgba(26, 143, 136, 0.9)), url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&h=600&fit=crop&q=80)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1920&h=600&fit=crop&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: 'white',
@@ -130,7 +130,7 @@ function HowItWorks() {
       }}>
         <div className="container">
           <h1 style={{ fontSize: '3em', marginBottom: '20px', fontWeight: 'bold' }}>
-            How Local AIDS Works
+            How Local Aid Works
           </h1>
           <p style={{ fontSize: '1.3em', maxWidth: '800px', margin: '0 auto', opacity: 0.95 }}>
             Connecting neighbors to help neighbors. Simple, safe, and impactful.

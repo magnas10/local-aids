@@ -121,7 +121,7 @@ function CommunityGuidelines() {
       <div className="guidelines-intro">
         <h2>Our Commitment to Community</h2>
         <p>
-          Local AIDS is built on the foundation of trust, respect, and mutual support. These guidelines 
+          Local Aid is built on the foundation of trust, respect, and mutual support. These guidelines 
           help ensure that our platform remains a safe and welcoming space for everyone. By participating 
           in our community, you agree to uphold these values and contribute to a positive environment.
         </p>

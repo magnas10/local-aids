@@ -124,7 +124,7 @@ function Footer() {
                 className="footer-logo-icon"
                 style={{ width: '50px', height: '50px', objectFit: 'contain' }}
               />
-              <span className="footer-logo-text">Local AIDS</span>
+              <span className="footer-logo-text">Local Aid</span>
             </div>
             <p className="footer-tagline">
               Connecting communities through kindness. We help Australians find and offer
@@ -164,7 +164,7 @@ function Footer() {
         {/* Footer Bottom */}
         <div className="footer-bottom">
           <p className="footer-copyright">
-            © 2025 Local AIDS. Connecting Communities Through Kindness. All rights reserved.
+            © 2025 Local Aid. Connecting Communities Through Kindness. All rights reserved.
           </p>
           <div className="footer-legal">
             <a href="/terms">Terms of Service</a>

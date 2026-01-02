@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
 import './Pages.css';
 
 function Careers() {
@@ -8,7 +7,7 @@ function Careers() {
 
   // Company information
   const companyInfo = {
-    name: 'Local AIDS',
+    name: 'Local Aid',
     founded: '2018',
     mission: 'Connecting communities through kindness and volunteer support, providing essential services to vulnerable populations',
     teamSize: '50+',
@@ -346,7 +345,7 @@ function Careers() {
             <div className="process-step">
               <div className="step-number">4</div>
               <h3>Offer</h3>
-              <p>Join the Local AIDS family</p>
+              <p>Join the Local Aid family</p>
             </div>
           </div>
         </div>
@@ -359,7 +358,7 @@ function Careers() {
             <h2>Ready to Make an Impact?</h2>
             <p>Don't see a role that fits? We're always looking for talented people to join our mission.</p>
             <div className="cta-buttons">
-              <a href="mailto:careers@localaids.org.au" className="cta-btn primary">
+              <a href="mailto:careers@localaid.org.au" className="cta-btn primary">
                 Apply or Send Your Resume
               </a>
               <Link to="/contact" className="cta-btn secondary">
@@ -376,8 +375,8 @@ function Careers() {
           <div className="careers-footer-content">
             <h3>Questions About Careers at {companyInfo.name}?</h3>
             <p>Our HR team is here to help. Reach out with any questions about opportunities, the application process, or our organization.</p>
-            <a href="mailto:careers@localaids.org.au" className="careers-footer-link">
-              careers@localaids.org.au
+            <a href="mailto:careers@localaid.org.au" className="careers-footer-link">
+              careers@localaid.org.au
             </a>
             <p style={{ marginTop: '1rem', fontSize: '0.95rem', opacity: 0.8 }}>
               We are committed to building a diverse, equitable, and inclusive team. We encourage applications from all backgrounds and experiences.
@@ -385,8 +384,6 @@ function Careers() {
           </div>
         </div>
       </section>
-      
-      <Footer />
     </div>
   );
 }

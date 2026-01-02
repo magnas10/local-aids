@@ -171,7 +171,7 @@ function Partners() {
       <section className="partner-types-section">
         <div className="section-container">
           <h2>Partnership Opportunities</h2>
-          <p className="section-subtitle">Different ways to partner with Local AIDS.</p>
+          <p className="section-subtitle">Different ways to partner with Local Aid.</p>
 
           <div className="partner-types-grid">
             {partnerTypes.map((type, index) => (

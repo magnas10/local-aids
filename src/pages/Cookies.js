@@ -82,7 +82,7 @@ function Cookies() {
           <div className="legal-section">
             <h2>How We Use Cookies</h2>
             <p>
-              Local AIDS uses cookies and similar tracking technologies to:
+              Local Aid uses cookies and similar tracking technologies to:
             </p>
             <ul>
               <li>Keep you signed in to your account</li>
@@ -211,7 +211,7 @@ function Cookies() {
               If you have questions about our use of cookies or this policy, please contact us:
             </p>
             <p>
-              <strong>Email:</strong> privacy@localaids.com<br />
+              <strong>Email:</strong> privacy@localaid.com<br />
               <strong>Subject Line:</strong> Cookie Policy Inquiry
             </p>
           </div>
@@ -222,7 +222,7 @@ function Cookies() {
               <div style={{ flex: 1 }}>
                 <h3 style={{ marginTop: 0 }}>Cookie Consent</h3>
                 <p>
-                  By continuing to use Local AIDS, you consent to our use of cookies as described in this policy. You can change your preferences at any time through your browser or account settings.
+                  By continuing to use Local Aid, you consent to our use of cookies as described in this policy. You can change your preferences at any time through your browser or account settings.
                 </p>
                 <div style={{ marginTop: '15px' }}>
                   <Link to="/privacy" style={{ marginRight: '20px' }}>Privacy Policy</Link>

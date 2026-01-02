@@ -19,7 +19,7 @@ function HelpCenter() {
   const faqs = [
     {
       category: 'getting-started',
-      question: 'How do I get started with Local AIDS?',
+      question: 'How do I get started with Local Aid?',
       answer: 'Getting started is easy! Simply sign up for a free account, complete your profile, and you can start browsing opportunities to help or post your own request for assistance. We recommend verifying your email and adding a profile photo to build trust with the community.'
     },
     {
@@ -39,7 +39,7 @@ function HelpCenter() {
     },
     {
       category: 'safety',
-      question: 'How does Local AIDS ensure user safety?',
+      question: 'How does Local Aid ensure user safety?',
       answer: 'Safety is our top priority. We employ multiple safety measures including user verification, secure messaging, a comprehensive rating system, 24/7 monitoring, and easy reporting tools. We also provide extensive safety guidelines and tips for all users.'
     },
     {
