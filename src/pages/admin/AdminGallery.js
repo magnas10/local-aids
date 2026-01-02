@@ -177,7 +177,7 @@ function AdminGallery() {
                 onClick={() => setSelectedImage(image)}
               >
                 <img 
-                  src={`http://localhost:5001${image.imageUrl}`} 
+                  src={image.imageUrl} 
                   alt={image.title}
                   onError={(e) => {
                     e.target.src = 'https://via.placeholder.com/300x200?text=Error';
@@ -226,7 +226,7 @@ function AdminGallery() {
             
             <div className="modal-image-section">
               <img 
-                src={`http://localhost:5001${selectedImage.imageUrl}`} 
+                src={selectedImage.imageUrl} 
                 alt={selectedImage.title}
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/800x600?text=Error';

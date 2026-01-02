@@ -20,7 +20,7 @@ const seedData = async () => {
     const adminUser = await User.create({
       name: 'Admin User',
       email: 'admin@localaids.org.au',
-      password: 'admin123', // hooks will hash it
+      password: '12345678', // Exactly 8 digits as per validation rules
       role: 'admin',
       isActive: true,
       phone: '1234567890'
@@ -32,15 +32,17 @@ const seedData = async () => {
       {
         name: 'John Volunteer',
         email: 'volunteer@example.com',
-        password: 'password123',
+        password: '11111111', // Exactly 8 digits
         role: 'volunteer',
+        phone: '9876543210'
         // bio: 'Passionate about helping the community' // Removed bio if not in model or added to model later
       },
       {
         name: 'Jane Doe',
         email: 'jane@example.com',
-        password: 'password123',
-        role: 'user'
+        password: '22222222', // Exactly 8 digits
+        role: 'user',
+        phone: '9876543211'
       }
     ], { individualHooks: true }); // Important for password hashing!
     console.log('Created sample users');
@@ -110,9 +112,10 @@ const seedData = async () => {
     console.log('Created sample partners');
 
     console.log('\n=== Seed Data Complete ===');
-    console.log('Admin login: admin@localaids.org.au / admin123');
-    console.log('Volunteer login: volunteer@example.com / password123');
-    console.log('User login: jane@example.com / password123');
+    console.log('Admin login: admin@localaids.org.au / 12345678');
+    console.log('Volunteer login: volunteer@example.com / 11111111');
+    console.log('User login: jane@example.com / 22222222');
+    console.log('\nNote: All passwords are 8-digit numeric format');
 
     process.exit(0);
   } catch (error) {

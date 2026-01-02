@@ -7,7 +7,7 @@ const Notification = sequelize.define('Notification', {
     autoIncrement: true,
     primaryKey: true
   },
-  recipientId: {
+  createdBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -16,30 +16,39 @@ const Notification = sequelize.define('Notification', {
     }
   },
   type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isIn: [['request_update', 'new_message', 'event_reminder', 'system', 'volunteer_match']]
-    }
+    type: DataTypes.ENUM('announcement', 'alert', 'reminder', 'system'),
+    defaultValue: 'announcement',
+    allowNull: false
+  },
+  priority: {
+    type: DataTypes.ENUM('low', 'medium', 'high'),
+    defaultValue: 'medium',
+    allowNull: false
   },
   title: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  message: {
+  content: {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  relatedId: {
-    type: DataTypes.STRING // ID of related item (request, event, etc), kept as string to be flexible
+  targetAudience: {
+    type: DataTypes.ENUM('all', 'users', 'volunteers', 'admins'),
+    defaultValue: 'all',
+    allowNull: false
   },
-  relatedModel: {
-    type: DataTypes.STRING // 'HelpRequest', 'Event', 'Message', etc.
+  expiresAt: {
+    type: DataTypes.DATE,
+    allowNull: true
   },
-  read: {
+  isActive: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
+    defaultValue: true
   }
+}, {
+  timestamps: true,
+  tableName: 'Notifications'
 });
 
 module.exports = Notification;

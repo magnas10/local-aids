@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { donationsAPI } from '../services/api';
 import './Pages.css';
 
 function Donate() {
@@ -18,6 +19,14 @@ function Donate() {
     endDate: '',
     image: null
   });
+  const [donorInfo, setDonorInfo] = useState({
+    name: '',
+    email: '',
+    anonymous: false
+  });
+  const [processing, setProcessing] = useState(false);
+  const [donationSuccess, setDonationSuccess] = useState(false);
+  const [donationError, setDonationError] = useState('');
 
   const impactItems = [
     {
@@ -131,6 +140,57 @@ function Donate() {
       endDate: '',
       image: null
     });
+  };
+
+  const handleDonorInfoChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setDonorInfo(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleDonateSubmit = async (e) => {
+    if (e) e.preventDefault();
+    
+    setDonationError('');
+    
+    const amount = customAmount || selectedAmount;
+    if (!amount || amount <= 0) {
+      setDonationError('Please select or enter a valid donation amount');
+      return;
+    }
+
+    if (!donorInfo.name || !donorInfo.email) {
+      setDonationError('Please provide your name and email');
+      return;
+    }
+
+    setProcessing(true);
+    
+    try {
+      await donationsAPI.create({
+        amount: parseFloat(amount),
+        donorName: donorInfo.anonymous ? 'Anonymous' : donorInfo.name,
+        donorEmail: donorInfo.email,
+        isRecurring: donationType === 'monthly',
+        isAnonymous: donorInfo.anonymous
+      });
+
+      setDonationSuccess(true);
+      setDonorInfo({ name: '', email: '', anonymous: false });
+      setSelectedAmount(100);
+      setCustomAmount('');
+      
+      setTimeout(() => {
+        setDonationSuccess(false);
+      }, 5000);
+      
+    } catch (error) {
+      setDonationError(error.message || 'Failed to process donation. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
   };
 
   return (
@@ -663,19 +723,38 @@ function Donate() {
               {/* Personal Information */}
               <div className="donor-info-pro">
                 <h3>Your Information</h3>
-                <div className="form-row-pro">
-                  <div className="form-group-pro">
-                    <label>First Name</label>
-                    <input type="text" placeholder="John" />
-                  </div>
-                  <div className="form-group-pro">
-                    <label>Last Name</label>
-                    <input type="text" placeholder="Smith" />
-                  </div>
+                <div className="form-group-pro">
+                  <label>Full Name *</label>
+                  <input 
+                    type="text" 
+                    name="name"
+                    placeholder="John Smith" 
+                    value={donorInfo.name}
+                    onChange={handleDonorInfoChange}
+                    required
+                  />
                 </div>
                 <div className="form-group-pro">
-                  <label>Email Address</label>
-                  <input type="email" placeholder="john@example.com" />
+                  <label>Email Address *</label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    placeholder="john@example.com" 
+                    value={donorInfo.email}
+                    onChange={handleDonorInfoChange}
+                    required
+                  />
+                </div>
+                <div className="form-group-pro">
+                  <label className="checkbox-label-pro">
+                    <input 
+                      type="checkbox" 
+                      name="anonymous"
+                      checked={donorInfo.anonymous}
+                      onChange={handleDonorInfoChange}
+                    />
+                    <span>Make my donation anonymous</span>
+                  </label>
                 </div>
               </div>
 
@@ -725,8 +804,30 @@ function Donate() {
               </div>
 
               {/* Submit Button */}
-              <button className="donate-submit-btn-pro">
-                Donate ${customAmount || selectedAmount} {donationType === 'monthly' ? '/month' : ''}
+              {donationSuccess && (
+                <div className="success-message-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                  Thank you for your generous donation!
+                </div>
+              )}
+              {donationError && (
+                <div className="error-message-pro">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                  </svg>
+                  {donationError}
+                </div>
+              )}
+              <button 
+                className="donate-submit-btn-pro"
+                onClick={handleDonateSubmit}
+                disabled={processing}
+              >
+                {processing ? 'Processing...' : `Donate $${customAmount || selectedAmount} ${donationType === 'monthly' ? '/month' : ''}`}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
                   <line x1="5" y1="12" x2="19" y2="12"/>
                   <polyline points="12 5 19 12 12 19"/>

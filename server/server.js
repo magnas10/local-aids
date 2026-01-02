@@ -13,7 +13,10 @@ const GalleryItem = require('./models/GalleryItem');
 const Event = require('./models/Event');
 const Donation = require('./models/Donation');
 const Message = require('./models/Message');
+const Conversation = require('./models/Conversation');
+const ConversationParticipant = require('./models/ConversationParticipant');
 const HelpRequest = require('./models/HelpRequest');
+const Notification = require('./models/Notification');
 
 // Set up associations
 GalleryItem.belongsTo(User, {
@@ -30,6 +33,22 @@ User.hasMany(GalleryItem, {
   foreignKey: 'uploadedBy',
   as: 'uploadedGalleryItems'
 });
+
+// Conversation associations
+Conversation.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+Conversation.hasMany(ConversationParticipant, { foreignKey: 'conversationId', as: 'participants' });
+Conversation.hasMany(Message, { foreignKey: 'conversationId', as: 'messages' });
+
+ConversationParticipant.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+ConversationParticipant.belongsTo(Conversation, { foreignKey: 'conversationId', as: 'conversation' });
+
+Message.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
+Message.belongsTo(Conversation, { foreignKey: 'conversationId', as: 'conversation' });
+Message.belongsTo(Message, { foreignKey: 'replyToId', as: 'replyTo' });
+
+// Notification associations
+Notification.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+User.hasMany(Notification, { foreignKey: 'createdBy', as: 'createdNotifications' });
 
 // Import routes
 const authRoutes = require('./routes/auth');

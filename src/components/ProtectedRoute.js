@@ -3,6 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // ProtectedRoute - Requires user to be logged in
+// Note: volunteers and users now have unified access
 function ProtectedRoute({ children, requireRole }) {
   const { isLoggedIn, user, loading } = useAuth();
   const location = useLocation();
@@ -20,8 +21,9 @@ function ProtectedRoute({ children, requireRole }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If a specific role is required and user doesn't have it
-  if (requireRole && user?.role !== requireRole) {
+  // Allow volunteers and users to access each other's features
+  // Only restrict admin-specific routes
+  if (requireRole === 'admin' && user?.role !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
 

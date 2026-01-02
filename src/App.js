@@ -10,10 +10,11 @@ import AdminNavigation from './components/AdminNavigation';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Gallery from './pages/Gallery';
-import Messages from './pages/Messages';
+import Messages from './pages/Messages_new';
 import Profile from './pages/Profile';
 import VolunteerDashboard from './pages/VolunteerDashboard';
 import UserDashboard from './pages/UserDashboard';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import About from './pages/About';
@@ -65,8 +66,9 @@ function App() {
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/volunteer-dashboard" element={<ProtectedRoute requireRole="volunteer"><VolunteerDashboard /></ProtectedRoute>} />
-              <Route path="/user-dashboard" element={<ProtectedRoute requireRole="user"><UserDashboard /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/volunteer-dashboard" element={<ProtectedRoute><VolunteerDashboard /></ProtectedRoute>} />
+              <Route path="/user-dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/about" element={<About />} />

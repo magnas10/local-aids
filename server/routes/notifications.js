@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+const { Op } = require('sequelize');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const { protect, admin, optionalAuth } = require('../middleware/auth');
@@ -52,50 +53,47 @@ router.get('/', optionalAuth, async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    // Build query based on user role or public access
-    const query = {
+    // Build where clause
+    const where = {
       isActive: true,
-      $or: [
+      [Op.or]: [
         { expiresAt: null },
-        { expiresAt: { $gt: new Date() } }
+        { expiresAt: { [Op.gt]: new Date() } }
       ]
     };
 
     // If user is authenticated, filter by their role
     if (req.user) {
       const userRole = req.user.role;
-      query.$and = [
+      where[Op.and] = [
         {
-          $or: [
+          [Op.or]: [
             { targetAudience: 'all' },
-            { targetAudience: userRole === 'admin' ? 'admins' : userRole }
+            { targetAudience: userRole }
           ]
         }
       ];
     } else {
       // For unauthenticated users, only show 'all' audience notifications
-      query.targetAudience = 'all';
+      where.targetAudience = 'all';
     }
 
-    const notifications = await Notification.find(query)
-      .populate('createdBy', 'name')
-      .sort({ priority: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Notification.countDocuments(query);
-
-    // Mark notifications as read if user is authenticated
-    const notificationsWithReadStatus = notifications.map(notification => {
-      const isRead = req.user ? notification.readBy.some(read => read.user.toString() === req.user.id) : false;
-      return {
-        ...notification.toObject(),
-        isRead
-      };
+    const notifications = await Notification.findAll({
+      where,
+      include: [{
+        model: User,
+        as: 'creator',
+        attributes: ['id', 'name', 'email']
+      }],
+      order: [['priority', 'DESC'], ['createdAt', 'DESC']],
+      offset: skip,
+      limit: limit
     });
 
+    const total = await Notification.count({ where });
+
     res.json({
-      notifications: notificationsWithReadStatus,
+      notifications,
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
@@ -119,24 +117,19 @@ router.get('/unread-count', optionalAuth, async (req, res) => {
       return res.json({ count: 0 });
     }
 
-    const query = {
+    const where = {
       isActive: true,
-      $or: [
+      [Op.or]: [
         { expiresAt: null },
-        { expiresAt: { $gt: new Date() } }
+        { expiresAt: { [Op.gt]: new Date() } }
       ],
-      $and: [
-        {
-          $or: [
-            { targetAudience: 'all' },
-            { targetAudience: req.user.role === 'admin' ? 'admins' : req.user.role }
-          ]
-        }
-      ],
-      'readBy.user': { $ne: req.user.id }
+      [Op.or]: [
+        { targetAudience: 'all' },
+        { targetAudience: req.user.role }
+      ]
     };
 
-    const count = await Notification.countDocuments(query);
+    const count = await Notification.count({ where });
 
     res.json({ count });
   } catch (error) {

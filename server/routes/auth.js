@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
+const { body } = require('express-validator');
 
 // Import college project validation and security middleware
 const { registrationValidation, loginValidation, sanitizeInput } = require('../middleware/validation');

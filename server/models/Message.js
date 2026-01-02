@@ -7,13 +7,13 @@ const Message = sequelize.define('Message', {
     autoIncrement: true,
     primaryKey: true
   },
-  subject: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  content: {
-    type: DataTypes.TEXT,
-    allowNull: false
+  conversationId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Conversations',
+      key: 'id'
+    }
   },
   senderId: {
     type: DataTypes.INTEGER,
@@ -23,22 +23,37 @@ const Message = sequelize.define('Message', {
       key: 'id'
     }
   },
-  recipientId: {
+  content: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  type: {
+    type: DataTypes.ENUM('text', 'image', 'file', 'system'),
+    defaultValue: 'text'
+  },
+  attachmentUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  replyToId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
-      model: 'Users',
+      model: 'Messages',
       key: 'id'
     }
   },
-  read: {
+  isEdited: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  archived: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
+  editedAt: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
+}, {
+  timestamps: true,
+  tableName: 'Messages'
 });
 
 module.exports = Message;

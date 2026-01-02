@@ -77,13 +77,13 @@ function UserDashboard() {
     }
   };
 
-  if (!user || user.role === 'admin') {
+  // Allow both users and volunteers to access user dashboard
+  if (!user) {
     return (
       <div className="dashboard-container">
-        <div className="access-denied">
-          <h1>Access Restricted</h1>
-          <p>This dashboard is for community members seeking help.</p>
-          <Link to="/" className="btn btn-primary">Go to Home</Link>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading...</p>
         </div>
       </div>
     );

@@ -9,6 +9,7 @@ function Signup() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: ''
   });
@@ -29,20 +30,26 @@ function Signup() {
     e.preventDefault();
     
     // Validate all fields are filled
-    if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.password || !formData.confirmPassword) {
       setFormError('Please fill in all fields');
+      return;
+    }
+    
+    // Validate phone number (exactly 10 digits)
+    if (!/^[0-9]{10}$/.test(formData.phone)) {
+      setFormError('Phone number must be exactly 10 digits');
+      return;
+    }
+    
+    // Validate password (exactly 8 numeric digits)
+    if (!/^[0-9]{8}$/.test(formData.password)) {
+      setFormError('Password must be exactly 8 numeric digits');
       return;
     }
     
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setFormError('Passwords do not match!');
-      return;
-    }
-    
-    // Validate password length
-    if (formData.password.length < 6) {
-      setFormError('Password must be at least 6 characters');
       return;
     }
     
@@ -53,7 +60,9 @@ function Signup() {
     const result = await register({
       name: formData.fullName,
       email: formData.email,
-      password: formData.password
+      phone: formData.phone,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword
     });
     
     setLoading(false);
@@ -72,6 +81,23 @@ function Signup() {
         <div className="auth-card" role="main">
           <h1>Create Account</h1>
           <p>Join our community and make a difference</p>
+          
+          {/* Validation Requirements Info */}
+          <div style={{
+            background: '#e3f2fd',
+            border: '1px solid #2196f3',
+            borderRadius: '8px',
+            padding: '12px 16px',
+            marginBottom: '20px',
+            fontSize: '0.9em'
+          }}>
+            <strong>📋 Registration Requirements:</strong>
+            <ul style={{margin: '8px 0 0 20px', paddingLeft: '0'}}>
+              <li>Password: Exactly 8 numeric digits (e.g., 12345678)</li>
+              <li>Phone: Exactly 10 numeric digits (e.g., 9876543210)</li>
+              <li>Name: 2-50 characters, letters and spaces only</li>
+            </ul>
+          </div>
           
           <form onSubmit={handleSubmit} className="auth-form" aria-label="Sign up form">
             {formError && (
@@ -110,20 +136,40 @@ function Signup() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="signup-password">Password</label>
+              <label htmlFor="signup-phone">Phone Number</label>
+              <input 
+                id="signup-phone"
+                type="tel" 
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Enter 10-digit phone number (e.g., 9876543210)"
+                required 
+                autoComplete="tel"
+                aria-required="true"
+                pattern="[0-9]{10}"
+                maxLength="10"
+                disabled={loading}
+              />
+              <small style={{color: '#666', fontSize: '0.85em'}}>Must be exactly 10 digits</small>
+            </div>
+            <div className="form-group">
+              <label htmlFor="signup-password">Password (8 Digits)</label>
               <input 
                 id="signup-password"
                 type="password" 
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Create a password (min 6 characters)"
+                placeholder="Enter 8-digit numeric password (e.g., 12345678)"
                 required 
                 autoComplete="new-password"
                 aria-required="true"
-                minLength="6"
+                pattern="[0-9]{8}"
+                maxLength="8"
                 disabled={loading}
               />
+              <small style={{color: '#666', fontSize: '0.85em'}}>Must be exactly 8 numeric digits</small>
             </div>
             <div className="form-group">
               <label htmlFor="signup-confirm-password">Confirm Password</label>
@@ -133,10 +179,12 @@ function Signup() {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirm your password"
+                placeholder="Re-enter your 8-digit password"
                 required 
                 autoComplete="new-password"
                 aria-required="true"
+                pattern="[0-9]{8}"
+                maxLength="8"
                 disabled={loading}
               />
             </div>

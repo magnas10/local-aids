@@ -327,7 +327,7 @@ function Gallery() {
               filteredImages.map(image => (
                 <div key={image.id} className="gallery-item" onClick={() => handleImageSelect(image)}>
                   <img 
-                    src={`http://localhost:5001${image.imageUrl}`} 
+                    src={image.imageUrl} 
                     alt={image.title}
                     onError={(e) => {
                       e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
@@ -369,7 +369,7 @@ function Gallery() {
             <button className="modal-close" onClick={handleCloseModal}>×</button>
             <div className="modal-image-container">
               <img 
-                src={`http://localhost:5001${selectedImage.imageUrl}`} 
+                src={selectedImage.imageUrl} 
                 alt={selectedImage.title}
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Found';

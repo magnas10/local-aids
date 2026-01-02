@@ -1,6 +1,12 @@
 /* ===========================
    CONTACT PAGE STYLES - COMPREHENSIVE
+   Matching Home Page Design Language
    =========================== */
+
+/* Base Page Container */
+.contact-page-pro {
+    font-family: 'Inter', sans-serif;
+}
 
 /* Hero Section */
 .contact-hero-pro {
@@ -10,6 +16,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    font-family: 'Outfit', sans-serif;
 }
 
 .contact-hero-background {
@@ -50,12 +57,13 @@
     gap: 10px;
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(12px);
-    padding: 12px 28px;
+    padding: 8px 24px;
     border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     margin-bottom: 24px;
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
@@ -66,24 +74,28 @@
 }
 
 .contact-hero-content-pro h1 {
-    font-size: 4rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 4.5rem;
     font-weight: 800;
     margin-bottom: 24px;
-    line-height: 1.1;
-    letter-spacing: -1px;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
 }
 
 .contact-hero-content-pro h1 .highlight {
-    background: linear-gradient(90deg, #4db3a2 0%, #3d8b7a 100%);
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-strong) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
 
 .contact-hero-content-pro p {
-    font-size: 1.3rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.35rem;
     line-height: 1.7;
     opacity: 0.95;
+    font-weight: 400;
     margin-bottom: 40px;
     max-width: 700px;
     margin-left: auto;
@@ -101,21 +113,24 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    padding: 18px 40px;
-    background: linear-gradient(135deg, #4db3a2 0%, #3d8b7a 100%);
+    padding: 20px 45px;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-strong) 100%);
     color: white;
     border: none;
-    border-radius: 14px;
-    font-size: 1.15rem;
+    border-radius: 16px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 24px rgba(77, 179, 162, 0.3);
+    letter-spacing: 0.3px;
 }
 
 .contact-hero-btn-primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(245, 199, 93, 0.4);
+    box-shadow: 0 12px 40px rgba(77, 179, 162, 0.4);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-strong) 100%);
 }
 
 .contact-hero-btn-primary svg {
@@ -140,6 +155,7 @@
 
 .hero-stat .stat-number {
     display: block;
+    font-family: 'Outfit', sans-serif;
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 6px;
@@ -148,6 +164,7 @@
 
 .hero-stat .stat-label {
     display: block;
+    font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
     opacity: 0.9;
     font-weight: 500;
@@ -176,10 +193,12 @@
 }
 
 .contact-card-pro h2 {
-    font-size: 2rem;
-    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: #1a1a1a;
     margin-bottom: 30px;
+    letter-spacing: -0.5px;
 }
 
 .contact-form-pro {
@@ -201,6 +220,7 @@
 }
 
 .form-group-pro label {
+    font-family: 'Inter', sans-serif;
     font-weight: 600;
     color: #1a1a1a;
     font-size: 0.95rem;
@@ -213,7 +233,7 @@
     border: 2px solid #e2e8f0;
     border-radius: 12px;
     font-size: 1rem;
-    font-family: inherit;
+    font-family: 'Inter', sans-serif;
     transition: all 0.2s ease;
     background: white;
 }
@@ -247,7 +267,8 @@
     color: white;
     border: none;
     border-radius: 14px;
-    font-size: 1.1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -300,6 +321,7 @@
     border-radius: 14px;
     color: #065f46;
     margin-bottom: 24px;
+    font-family: 'Inter', sans-serif;
 }
 
 .success-message-pro svg {
@@ -324,6 +346,7 @@
     border-radius: 14px;
     color: #991b1b;
     margin-bottom: 24px;
+    font-family: 'Inter', sans-serif;
 }
 
 .error-message-pro svg {
@@ -378,6 +401,7 @@
 }
 
 .info-content-pro h3 {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.15rem;
     font-weight: 700;
     color: #1a1a1a;
@@ -385,6 +409,7 @@
 }
 
 .info-content-pro p {
+    font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     color: #64748b;
     margin: 4px 0;
@@ -400,6 +425,7 @@
 }
 
 .social-links-card-pro h3 {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 20px;
@@ -490,6 +516,7 @@
 }
 
 .map-info-card h3 {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.5rem;
     font-weight: 700;
     color: #1a1a1a;
@@ -497,6 +524,7 @@
 }
 
 .map-info-card p {
+    font-family: 'Inter', sans-serif;
     color: #64748b;
     margin-bottom: 20px;
     line-height: 1.6;
@@ -510,6 +538,7 @@
     background: #20b2aa;
     color: white;
     border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
     font-weight: 600;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -545,18 +574,20 @@
 .section-label {
     display: inline-block;
     color: #20b2aa;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 2px;
     margin-bottom: 12px;
 }
 
 .faq-header h2 {
+    font-family: 'Outfit', sans-serif;
     font-size: 2.75rem;
     font-weight: 800;
     color: #1a1a1a;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
 }
 
 .faq-grid-pro {
@@ -598,6 +629,7 @@
 }
 
 .faq-card-pro h3 {
+    font-family: 'Outfit', sans-serif;
     font-size: 1.25rem;
     font-weight: 700;
     color: #1a1a1a;
@@ -606,6 +638,7 @@
 }
 
 .faq-card-pro p {
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     line-height: 1.7;
     color: #64748b;
@@ -613,9 +646,24 @@
 
 /* Newsletter Section */
 .contact-newsletter-pro {
-    padding: 80px 24px;
-    background: linear-gradient(135deg, #20b2aa, #1a8f88);
+    padding: 100px 24px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-newsletter-pro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .newsletter-container-pro {
@@ -625,16 +673,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .newsletter-content h2 {
+    font-family: 'Outfit', sans-serif;
     font-size: 2.5rem;
     font-weight: 800;
     margin-bottom: 12px;
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
 }
 
 .newsletter-content p {
+    font-family: 'Inter', sans-serif;
     font-size: 1.15rem;
     opacity: 0.95;
     margin-bottom: 40px;
@@ -653,6 +705,7 @@
     padding: 18px 24px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 14px;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     background: rgba(255, 255, 255, 0.1);
     color: white;
@@ -675,10 +728,11 @@
     align-items: center;
     gap: 10px;
     padding: 18px 32px;
-    background: white;
-    color: #20b2aa;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-strong) 100%);
+    color: white;
     border: none;
     border-radius: 14px;
+    font-family: 'Outfit', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
@@ -688,7 +742,8 @@
 
 .newsletter-form-pro button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(77, 179, 162, 0.4);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-strong) 100%);
 }
 
 .newsletter-form-pro button:disabled {

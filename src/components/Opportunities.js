@@ -286,9 +286,6 @@ function Opportunities() {
               <div className="opp-card-image">
                 <img src={opportunity.image} alt={opportunity.title} />
                 <div className="opp-image-overlay">
-                  <span className={`opp-priority ${opportunity.priority.toLowerCase()}`}>
-                    {opportunity.priority} Priority
-                  </span>
                   <span className="opp-category">
                     {getCategoryIcon(opportunity.category)}
                     {opportunity.category}
