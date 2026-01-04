@@ -3,16 +3,13 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const HelpRequest = require('../models/HelpRequest');
 const User = require('../models/User'); // For population emulation
-const Conversation = require('../models/Conversation');
-const ConversationParticipant = require('../models/ConversationParticipant');
-const Message = require('../models/Message');
 const { protect, admin, optionalAuth } = require('../middleware/auth');
 const { Op } = require('sequelize');
 
 // @route   POST /api/help-requests
 // @desc    Create a new help request
-// @access  Public (optionalAuth to track logged-in users)
-router.post('/', optionalAuth, [
+// @access  Public
+router.post('/', [
   // Required fields & Validation (kept same as before)
   body('fullName').trim().notEmpty().withMessage('Full name is required'),
   body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
@@ -69,8 +66,7 @@ router.post('/', optionalAuth, [
       specialRequirements: req.body.specialRequirements,
       howHeard: req.body.howHeard,
       agreeTerms: req.body.agreeTerms === true || req.body.agreeTerms === 'true',
-      agreePrivacy: req.body.agreePrivacy === true || req.body.agreePrivacy === 'true',
-      createdBy: req.user ? req.user.id : null // Track logged-in user
+      agreePrivacy: req.body.agreePrivacy === true || req.body.agreePrivacy === 'true'
     };
 
     const helpRequest = await HelpRequest.create(helpRequestData);
@@ -105,20 +101,13 @@ router.get('/', optionalAuth, async (req, res) => {
     if (urgency) whereClause.urgency = urgency;
     if (helpType) whereClause.helpType = helpType;
     if (status) whereClause.status = status;
-    
-    // When showing as events, ONLY show approved requests
-    if (showAsEvent === 'true') {
-      whereClause.showAsEvent = true;
-      // Only show approved requests in events section (pending remain hidden until admin approves)
-      whereClause.status = 'approved';
-    }
+    if (showAsEvent === 'true') whereClause.showAsEvent = true;
 
     const isAdmin = req.user && req.user.role === 'admin';
 
     let attributes = undefined;
     if (!isAdmin) {
-      // Include status field so frontend knows which requests are approved
-      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'status', 'createdAt'];
+      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'createdAt'];
     }
 
     const { count, rows: helpRequests } = await HelpRequest.findAndCountAll({
@@ -227,7 +216,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
 // @desc    Update help request status
 // @access  Admin only
 router.put('/:id/status', protect, admin, [
-  body('status').isIn(['pending', 'approved', 'rejected', 'matched', 'in-progress', 'completed', 'cancelled']).withMessage('Valid status is required')
+  body('status').isIn(['pending', 'matched', 'in-progress', 'completed', 'cancelled']).withMessage('Valid status is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -320,9 +309,11 @@ router.put('/:id', [
 });
 
 // @route   DELETE /api/help-requests/:id
-// @desc    Delete a help request permanently (by creator or admin only)
-// @access  Protected (must be logged in)
-router.delete('/:id', protect, async (req, res) => {
+// @desc    Delete a help request (by requester with email verification)
+// @access  Public (with email verification)
+router.delete('/:id', [
+  body('email').isEmail().normalizeEmail().withMessage('Valid email is required for verification')
+], async (req, res) => {
   try {
     const helpRequest = await HelpRequest.findByPk(req.params.id);
 
@@ -330,96 +321,22 @@ router.delete('/:id', protect, async (req, res) => {
       return res.status(404).json({ message: 'Help request not found' });
     }
 
-    // Check if user is admin or the creator of the request
-    const isAdmin = req.user.role === 'admin';
-    const isCreator = helpRequest.createdBy && helpRequest.createdBy === req.user.id;
-    const isOwnerByEmail = helpRequest.email === req.user.email;
-
-    if (!isAdmin && !isCreator && !isOwnerByEmail) {
+    if (helpRequest.email !== req.body.email) {
       return res.status(403).json({
         message: 'Access denied. You can only delete your own help requests.'
       });
     }
 
-    // Only allow deletion if status is pending or cancelled (unless admin)
-    if (!isAdmin && helpRequest.status !== 'pending' && helpRequest.status !== 'cancelled') {
+    if (helpRequest.status !== 'pending') {
       return res.status(400).json({
-        message: 'Cannot delete help request that has already been matched or in progress.'
+        message: 'Cannot delete help request that has already been matched or completed.'
       });
     }
 
-    // If admin is deleting someone else's post, send them a direct message notification
-    if (isAdmin && !isCreator && helpRequest.createdBy) {
-      try {
-        // Find or create direct conversation between admin and user
-        let conversation = await Conversation.findOne({
-          where: { type: 'direct' },
-          include: [{
-            model: ConversationParticipant,
-            as: 'participants',
-            where: {
-              userId: { [Op.in]: [req.user.id, helpRequest.createdBy] }
-            }
-          }]
-        });
-
-        // Check if conversation has exactly these two participants
-        if (conversation) {
-          const participantIds = conversation.participants.map(p => p.userId).sort();
-          const targetIds = [req.user.id, helpRequest.createdBy].sort();
-          if (participantIds.length !== 2 || participantIds[0] !== targetIds[0] || participantIds[1] !== targetIds[1]) {
-            conversation = null;
-          }
-        }
-
-        if (!conversation) {
-          // Create new conversation
-          conversation = await Conversation.create({
-            type: 'direct',
-            name: 'Direct Message',
-            createdBy: req.user.id,
-            lastMessageAt: new Date()
-          });
-
-          // Add participants
-          await ConversationParticipant.create({
-            conversationId: conversation.id,
-            userId: req.user.id,
-            role: 'admin'
-          });
-
-          await ConversationParticipant.create({
-            conversationId: conversation.id,
-            userId: helpRequest.createdBy,
-            role: 'member'
-          });
-        } else {
-          // Update last message timestamp
-          conversation.lastMessageAt = new Date();
-          await conversation.save();
-        }
-
-        // Send system message about deletion
-        await Message.create({
-          conversationId: conversation.id,
-          senderId: req.user.id,
-          content: `Your help request "${helpRequest.helpType} - ${helpRequest.description.substring(0, 100)}${helpRequest.description.length > 100 ? '...' : ''}" has been deleted by an administrator. If you have any questions about this action, please contact support.`,
-          type: 'system'
-        });
-
-        console.log(`Sent deletion notification to user ${helpRequest.createdBy} for request ${helpRequest.id}`);
-      } catch (msgError) {
-        console.error('Error sending deletion notification:', msgError);
-        // Continue with deletion even if message fails
-      }
-    }
-
-    // Permanently delete the request
     await helpRequest.destroy();
 
     res.json({
-      message: 'Help request deleted permanently',
-      notificationSent: isAdmin && !isCreator && helpRequest.createdBy ? true : false
+      message: 'Help request deleted successfully'
     });
   } catch (error) {
     console.error('Delete help request error:', error);
