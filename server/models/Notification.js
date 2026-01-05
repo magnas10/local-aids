@@ -34,7 +34,7 @@ const Notification = sequelize.define('Notification', {
     allowNull: false
   },
   targetAudience: {
-    type: DataTypes.ENUM('all', 'users', 'volunteers', 'admins'),
+    type: DataTypes.ENUM('all', 'user', 'volunteer', 'admin'),
     defaultValue: 'all',
     allowNull: false
   },

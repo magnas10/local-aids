@@ -1,17 +1,12 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
+  // Proxy uploaded files (images, avatars, etc.)
   app.use(
-    '/api',
+    '/uploads',
     createProxyMiddleware({
       target: 'http://localhost:5001',
       changeOrigin: true,
-      secure: false,
-      logLevel: 'debug',
-      onError: (err, req, res) => {
-        console.error('Proxy Error:', err);
-        res.status(500).json({ message: 'Proxy error connecting to backend' });
-      }
     })
   );
 };

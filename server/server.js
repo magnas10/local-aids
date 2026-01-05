@@ -73,9 +73,24 @@ const newsletterRoutes = require('./routes/newsletter');
 
 const app = express();
 
+// Allowed origins for CORS
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://local-aid-dcbca.web.app',
+  'https://local-aid-dcbca.firebaseapp.com',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? process.env.CLIENT_URL : true,
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '20mb' }));
