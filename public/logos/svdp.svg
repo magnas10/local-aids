@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="95" fill="#4169B5"/>
+  <circle cx="100" cy="100" r="75" fill="white"/>
+  <path d="M70 80 Q80 70 90 80 L90 120 Q90 130 80 130 L60 130 Q50 130 50 120 Z" fill="#000000"/>
+  <path d="M130 80 Q120 70 110 80 L110 120 Q110 130 120 130 L140 130 Q150 130 150 120 Z" fill="#000000"/>
+  <text x="100" y="40" font-family="Arial" font-size="16" fill="white" text-anchor="middle" font-weight="bold">ST. VINCENT DE PAUL</text>
+  <text x="100" y="180" font-family="Arial" font-size="14" fill="white" text-anchor="middle" font-weight="bold">HELPS PEOPLE</text>
+</svg>

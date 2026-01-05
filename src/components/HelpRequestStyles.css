@@ -1,0 +1,111 @@
+/* ============================================
+   🆘 Help Request Cards Styling - Additional
+   ============================================ */
+
+/* Help request cards have a special visual treatment */
+.opp-card[data-type="help-request"] {
+  position: relative !important;
+  border: 2px solid #20b2aa !important;
+  box-shadow: 0 8px 30px rgba(32, 178, 170, 0.15), 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  background: #ffffff !important;
+  overflow: visible !important;
+}
+
+/* Add a small badge instead of overlay */
+.opp-card[data-type="help-request"] .opp-card-image::after {
+  content: '🆘 HELP NEEDED';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(90deg, #ff6b6b, #20b2aa);
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 15;
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+.help-request-card {
+  border: 2px solid #20b2aa !important;
+  background: #ffffff !important;
+}
+
+.help-request-card .opp-card-content {
+  margin-top: 25px !important;
+  padding-top: 10px !important;
+}
+
+.help-request-content {
+  margin-top: 25px !important;
+  padding-top: 10px !important;
+}
+
+.opp-card[data-type="help-request"] .opp-card-content {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+.opp-card[data-type="help-request"] .opp-title {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  color: #333 !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+}
+
+.opp-card[data-type="help-request"] .opp-description {
+  color: #666 !important;
+  margin: 8px 0 !important;
+}
+
+.opp-card[data-type="help-request"] .opp-card-image {
+  position: relative !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.help-request-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: linear-gradient(90deg, #ff6b6b, #20b2aa);
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 11;
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.02); }
+}
+
+.urgency-badge.high,
+.urgency-badge.urgent {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.opp-card[data-type="help-request"] .opp-priority.high,
+.opp-card[data-type="help-request"] .opp-priority.urgent {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+  color: white !important;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes urgentGlow {
+  0% { box-shadow: 0 0 3px rgba(255, 107, 107, 0.3); }
+  100% { box-shadow: 0 0 8px rgba(255, 107, 107, 0.5); }
+}

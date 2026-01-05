@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="95" fill="#FDB913"/>
+  <circle cx="100" cy="100" r="80" fill="#003F87"/>
+  <path d="M60 90 L80 110 L130 60" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <text x="100" y="160" font-family="Arial Black" font-size="24" fill="#FDB913" text-anchor="middle" font-weight="bold">LIONS</text>
+</svg>

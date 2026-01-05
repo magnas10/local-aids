@@ -1,0 +1,2 @@
+# This directory stores uploaded gallery images
+# Files in this directory are served statically at /uploads/gallery/
