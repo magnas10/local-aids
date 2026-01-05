@@ -9,7 +9,7 @@ services:
     name: local-aid-api
     runtime: node
     plan: free
-    branch: local-aid
+    branch: main
     rootDir: server
     buildCommand: npm install
     startCommand: npm start
