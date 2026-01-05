@@ -133,6 +133,27 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
 
+// Temporary setup endpoint to create admin (remove after use)
+const User = require('./models/User');
+app.post('/api/setup/make-admin', async (req, res) => {
+  const { email, secretKey } = req.body;
+  // Simple secret key check
+  if (secretKey !== 'local-aid-setup-2026') {
+    return res.status(403).json({ message: 'Invalid secret key' });
+  }
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.role = 'admin';
+    await user.save();
+    res.json({ message: `User ${email} is now an admin`, role: user.role });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user', error: error.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
