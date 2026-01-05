@@ -134,7 +134,6 @@ app.get('/api/health', (req, res) => {
 });
 
 // Temporary setup endpoint to create admin (remove after use)
-const User = require('./models/User');
 app.post('/api/setup/make-admin', async (req, res) => {
   const { email, secretKey } = req.body;
   // Simple secret key check

@@ -24,11 +24,7 @@ const GalleryItem = sequelize.define('GalleryItem', {
   },
   uploadedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+    allowNull: false
   },
   tags: {
     type: DataTypes.ARRAY(DataTypes.STRING),
@@ -46,11 +42,7 @@ const GalleryItem = sequelize.define('GalleryItem', {
     type: DataTypes.TEXT
   },
   approvedBy: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+    type: DataTypes.INTEGER
   },
   approvedAt: {
     type: DataTypes.DATE
