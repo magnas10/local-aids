@@ -1,39 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+const { Op } = require('sequelize');
 const Event = require('../models/Event');
+const User = require('../models/User');
 const { protect, admin, optionalAuth } = require('../middleware/auth');
 
 // @route   GET /api/events
-// @desc    Get all public events
+// @desc    Get all events
 // @access  Public
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
+    const offset = (page - 1) * limit;
     const { category, status, featured } = req.query;
 
     // Build query
-    const query = { isPublic: true };
-    if (category) query.category = category;
-    if (status) query.status = status;
-    if (featured === 'true') query.isFeatured = true;
+    const where = {};
+    if (category) where.category = category;
+    if (status) where.status = status;
 
-    const events = await Event.find(query)
-      .populate('organizer', 'name email')
-      .sort({ date: 1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Event.countDocuments(query);
+    const { count, rows: events } = await Event.findAndCountAll({
+      where,
+      order: [['date', 'ASC']],
+      limit,
+      offset
+    });
 
     res.json({
       events,
       pagination: {
         currentPage: page,
-        totalPages: Math.ceil(total / limit),
-        totalEvents: total
+        totalPages: Math.ceil(count / limit),
+        totalEvents: count
       }
     });
   } catch (error) {
@@ -49,14 +49,14 @@ router.get('/upcoming', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
     
-    const events = await Event.find({
-      isPublic: true,
-      date: { $gte: new Date() },
-      status: 'upcoming'
-    })
-      .populate('organizer', 'name')
-      .sort({ date: 1 })
-      .limit(limit);
+    const events = await Event.findAll({
+      where: {
+        date: { [Op.gte]: new Date() },
+        status: 'upcoming'
+      },
+      order: [['date', 'ASC']],
+      limit
+    });
 
     res.json({ events });
   } catch (error) {
@@ -70,9 +70,7 @@ router.get('/upcoming', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate('organizer', 'name email')
-      .populate('attendees.user', 'name');
+    const event = await Event.findByPk(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
@@ -91,9 +89,9 @@ router.get('/:id', async (req, res) => {
 router.post('/', protect, admin, [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('description').trim().notEmpty().withMessage('Description is required'),
-  body('date').isISO8601().withMessage('Valid date is required'),
-  body('time').notEmpty().withMessage('Time is required'),
-  body('location.venue').notEmpty().withMessage('Venue is required')
+  body('date').notEmpty().withMessage('Date is required'),
+  body('location').notEmpty().withMessage('Location is required'),
+  body('category').notEmpty().withMessage('Category is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -101,15 +99,19 @@ router.post('/', protect, admin, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const eventData = {
-      ...req.body,
-      organizer: req.user.id
-    };
+    const { title, description, date, location, category, capacity, image, organizer } = req.body;
 
-    const event = new Event(eventData);
-    await event.save();
-
-    await event.populate('organizer', 'name email');
+    const event = await Event.create({
+      title,
+      description,
+      date,
+      location,
+      category,
+      capacity,
+      image,
+      organizer: organizer || req.user.name,
+      createdBy: req.user.id
+    });
 
     res.status(201).json({
       message: 'Event created successfully',
@@ -126,15 +128,25 @@ router.post('/', protect, admin, [
 // @access  Private/Admin
 router.put('/:id', protect, admin, async (req, res) => {
   try {
-    const event = await Event.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    ).populate('organizer', 'name email');
+    const event = await Event.findByPk(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
+
+    const { title, description, date, location, category, capacity, image, organizer, status } = req.body;
+
+    await event.update({
+      title: title || event.title,
+      description: description || event.description,
+      date: date || event.date,
+      location: location || event.location,
+      category: category || event.category,
+      capacity: capacity !== undefined ? capacity : event.capacity,
+      image: image || event.image,
+      organizer: organizer || event.organizer,
+      status: status || event.status
+    });
 
     res.json({
       message: 'Event updated successfully',
@@ -151,11 +163,13 @@ router.put('/:id', protect, admin, async (req, res) => {
 // @access  Private/Admin
 router.delete('/:id', protect, admin, async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
+    const event = await Event.findByPk(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
+
+    await event.destroy();
 
     res.json({ message: 'Event deleted successfully' });
   } catch (error) {
@@ -169,27 +183,27 @@ router.delete('/:id', protect, admin, async (req, res) => {
 // @access  Private
 router.post('/:id/register', protect, async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findByPk(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
     // Check if already registered
-    const alreadyRegistered = event.attendees.some(
-      a => a.user.toString() === req.user.id
-    );
-    if (alreadyRegistered) {
+    const registeredAttendees = event.registeredAttendees || [];
+    if (registeredAttendees.includes(req.user.id)) {
       return res.status(400).json({ message: 'Already registered for this event' });
     }
 
     // Check if event is full
-    if (event.maxAttendees && event.attendees.length >= event.maxAttendees) {
+    if (event.capacity && registeredAttendees.length >= event.capacity) {
       return res.status(400).json({ message: 'Event is full' });
     }
 
-    event.attendees.push({ user: req.user.id });
-    await event.save();
+    // Add user to registered attendees
+    await event.update({
+      registeredAttendees: [...registeredAttendees, req.user.id]
+    });
 
     res.json({ message: 'Successfully registered for event' });
   } catch (error) {
@@ -203,16 +217,18 @@ router.post('/:id/register', protect, async (req, res) => {
 // @access  Private
 router.delete('/:id/register', protect, async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await Event.findByPk(req.params.id);
 
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
 
-    event.attendees = event.attendees.filter(
-      a => a.user.toString() !== req.user.id
-    );
-    await event.save();
+    const registeredAttendees = event.registeredAttendees || [];
+    const updatedAttendees = registeredAttendees.filter(id => id !== req.user.id);
+
+    await event.update({
+      registeredAttendees: updatedAttendees
+    });
 
     res.json({ message: 'Registration cancelled successfully' });
   } catch (error) {

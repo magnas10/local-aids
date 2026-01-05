@@ -11,12 +11,13 @@ router.get('/', async (req, res) => {
   try {
     const { category, featured } = req.query;
 
-    const query = { isActive: true };
-    if (category) query.category = category;
-    if (featured === 'true') query.isFeatured = true;
+    const where = { isActive: true };
+    if (category) where.category = category;
 
-    const partners = await Partner.find(query)
-      .sort({ isFeatured: -1, name: 1 });
+    const partners = await Partner.findAll({
+      where,
+      order: [['name', 'ASC']]
+    });
 
     res.json({ partners });
   } catch (error) {
@@ -30,7 +31,7 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const partner = await Partner.findById(req.params.id);
+    const partner = await Partner.findByPk(req.params.id);
 
     if (!partner) {
       return res.status(404).json({ message: 'Partner not found' });
@@ -47,7 +48,9 @@ router.get('/:id', async (req, res) => {
 // @desc    Add a new partner
 // @access  Private/Admin
 router.post('/', protect, admin, [
-  body('name').trim().notEmpty().withMessage('Partner name is required')
+  body('name').trim().notEmpty().withMessage('Partner name is required'),
+  body('description').trim().notEmpty().withMessage('Description is required'),
+  body('logoUrl').trim().notEmpty().withMessage('Logo URL is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -55,8 +58,15 @@ router.post('/', protect, admin, [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const partner = new Partner(req.body);
-    await partner.save();
+    const { name, description, logoUrl, websiteUrl, category } = req.body;
+
+    const partner = await Partner.create({
+      name,
+      description,
+      logoUrl,
+      websiteUrl,
+      category: category || 'corporate'
+    });
 
     res.status(201).json({
       message: 'Partner added successfully',
@@ -73,15 +83,22 @@ router.post('/', protect, admin, [
 // @access  Private/Admin
 router.put('/:id', protect, admin, async (req, res) => {
   try {
-    const partner = await Partner.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true, runValidators: true }
-    );
+    const partner = await Partner.findByPk(req.params.id);
 
     if (!partner) {
       return res.status(404).json({ message: 'Partner not found' });
     }
+
+    const { name, description, logoUrl, websiteUrl, category, isActive } = req.body;
+
+    await partner.update({
+      name: name || partner.name,
+      description: description || partner.description,
+      logoUrl: logoUrl || partner.logoUrl,
+      websiteUrl: websiteUrl !== undefined ? websiteUrl : partner.websiteUrl,
+      category: category || partner.category,
+      isActive: isActive !== undefined ? isActive : partner.isActive
+    });
 
     res.json({
       message: 'Partner updated successfully',
@@ -98,11 +115,13 @@ router.put('/:id', protect, admin, async (req, res) => {
 // @access  Private/Admin
 router.delete('/:id', protect, admin, async (req, res) => {
   try {
-    const partner = await Partner.findByIdAndDelete(req.params.id);
+    const partner = await Partner.findByPk(req.params.id);
 
     if (!partner) {
       return res.status(404).json({ message: 'Partner not found' });
     }
+
+    await partner.destroy();
 
     res.json({ message: 'Partner deleted successfully' });
   } catch (error) {

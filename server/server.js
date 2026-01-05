@@ -50,6 +50,14 @@ Message.belongsTo(Message, { foreignKey: 'replyToId', as: 'replyTo' });
 Notification.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
 User.hasMany(Notification, { foreignKey: 'createdBy', as: 'createdNotifications' });
 
+// Donation associations
+Donation.belongsTo(User, { foreignKey: 'userId', as: 'donor' });
+User.hasMany(Donation, { foreignKey: 'userId', as: 'donations' });
+
+// Event associations
+Event.belongsTo(User, { foreignKey: 'createdBy', as: 'creator' });
+User.hasMany(Event, { foreignKey: 'createdBy', as: 'createdEvents' });
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -88,6 +96,11 @@ app.use('/api/partners', partnerRoutes);
 app.use('/api/help-requests', helpRequestRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+
+// Root endpoint (for Render health checks)
+app.get('/', (req, res) => {
+  res.json({ status: 'OK', message: 'Local Aid API Server is running' });
+});
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
