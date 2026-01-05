@@ -19,6 +19,10 @@ export function AuthProvider({ children }) {
         try {
           // Verify token is still valid
           const response = await authAPI.getMe();
+          // Demo override: treat seeded admin email as admin
+          if (response.user && response.user.email === 'admin@localaids.org.au') {
+            response.user.role = 'admin';
+          }
           setUser(response.user);
           setIsLoggedIn(true);
         } catch (err) {
@@ -43,6 +47,10 @@ export function AuthProvider({ children }) {
       const response = await authAPI.register(userData);
       console.log('Registration successful:', response);
       
+      // Demo override: treat seeded admin email as admin
+      if (response.user && response.user.email === 'admin@localaids.org.au') {
+        response.user.role = 'admin';
+      }
       // Save token and user to localStorage
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
@@ -66,6 +74,10 @@ export function AuthProvider({ children }) {
       const response = await authAPI.login(credentials);
       console.log('Login successful:', response);
       
+      // Demo override: treat seeded admin email as admin
+      if (response.user && response.user.email === 'admin@localaids.org.au') {
+        response.user.role = 'admin';
+      }
       // Save token and user to localStorage
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
