@@ -169,10 +169,42 @@ const PORT = process.env.PORT || 5001;
 sequelize.sync({ alter: true }) // Sync models with database
   .then(() => {
     console.log('PostgreSQL Database Connected & Synced');
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    });
+
+    // Ensure admin user exists and has admin role (useful for demos)
+    (async () => {
+      try {
+        const adminEmail = 'admin@localaids.org.au';
+        const adminDefaults = {
+          name: 'Admin User',
+          password: '12345678',
+          role: 'admin',
+          isActive: true,
+          phone: '1234567890'
+        };
+
+        const [adminUser, created] = await User.findOrCreate({
+          where: { email: adminEmail },
+          defaults: adminDefaults
+        });
+
+        if (!created && adminUser.role !== 'admin') {
+          adminUser.role = 'admin';
+          await adminUser.save();
+          console.log(`Promoted existing user ${adminEmail} to admin.`);
+        } else if (created) {
+          console.log(`Created admin user ${adminEmail} for demo purposes.`);
+        } else {
+          console.log(`Admin user ${adminEmail} already exists with admin role.`);
+        }
+      } catch (err) {
+        console.error('Error ensuring admin user:', err);
+      }
+
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      });
+    })();
   })
   .catch((err) => {
     console.error('Failed to connect to PostgreSQL:', err);
