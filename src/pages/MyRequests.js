@@ -156,7 +156,7 @@ function MyRequests() {
     setError('');
 
     try {
-      await updateHelpRequest(selectedRequest._id, editFormData, email);
+      await updateHelpRequest(selectedRequest.id, editFormData, email);
       setSuccess('Help request updated successfully');
       await fetchMyRequests();
       closeEditModal();
@@ -175,7 +175,7 @@ function MyRequests() {
     setError('');
 
     try {
-      await deleteHelpRequest(selectedRequest._id);
+      await deleteHelpRequest(selectedRequest.id, user.email);
       setSuccess('Help request deleted successfully');
       await fetchMyRequests();
       closeDeleteModal();
@@ -215,8 +215,8 @@ function MyRequests() {
   const canDelete = (request) => {
     // Admin can delete any request
     if (user.role === 'admin') return true;
-    // Owner can delete pending or cancelled requests
-    return request.status === 'pending' || request.status === 'cancelled';
+    // Owner can delete pending, approved, rejected or cancelled requests (not matched, in-progress, or completed)
+    return !['matched', 'in-progress', 'completed'].includes(request.status);
   };
 
   const getUrgencyBadge = (urgency) => {
@@ -317,7 +317,7 @@ function MyRequests() {
               </div>
               <div className="requests-grid">
                 {requests.map((request) => (
-                  <div key={request._id} className="request-card">
+                  <div key={request.id} className="request-card">
                     <div className="request-header">
                       <div className="request-type">
                         <span className="help-type-emoji">{getHelpTypeEmoji(request.helpType)}</span>
@@ -361,8 +361,8 @@ function MyRequests() {
                       <button 
                         onClick={() => openEditModal(request)}
                         className="btn btn-sm btn-outline"
-                        disabled={request.status !== 'pending'}
-                        title={request.status !== 'pending' ? 'Can only edit pending requests' : 'Edit this request'}
+                        disabled={['matched', 'in-progress', 'completed'].includes(request.status)}
+                        title={['matched', 'in-progress', 'completed'].includes(request.status) ? 'Cannot edit active or completed requests' : 'Edit this request'}
                         style={{ padding: '8px 16px', fontSize: '14px' }}
                       >
                         ✏️ Edit

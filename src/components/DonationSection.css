@@ -53,7 +53,7 @@
 
 .impact-stat {
   text-align: center;
-  color: white;
+  color: white !important;
 }
 
 .stat-value {
@@ -61,11 +61,15 @@
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 5px;
+  color: #ffffff !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
   font-size: 0.9rem;
-  opacity: 0.9;
+  color: #ffffff !important;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Donation Content */

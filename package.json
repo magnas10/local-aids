@@ -28,7 +28,7 @@
     "dev": "concurrently \"npm start\" \"npm run server\"",
     "seed": "cd server && npm run seed"
   },
-  "proxy": "http://localhost:5001",
+  "proxy": "http://localhost:5002",
   "eslintConfig": {
     "extends": [
       "react-app",

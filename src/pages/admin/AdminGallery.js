@@ -23,7 +23,17 @@ function AdminGallery() {
       setLoading(true);
       const params = filter !== 'all' ? { status: filter } : {};
       const response = await galleryAPI.getAll(params);
-      setGalleryImages(response.data || []);
+      
+      // Convert relative image URLs to full URLs
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
+      const imagesWithFullUrls = (response.data || []).map(img => ({
+        ...img,
+        imageUrl: img.imageUrl.startsWith('http') 
+          ? img.imageUrl 
+          : `${API_BASE_URL}${img.imageUrl}`
+      }));
+      
+      setGalleryImages(imagesWithFullUrls);
       
       // Calculate stats
       const allResponse = await galleryAPI.getAll({});

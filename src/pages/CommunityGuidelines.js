@@ -1,7 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { contactAPI } from '../services/api';
 import './Pages.css';
 
 function CommunityGuidelines() {
+  const { user } = useAuth();
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportData, setReportData] = useState({
+    type: 'violation',
+    subject: '',
+    description: '',
+    urgency: 'medium'
+  });
+  const [submitStatus, setSubmitStatus] = useState({ loading: false, error: '', success: false });
+
+  const handleReportSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!reportData.subject.trim() || !reportData.description.trim()) {
+      setSubmitStatus({ loading: false, error: 'Please fill in all fields', success: false });
+      return;
+    }
+
+    setSubmitStatus({ loading: true, error: '', success: false });
+
+    try {
+      const submissionData = {
+        name: user?.name || 'Anonymous',
+        email: user?.email || 'anonymous@report.com',
+        subject: `[VIOLATION REPORT] ${reportData.subject}`,
+        message: `Type: ${reportData.type}\nUrgency: ${reportData.urgency}\n\n${reportData.description}`,
+        type: 'violation'
+      };
+
+      await contactAPI.submit(submissionData);
+      
+      setSubmitStatus({ loading: false, error: '', success: true });
+      
+      // Reset form after 2 seconds
+      setTimeout(() => {
+        setShowReportModal(false);
+        setReportData({
+          type: 'violation',
+          subject: '',
+          description: '',
+          urgency: 'medium'
+        });
+        setSubmitStatus({ loading: false, error: '', success: false });
+      }, 2000);
+    } catch (err) {
+      setSubmitStatus({ 
+        loading: false, 
+        error: err.message || 'Failed to submit report. Please try again.', 
+        success: false 
+      });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReportData(prev => ({ ...prev, [name]: value }));
+  };
   const guidelines = [
     {
       icon: (
@@ -167,7 +226,12 @@ function CommunityGuidelines() {
             If you witness or experience behavior that violates these guidelines, please report it 
             immediately. We take all reports seriously and investigate them promptly.
           </p>
-          <button className="btn-primary">Report an Issue</button>
+          <button 
+            className="btn-primary"
+            onClick={() => setShowReportModal(true)}
+          >
+            Report an Issue
+          </button>
         </div>
         <div className="reporting-image">
           <img 
@@ -181,6 +245,111 @@ function CommunityGuidelines() {
       <div className="guidelines-consequences">
         <h2>Consequences of Violations</h2>
         <p>
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h2>Report a Violation</h2>
+              <button className="modal-close" onClick={() => setShowReportModal(false)}>×</button>
+            </div>
+            
+            {submitStatus.success ? (
+              <div className="success-message" style={{ padding: '40px', textAlign: 'center' }}>
+                <div style={{ fontSize: '48px', marginBottom: '20px' }}>✓</div>
+                <h3>Report Submitted Successfully</h3>
+                <p>Thank you for helping us maintain a safe community. We will review your report promptly.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleReportSubmit}>
+                <div className="form-group">
+                  <label htmlFor="report-type">Report Type</label>
+                  <select
+                    id="report-type"
+                    name="type"
+                    value={reportData.type}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="violation">Community Guidelines Violation</option>
+                    <option value="harassment">Harassment or Bullying</option>
+                    <option value="spam">Spam or Fraud</option>
+                    <option value="privacy">Privacy Violation</option>
+                    <option value="safety">Safety Concern</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="report-subject">Subject *</label>
+                  <input
+                    type="text"
+                    id="report-subject"
+                    name="subject"
+                    value={reportData.subject}
+                    onChange={handleInputChange}
+                    placeholder="Brief description of the issue"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="report-urgency">Urgency Level</label>
+                  <select
+                    id="report-urgency"
+                    name="urgency"
+                    value={reportData.urgency}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="low">Low - General concern</option>
+                    <option value="medium">Medium - Needs attention</option>
+                    <option value="high">High - Immediate safety concern</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="report-description">Detailed Description *</label>
+                  <textarea
+                    id="report-description"
+                    name="description"
+                    value={reportData.description}
+                    onChange={handleInputChange}
+                    placeholder="Please provide as much detail as possible about what happened, including dates, usernames, or links if applicable..."
+                    rows="6"
+                    required
+                  />
+                </div>
+
+                {submitStatus.error && (
+                  <div className="error-message" style={{ marginBottom: '15px', padding: '10px', background: '#fee', color: '#c33', borderRadius: '4px' }}>
+                    {submitStatus.error}
+                  </div>
+                )}
+
+                <div className="modal-actions">
+                  <button 
+                    type="button" 
+                    className="btn-secondary"
+                    onClick={() => setShowReportModal(false)}
+                    disabled={submitStatus.loading}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn-primary"
+                    disabled={submitStatus.loading}
+                  >
+                    {submitStatus.loading ? 'Submitting...' : 'Submit Report'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
           Violations of these guidelines may result in warnings, temporary suspension, or permanent 
           removal from the platform, depending on the severity and frequency of the violation. We 
           believe in education and growth, but we also prioritize the safety and wellbeing of our community.

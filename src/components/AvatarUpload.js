@@ -32,9 +32,14 @@ function AvatarUpload({ user, updateUser, profileData }) {
       const response = await uploadAvatar(file);
       console.log('Avatar upload successful:', response);
 
-      // Update user in context
+      // Update user in context with the new avatar
       if (updateUser && response.user) {
-        updateUser(response.user);
+        // Force update by creating new user object
+        const updatedUser = { ...response.user };
+        updateUser(updatedUser);
+        
+        // Force re-render by updating the avatar timestamp
+        window.location.reload();
       }
 
       alert('Avatar updated successfully!');
@@ -65,7 +70,11 @@ function AvatarUpload({ user, updateUser, profileData }) {
 
       // Update user in context
       if (updateUser && response.user) {
-        updateUser(response.user);
+        const updatedUser = { ...response.user };
+        updateUser(updatedUser);
+        
+        // Force re-render
+        window.location.reload();
       }
 
       alert('Avatar deleted successfully!');
@@ -77,14 +86,32 @@ function AvatarUpload({ user, updateUser, profileData }) {
     }
   };
 
+  // Get the correct avatar URL
+  const getAvatarUrl = () => {
+    if (!profileData.avatar) {
+      return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
+    }
+    
+    // If it's already a full URL, use it
+    if (profileData.avatar.startsWith('http')) {
+      return profileData.avatar;
+    }
+    
+    // If it's a relative path, construct the full URL
+    if (profileData.avatar.startsWith('/uploads/')) {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
+      return `${API_BASE_URL}${profileData.avatar}?t=${timestamp}`;
+    }
+    
+    return profileData.avatar;
+  };
+
   return (
     <div className="profile-avatar-large">
       <img 
-        src={
-          profileData.avatar 
-            ? (profileData.avatar.startsWith('http') ? profileData.avatar : profileData.avatar)
-            : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
-        } 
+        src={getAvatarUrl()} 
         alt={profileData.name} 
         onError={(e) => {
           e.target.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
