@@ -78,6 +78,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://local-aid-dcbca.web.app',
   'https://local-aid-dcbca.firebaseapp.com',
+  'https://local-aid-frontend.onrender.com',
   process.env.CLIENT_URL
 ].filter(Boolean);
 

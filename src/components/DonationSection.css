@@ -56,18 +56,18 @@
   color: white !important;
 }
 
-.stat-value {
+.impact-stats .stat-value {
   display: block;
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 5px;
-  color: #ffffff !important;
+  color: white !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.stat-label {
+.impact-stats .stat-label {
   font-size: 0.9rem;
-  color: #ffffff !important;
+  color: white !important;
   text-transform: uppercase;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
