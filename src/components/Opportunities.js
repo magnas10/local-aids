@@ -406,7 +406,7 @@ function Opportunities() {
           </div>
           
           <div className="opp-map-container">
-            {/* Interactive Map Placeholder with Markers */}
+            {/* Interactive Map - Static Embed */}
             <div className="opp-map-interactive">
               <iframe
                 title="Opportunities Map"
@@ -487,51 +487,57 @@ function Opportunities() {
                 </button>
               </div>
               
-              <div className="map-modal-tabs">
-                <button 
-                  className={`map-tab ${!showDirections ? 'active' : ''}`}
-                  onClick={() => setShowDirections(false)}
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+              <div className="map-modal-content">
+                <div style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  background: 'linear-gradient(135deg, #20b2aa 0%, #3498db 100%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  padding: '40px',
+                  textAlign: 'center',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: '200px',
+                    height: '200px',
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.1)',
+                    animation: 'pulse 2s infinite'
+                  }}></div>
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="64" height="64" style={{marginBottom: '20px', position: 'relative', zIndex: 1}}>
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
-                  Location
-                </button>
-                <button 
-                  className={`map-tab ${showDirections ? 'active' : ''}`}
-                  onClick={() => setShowDirections(true)}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                    <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-                  </svg>
-                  Directions
-                </button>
-              </div>
-
-              <div className="map-modal-content">
-                {showDirections ? (
-                  <iframe
-                    title={`Directions to ${mapLocation.title}`}
-                    src={`https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d50430!2d144.96!3d-37.81!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x6ad642af0f11fd81%3A0x5045675218ce6e0!2sMelbourne%20Central!3m2!1d-37.8102!2d144.9628!4m5!1s0x0%3A0x0!2s${encodeURIComponent(mapLocation.address)}!3m2!1d${mapLocation.coordinates.lat}!2d${mapLocation.coordinates.lng}!5e0!3m2!1sen!2sau!4v1700000000000!5m2!1sen!2sau`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                ) : (
-                  <iframe
-                    title={`Map - ${mapLocation.title}`}
-                    src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3000!2d${mapLocation.coordinates.lng}!3d${mapLocation.coordinates.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zLocation!5e0!3m2!1sen!2sau!4v1635000000000!5m2!1sen!2sau`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                )}
+                  <h3 style={{marginBottom: '10px', fontSize: '1.5em', position: 'relative', zIndex: 1}}>{mapLocation.title}</h3>
+                  <p style={{marginBottom: '10px', opacity: 0.9, position: 'relative', zIndex: 1}}>{mapLocation.location}</p>
+                  <p style={{marginBottom: '20px', opacity: 0.8, fontSize: '0.9em', position: 'relative', zIndex: 1}}>{mapLocation.distance} km away</p>
+                  <a 
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapLocation.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '12px 24px',
+                      background: 'white',
+                      color: '#20b2aa',
+                      borderRadius: '8px',
+                      textDecoration: 'none',
+                      fontWeight: '600',
+                      display: 'inline-block',
+                      position: 'relative',
+                      zIndex: 1
+                    }}
+                  >
+                    Get Directions in Google Maps
+                  </a>
+                </div>
               </div>
 
               <div className="map-modal-footer">
@@ -551,15 +557,6 @@ function Opportunities() {
                   </div>
                 </div>
                 <div className="map-modal-actions">
-                  <button 
-                    className={`map-btn-directions ${showDirections ? 'active' : ''}`}
-                    onClick={toggleDirections}
-                  >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
-                      <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-                    </svg>
-                    {showDirections ? 'View Location' : 'Get Directions'}
-                  </button>
                   <button 
                     className="map-btn-volunteer"
                     onClick={() => {

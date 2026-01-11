@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { getHelpRequests } from '../services/api';
+import { getHelpRequests, deleteHelpRequest } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import './Pages.css';
 
 function Events() {
+  const { user } = useAuth();
   const [filters, setFilters] = useState({
     distance: 'all',
     type: 'all',
@@ -10,6 +12,11 @@ function Events() {
   });
   const [helpRequests, setHelpRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   // Fetch help requests on component mount
   useEffect(() => {
@@ -18,7 +25,7 @@ function Events() {
         setLoading(true);
         const response = await getHelpRequests({ showAsEvent: 'true' });
         const transformedRequests = response.helpRequests.map(request => ({
-          id: `help-${request._id}`,
+          id: `help-${request.id}`,
           title: `${getHelpTypeLabel(request.helpType)} Assistance ${request.urgency === 'high' || request.urgency === 'urgent' ? '- ' + request.urgency.toUpperCase() : ''}`,
           date: request.preferredDate || 'Flexible',
           time: request.preferredTime || 'Flexible',
@@ -31,7 +38,8 @@ function Events() {
           image: getImageForHelpType(request.helpType),
           helpType: request.helpType,
           isHelpRequest: true,
-          originalId: request._id,
+          originalId: request.id,
+          email: request.email,
           status: request.status,
           postedDate: new Date(request.createdAt)
         }));
@@ -249,8 +257,77 @@ function Events() {
     return typeLabels[type] || type;
   };
 
+  const openDeleteModal = (event) => {
+    setSelectedRequest(event);
+    setDeleteModalOpen(true);
+    setError('');
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setSelectedRequest(null);
+    setError('');
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    
+    setDeleteLoading(true);
+    setError('');
+
+    try {
+      await deleteHelpRequest(selectedRequest.originalId, user.email);
+      setSuccess('Help request deleted successfully');
+      
+      // Refresh the help requests
+      const response = await getHelpRequests({ showAsEvent: 'true' });
+      const transformedRequests = response.helpRequests.map(request => ({
+        id: `help-${request.id}`,
+        title: `${getHelpTypeLabel(request.helpType)} Assistance ${request.urgency === 'high' || request.urgency === 'urgent' ? '- ' + request.urgency.toUpperCase() : ''}`,
+        date: request.preferredDate || 'Flexible',
+        time: request.preferredTime || 'Flexible',
+        location: `${request.suburb}, ${request.state}`,
+        description: request.description,
+        attendees: 0,
+        type: 'help-request',
+        urgency: request.urgency,
+        distance: Math.floor(Math.random() * 20) + 1,
+        image: getImageForHelpType(request.helpType),
+        helpType: request.helpType,
+        isHelpRequest: true,
+        originalId: request.id,
+        email: request.email,
+        status: request.status,
+        postedDate: new Date(request.createdAt)
+      }));
+      setHelpRequests(transformedRequests);
+      
+      closeDeleteModal();
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError(error.message || 'Failed to delete help request. You may not have permission.');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const canDelete = (event) => {
+    // Only show delete for help requests
+    if (!event.isHelpRequest) return false;
+    // Must be logged in
+    if (!user) return false;
+    // Admin can delete any request
+    if (user.role === 'admin') return true;
+    // Show delete button for all approved/pending requests when logged in
+    // Backend will verify email ownership
+    return !['matched', 'in-progress', 'completed'].includes(event.status);
+  };
+
   return (
     <div className="page-container">
+      {success && <div className="alert alert-success" style={{ marginBottom: '20px' }}>{success}</div>}
+      {error && <div className="alert alert-error" style={{ marginBottom: '20px' }}>{error}</div>}
+      
       <div className="opportunities-header">
         <h1>Make a Difference <span className="highlight-text">Today</span></h1>
         <p>These are the most recent requests for help in your community. Each opportunity is a chance to positively impact someone's life.</p>
@@ -382,19 +459,25 @@ function Events() {
               </div>
               
               <div className="opportunity-actions">
-                {event.location && event.location !== 'Flexible' && (
-                  <a
-                    className="directions-btn"
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(event.location)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="Get directions to this event"
+                {canDelete(event) && (
+                  <button 
+                    onClick={() => openDeleteModal(event)}
+                    className="delete-btn"
+                    title="Delete this request"
+                    style={{ 
+                      padding: '8px 16px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 11H1l8-8v6h8l-8 8v-6z"/>
-                    </svg>
-                    Directions
-                  </a>
+                    🗑️ Delete
+                  </button>
                 )}
                 <button className="volunteer-btn">
                   Volunteer Now
@@ -411,6 +494,38 @@ function Events() {
       {filteredEvents.length === 0 && (
         <div className="no-results" role="status" aria-live="polite">
           <p>No events match your filters. Try adjusting your search criteria.</p>
+        </div>
+      )}
+
+      {/* Delete Modal */}
+      {deleteModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>Delete Help Request</h3>
+            </div>
+            <div className="modal-body">
+              <p className="warning-text">⚠️ Are you sure you want to delete this help request? This action cannot be undone.</p>
+              <div className="request-summary">
+                <p><strong>Title:</strong> {selectedRequest?.title}</p>
+                <p><strong>Description:</strong> {selectedRequest?.description}</p>
+                <p><strong>Status:</strong> {selectedRequest?.status}</p>
+              </div>
+              
+              {error && <div className="alert alert-error">{error}</div>}
+              
+              <form onSubmit={handleDelete}>
+                <div className="modal-footer">
+                  <button type="button" onClick={closeDeleteModal} className="btn btn-secondary" disabled={deleteLoading}>
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={deleteLoading} className="btn btn-danger">
+                    {deleteLoading ? 'Deleting...' : 'Yes, Delete Request'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       )}
     </div>

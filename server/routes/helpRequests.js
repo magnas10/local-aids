@@ -105,9 +105,14 @@ router.get('/', optionalAuth, async (req, res) => {
 
     const isAdmin = req.user && req.user.role === 'admin';
 
+    // Non-admin users can only see approved requests
+    if (!isAdmin) {
+      whereClause.status = 'approved';
+    }
+
     let attributes = undefined;
     if (!isAdmin) {
-      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'createdAt'];
+      attributes = ['id', 'helpType', 'urgency', 'description', 'preferredDate', 'preferredTime', 'duration', 'suburb', 'state', 'createdAt', 'email', 'status'];
     }
 
     const { count, rows: helpRequests } = await HelpRequest.findAndCountAll({
@@ -146,7 +151,7 @@ router.get('/opportunities', async (req, res) => {
 
     const helpRequests = await HelpRequest.findAll({
       where: {
-        status: 'pending',
+        status: 'approved',
         showInOpportunities: true,
         urgency: {
           [Op.in]: ['high', 'urgent']
@@ -180,6 +185,40 @@ router.get('/opportunities', async (req, res) => {
     res.json(opportunities);
   } catch (error) {
     console.error('Get help opportunities error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   GET /api/help-requests/admin/pending
+// @desc    Get all pending help requests for admin review
+// @access  Admin only
+router.get('/admin/pending', protect, admin, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = (page - 1) * limit;
+
+    const { count, rows: helpRequests } = await HelpRequest.findAndCountAll({
+      where: {
+        status: 'pending'
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      offset,
+      limit
+    });
+
+    res.json({
+      helpRequests,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        totalRequests: count
+      }
+    });
+  } catch (error) {
+    console.error('Get pending help requests error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -251,6 +290,68 @@ router.put('/:id/status', protect, admin, [
   }
 });
 
+// @route   PUT /api/help-requests/:id/approve
+// @desc    Approve a pending help request
+// @access  Admin only
+router.put('/:id/approve', protect, admin, async (req, res) => {
+  try {
+    const helpRequest = await HelpRequest.findByPk(req.params.id);
+    
+    if (!helpRequest) {
+      return res.status(404).json({ message: 'Help request not found' });
+    }
+
+    if (helpRequest.status !== 'pending') {
+      return res.status(400).json({ 
+        message: 'Only pending requests can be approved',
+        currentStatus: helpRequest.status 
+      });
+    }
+
+    helpRequest.status = 'approved';
+    await helpRequest.save();
+
+    res.json({
+      message: 'Help request approved successfully',
+      helpRequest
+    });
+  } catch (error) {
+    console.error('Approve help request error:', error);
+    res.status(500).json({ message: 'Server error while approving help request' });
+  }
+});
+
+// @route   PUT /api/help-requests/:id/reject
+// @desc    Reject a pending help request
+// @access  Admin only
+router.put('/:id/reject', protect, admin, async (req, res) => {
+  try {
+    const helpRequest = await HelpRequest.findByPk(req.params.id);
+    
+    if (!helpRequest) {
+      return res.status(404).json({ message: 'Help request not found' });
+    }
+
+    if (helpRequest.status !== 'pending') {
+      return res.status(400).json({ 
+        message: 'Only pending requests can be rejected',
+        currentStatus: helpRequest.status 
+      });
+    }
+
+    helpRequest.status = 'rejected';
+    await helpRequest.save();
+
+    res.json({
+      message: 'Help request rejected successfully',
+      helpRequest
+    });
+  } catch (error) {
+    console.error('Reject help request error:', error);
+    res.status(500).json({ message: 'Server error while rejecting help request' });
+  }
+});
+
 // @route   PUT /api/help-requests/:id
 // @desc    Update a help request (by requester with email verification)
 // @access  Public (with email verification)
@@ -279,10 +380,10 @@ router.put('/:id', [
       });
     }
 
-    // Only allow editing if the request hasn't been matched or is still pending
-    if (helpRequest.status !== 'pending') {
+    // Only allow editing if the request hasn't been matched, in-progress or completed
+    if (['matched', 'in-progress', 'completed'].includes(helpRequest.status)) {
       return res.status(400).json({
-        message: 'Cannot edit help request that has already been matched or completed.'
+        message: 'Cannot edit help request that has been matched, is in progress, or completed.'
       });
     }
 
@@ -327,9 +428,10 @@ router.delete('/:id', [
       });
     }
 
-    if (helpRequest.status !== 'pending') {
+    // Allow deletion only if not matched, in-progress, or completed
+    if (['matched', 'in-progress', 'completed'].includes(helpRequest.status)) {
       return res.status(400).json({
-        message: 'Cannot delete help request that has already been matched or completed.'
+        message: 'Cannot delete help request that has already been matched or is in progress.'
       });
     }
 
