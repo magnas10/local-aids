@@ -184,206 +184,172 @@ function Careers() {
   ];
 
   return (
-    <div className="careers-page">
+    <div className="page-container">
       {/* Hero Section */}
-      <section className="careers-hero">
-        <div className="careers-hero-content">
-          <span className="careers-badge">Join Our Mission</span>
-          <h1 className="careers-title">Build Your Career at {companyInfo.name}</h1>
-          <p className="careers-subtitle">
-            Since {companyInfo.founded}, we've been connecting communities through kindness and dedicated volunteer support.
-            Join our team and help us provide essential services to vulnerable populations. Be part of something that truly matters.
-          </p>
-          <p className="careers-mission" style={{ marginTop: '1.5rem', fontSize: '1.1rem', opacity: 0.9 }}>
-            <strong>Our Mission:</strong> {companyInfo.mission}
-          </p>
-          <div className="careers-hero-stats">
-            <div className="careers-stat">
-              <span className="careers-stat-number">{companyInfo.teamSize}</span>
-              <span className="careers-stat-text">Team Members</span>
-            </div>
-            <div className="careers-stat">
-              <span className="careers-stat-number">{companyInfo.volunteersCount}</span>
-              <span className="careers-stat-text">Active Volunteers</span>
-            </div>
-            <div className="careers-stat">
-              <span className="careers-stat-number">{companyInfo.clientsServed}</span>
-              <span className="careers-stat-text">Clients Served</span>
-            </div>
-            <div className="careers-stat">
-              <span className="careers-stat-number">{companyInfo.satisfactionRate}</span>
-              <span className="careers-stat-text">Satisfaction Rate</span>
-            </div>
-          </div>
+      <div className="safety-hero">
+        <div className="safety-hero-content">
+          <h1>Careers at Local Aid</h1>
+          <p>Join our mission to connect communities through kindness and volunteer support. Build a career that makes a real difference.</p>
         </div>
-      </section>
+        <div className="safety-hero-image">
+          <img 
+            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=600&fit=crop&q=80" 
+            alt="Team collaboration" 
+          />
+        </div>
+      </div>
+
+      {/* Career Stats */}
+      <div className="safety-stats">
+        <div className="stat-card">
+          <div className="stat-number">{companyInfo.teamSize}</div>
+          <div className="stat-label">Team Members</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{companyInfo.volunteersCount}</div>
+          <div className="stat-label">Active Volunteers</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{companyInfo.clientsServed}</div>
+          <div className="stat-label">Clients Served</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{companyInfo.satisfactionRate}</div>
+          <div className="stat-label">Satisfaction Rate</div>
+        </div>
+      </div>
 
       {/* Values Section */}
-      <section className="careers-values">
-        <div className="careers-container">
-          <div className="section-header">
-            <h2>Our Values</h2>
-            <p>What drives us every day</p>
-          </div>
-          <div className="values-grid">
-            {values.map((value, index) => (
-              <div key={index} className="value-card">
-                <div className="value-icon">{value.icon}</div>
-                <h3>{value.title}</h3>
-                <p>{value.description}</p>
-              </div>
-            ))}
-          </div>
+      <div className="safety-content">
+        <h2>Our Values</h2>
+        <div className="safety-tips-grid">
+          {values.map((value, index) => (
+            <div key={index} className="safety-tip-card">
+              <div className="tip-icon">{value.icon}</div>
+              <h3>{value.title}</h3>
+              <p>{value.description}</p>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
       {/* Benefits Section */}
-      <section className="careers-benefits">
-        <div className="careers-container">
-          <div className="benefits-content">
-            <div>
-              <h2>Why Join {companyInfo.name}?</h2>
-              <p>We offer more than just a job. We offer a career that directly improves lives and strengthens communities. Every role here contributes to our mission of connecting people with the support they need.</p>
-              <ul className="benefits-list">
-                {benefits.map((benefit, index) => (
-                  <li key={index}>
-                    <span className="benefit-icon">✓</span>
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
+      <div className="red-flags-section">
+        <h2>Why Join {companyInfo.name}?</h2>
+        <div className="red-flags-grid">
+          {benefits.map((benefit, index) => (
+            <div key={index} className="red-flag-card">
+              <h4>{benefit}</h4>
             </div>
-            <div className="benefits-image">
-              <div className="benefits-placeholder">
-                <div className="placeholder-text">Team Working Together</div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
 
       {/* Open Positions */}
-      <section className="careers-positions">
-        <div className="careers-container">
-          <div className="section-header">
-            <h2>Open Positions</h2>
-            <p>Join our growing team</p>
-          </div>
-
-          <div className="jobs-grid">
-            {jobs.map((job) => (
-              <div
-                key={job.id}
-                className="job-card"
-                onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}
-              >
-                <div className="job-header">
-                  <div>
-                    <h3>{job.title}</h3>
-                    <p className="job-department">{job.department}</p>
-                  </div>
-                  <span className="job-type">{job.type}</span>
+      <div className="safety-content">
+        <h2>Open Positions</h2>
+        <p style={{ textAlign: 'center', fontSize: '1.1rem', color: '#666', marginBottom: '2rem' }}>
+          Join our growing team
+        </p>
+        <div className="careers-jobs-list">
+          {jobs.map((job) => (
+            <div
+              key={job.id}
+              className={`careers-job-card ${selectedJob?.id === job.id ? 'expanded' : ''}`}
+              onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}
+            >
+              <div className="job-card-header">
+                <div className="job-title-section">
+                  <h3>{job.title}</h3>
+                  <span className="job-badge">{job.department}</span>
                 </div>
-
-                <div className="job-meta">
-                  <span className="job-location">📍 {job.location}</span>
-                  <span className="job-salary">{job.salary}</span>
-                </div>
-
-                <p className="job-description">{job.description}</p>
-
-                {selectedJob?.id === job.id && (
-                  <div className="job-details">
-                    <h4>Requirements</h4>
-                    <ul>
-                      {job.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                    <Link to="/login" className="apply-btn">
-                      Apply Now →
-                    </Link>
-                  </div>
-                )}
-
-                <button className="job-expand">
-                  {selectedJob?.id === job.id ? '▼ Hide Details' : '▶ View Details'}
-                </button>
+                <span className="job-type-badge">{job.type}</span>
               </div>
-            ))}
-          </div>
+              
+              <div className="job-meta-info">
+                <span className="job-meta-item">
+                  <span>📍</span> {job.location}
+                </span>
+                <span className="job-meta-item">
+                  <span>💰</span> {job.salary}
+                </span>
+              </div>
+
+              <p className="job-desc">{job.description}</p>
+
+              {selectedJob?.id === job.id && (
+                <div className="job-requirements">
+                  <h4>Requirements:</h4>
+                  <ul>
+                    {job.requirements.map((req, index) => (
+                      <li key={index}>{req}</li>
+                    ))}
+                  </ul>
+                  <Link to="/login" className="job-apply-btn">
+                    Apply Now →
+                  </Link>
+                </div>
+              )}
+
+              <button className="job-toggle-btn">
+                {selectedJob?.id === job.id ? '▲ Hide Details' : '▼ View Details'}
+              </button>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
       {/* Application Process */}
-      <section className="careers-process">
-        <div className="careers-container">
-          <div className="section-header">
-            <h2>Application Process</h2>
-            <p>Simple and straightforward</p>
+      <div className="safety-features">
+        <h2>Application Process</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <div className="feature-icon">
+              <span style={{ fontSize: '2rem' }}>1️⃣</span>
+            </div>
+            <h3>Apply</h3>
+            <p>Submit your application and resume</p>
           </div>
-
-          <div className="process-steps">
-            <div className="process-step">
-              <div className="step-number">1</div>
-              <h3>Apply</h3>
-              <p>Submit your application and resume</p>
+          <div className="feature-card">
+            <div className="feature-icon">
+              <span style={{ fontSize: '2rem' }}>2️⃣</span>
             </div>
-            <div className="process-arrow">→</div>
-            <div className="process-step">
-              <div className="step-number">2</div>
-              <h3>Review</h3>
-              <p>Our team reviews your qualifications</p>
-            </div>
-            <div className="process-arrow">→</div>
-            <div className="process-step">
-              <div className="step-number">3</div>
-              <h3>Interview</h3>
-              <p>Chat with our team members</p>
-            </div>
-            <div className="process-arrow">→</div>
-            <div className="process-step">
-              <div className="step-number">4</div>
-              <h3>Offer</h3>
-              <p>Join the Local Aid family</p>
-            </div>
+            <h3>Review</h3>
+            <p>Our team reviews your qualifications</p>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="careers-cta">
-        <div className="careers-container">
-          <div className="cta-content">
-            <h2>Ready to Make an Impact?</h2>
-            <p>Don't see a role that fits? We're always looking for talented people to join our mission.</p>
-            <div className="cta-buttons">
-              <a href="mailto:careers@localaid.org.au" className="cta-btn primary">
-                Apply or Send Your Resume
-              </a>
-              <Link to="/contact" className="cta-btn secondary">
-                Get in Touch
-              </Link>
+          <div className="feature-card">
+            <div className="feature-icon">
+              <span style={{ fontSize: '2rem' }}>3️⃣</span>
             </div>
+            <h3>Interview</h3>
+            <p>Chat with our team members</p>
+          </div>
+          <div className="feature-card">
+            <div className="feature-icon">
+              <span style={{ fontSize: '2rem' }}>4️⃣</span>
+            </div>
+            <h3>Offer</h3>
+            <p>Join the Local Aid family</p>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Careers Footer */}
-      <section className="careers-footer">
-        <div className="careers-container">
-          <div className="careers-footer-content">
-            <h3>Questions About Careers at {companyInfo.name}?</h3>
-            <p>Our HR team is here to help. Reach out with any questions about opportunities, the application process, or our organization.</p>
-            <a href="mailto:careers@localaid.org.au" className="careers-footer-link">
-              careers@localaid.org.au
-            </a>
-            <p style={{ marginTop: '1rem', fontSize: '0.95rem', opacity: 0.8 }}>
-              We are committed to building a diverse, equitable, and inclusive team. We encourage applications from all backgrounds and experiences.
-            </p>
+      {/* Contact Section */}
+      <div className="emergency-contact">
+        <h2>Ready to Make an Impact?</h2>
+        <p>Don't see a role that fits? We're always looking for talented people to join our mission.</p>
+        <div className="emergency-numbers">
+          <div className="emergency-number">
+            <strong>Email:</strong> <a href="mailto:careers@localaid.org.au">careers@localaid.org.au</a>
+          </div>
+          <div className="emergency-number">
+            <strong>General Inquiries:</strong> <Link to="/contact">Contact Us</Link>
+          </div>
+          <div className="emergency-number" style={{ fontSize: '0.95rem', marginTop: '1rem' }}>
+            We are committed to building a diverse, equitable, and inclusive team. We encourage applications from all backgrounds.
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

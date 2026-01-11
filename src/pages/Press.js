@@ -125,210 +125,120 @@ function Press() {
   ];
 
   return (
-    <div className="page press-page">
+    <div className="page-container">
       {/* Hero Section */}
-      <section className="hero-section" style={{ backgroundImage: `url(${heroImage.url})` }}>
-        <div className="hero-overlay"></div>
-        <div className="hero-content">
+      <div className="safety-hero">
+        <div className="safety-hero-content">
           <h1>Media Center</h1>
           <p>Press releases, news coverage, and official media resources for Local Aid</p>
         </div>
-      </section>
+        <div className="safety-hero-image">
+          <img 
+            src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=600&fit=crop&q=80" 
+            alt="Professional press and media center" 
+          />
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <div className="page-container">
-        {/* Media Contact Section */}
-        <section className="press-contact-section">
-          <div className="contact-card">
-            <h2>Press Contact Information</h2>
-            <p>For media inquiries, interview requests, or access to additional resources, contact our Media Relations office:</p>
-            <div className="contact-info">
-              <p><strong>Email:</strong> <a href="mailto:press@localaids.org">press@localaids.org</a></p>
-              <p><strong>Telephone:</strong> <a href="tel:+61234567890">+61 (2) 3456 7890</a></p>
-              <p><strong>Media Response:</strong> Standard response time for all inquiries is within 24 business hours</p>
+      {/* Press Stats */}
+      <div className="safety-stats">
+        <div className="stat-card">
+          <div className="stat-number">10,000+</div>
+          <div className="stat-label">Active Volunteers</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">50,000+</div>
+          <div className="stat-label">People Helped</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">127%</div>
+          <div className="stat-label">YoY Growth</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">89%</div>
+          <div className="stat-label">Satisfaction</div>
+        </div>
+      </div>
+      {/* Media Contact Section */}
+      <div className="emergency-contact">
+        <h2>Press Contact Information</h2>
+        <p>For media inquiries, interview requests, or access to additional resources, contact our Media Relations office:</p>
+        <div className="emergency-numbers">
+          <div className="emergency-number">
+            <strong>Email:</strong> <a href="mailto:press@localaids.org">press@localaids.org</a>
+          </div>
+          <div className="emergency-number">
+            <strong>Telephone:</strong> <a href="tel:+61234567890">+61 (2) 3456 7890</a>
+          </div>
+          <div className="emergency-number">
+            <strong>Response Time:</strong> Within 24 business hours
+          </div>
+        </div>
+      </div>
+
+      {/* Press Releases Section */}
+      <div className="safety-content">
+        <h2>Official Press Releases</h2>
+        <div className="safety-tips-grid">
+          {pressReleases.slice(0, 6).map((release, index) => (
+            <div key={index} className="safety-tip-card">
+              <div className="tip-icon">📰</div>
+              <h3>{release.title}</h3>
+              <p style={{ fontSize: '0.85rem', opacity: 0.7, marginBottom: '0.5rem' }}>{release.date}</p>
+              <p>{release.summary.substring(0, 200)}...</p>
+              <a href={release.link} style={{ color: 'var(--primary)', fontWeight: '600', marginTop: '0.5rem', display: 'inline-block' }}>
+                Read Full Release →
+              </a>
             </div>
-          </div>
-        </section>
+          ))}
+        </div>
+      </div>
 
-        {/* Press Releases Section */}
-        <section className="press-releases-section">
-          <h2>Official Press Releases</h2>
-          <p className="section-description">Latest organizational announcements and official communications</p>
-          <div className="press-releases-list">
-            {pressReleases.map((release, index) => (
-              <article key={index} className="press-release-item">
-                <div className="release-date">{release.date}</div>
-                <h3>{release.title}</h3>
-                <p className="release-summary">{release.summary}</p>
-                {release.fullContent && (
-                  <p className="release-content">{release.fullContent}</p>
-                )}
-                <a href={release.link} className="read-more">Read Full Release →</a>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        {/* Media Kit Section */}
-        <section className="media-kit-section">
-          <h2>Media Kit & Resources</h2>
-          <p className="section-description">Professional assets and documentation for editorial and broadcast use</p>
-          <div className="media-kit-grid">
-            {mediaKits.map((kit, index) => (
-              <div key={index} className="media-kit-card">
-                <div className="kit-icon">{kit.icon}</div>
-                <h3>{kit.title}</h3>
-                <p>{kit.description}</p>
-                <button className="kit-download-btn">Download Resource</button>
+      {/* Media Kit Section */}
+      <div className="safety-features">
+        <h2>Media Kit & Resources</h2>
+        <div className="features-grid">
+          {mediaKits.map((kit, index) => (
+            <div key={index} className="feature-card">
+              <div className="feature-icon">
+                <span style={{ fontSize: '2.5rem' }}>{kit.icon}</span>
               </div>
-            ))}
-          </div>
-        </section>
+              <h3>{kit.title}</h3>
+              <p>{kit.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* In The News Section */}
-        <section className="in-the-news-section">
-          <h2>Media Coverage</h2>
-          <p className="section-description">Recent editorial coverage and organizational features in major publications</p>
-          <div className="news-grid">
-            {inTheNews.map((news, index) => (
-              <article key={index} className="news-item">
-                <div className="news-outlet">{news.outlet}</div>
-                <h3>{news.title}</h3>
-                <p className="news-description">{news.description}</p>
-                <div className="news-date">{news.date}</div>
-                <a href="#" className="news-link">Access Article →</a>
-              </article>
-            ))}
-          </div>
-        </section>
+      {/* In The News Section */}
+      <div className="red-flags-section">
+        <h2>📺 Recent Media Coverage</h2>
+        <div className="red-flags-grid">
+          {inTheNews.map((news, index) => (
+            <div key={index} className="red-flag-card">
+              <h4>{news.title}</h4>
+              <p style={{ fontSize: '0.85rem', opacity: 0.7, marginTop: '0.5rem' }}>
+                <strong>{news.outlet}</strong> • {news.date}
+              </p>
+              <p style={{ marginTop: '0.75rem' }}>{news.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* Key Facts Section */}
-        <section className="key-facts-section">
-          <h2>Organizational At a Glance</h2>
-          <div className="facts-grid">
-            <div className="fact-card">
-              <h3>Year Established</h3>
-              <p>2022</p>
-            </div>
-            <div className="fact-card">
-              <h3>Registered Volunteers</h3>
-              <p>10,000+</p>
-            </div>
-            <div className="fact-card">
-              <h3>Geographic Coverage</h3>
-              <p>Multiple Australian Regions</p>
-            </div>
-            <div className="fact-card">
-              <h3>Community Members Assisted</h3>
-              <p>50,000+</p>
-            </div>
-            <div className="fact-card">
-              <h3>Service Categories</h3>
-              <p>Healthcare, Errands, Specialized Support</p>
-            </div>
-            <div className="fact-card">
-              <h3>Core Mission</h3>
-              <p>Enabling community-driven peer support networks</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Organization Overview Section */}
-        <section className="organization-overview-section">
-          <h2>About Local Aid</h2>
-          <div className="overview-content">
-            <p>
-              Local Aid is a community-driven platform connecting volunteers with individuals requiring healthcare support, 
-              transportation assistance, and community services across Australia. Founded in 2022, the organization has established 
-              a peer-to-peer support model addressing critical service gaps in healthcare accessibility and community-led assistance.
-            </p>
-            <p>
-              The platform leverages proprietary matching technology to connect trained volunteers with community members requiring 
-              support services including medical transportation, shopping assistance, appointment coordination, and specialized assistance 
-              for vulnerable populations. Local Aid operates as a registered nonprofit organization committed to evidence-based social 
-              impact and sustainable community development.
-            </p>
-            <h3>Our Commitment to Excellence</h3>
-            <ul className="commitment-list">
-              <li>Evidence-based service delivery with measurable impact outcomes</li>
-              <li>Comprehensive volunteer training and background verification</li>
-              <li>Personalized matching utilizing advanced algorithmic assessment</li>
-              <li>Community-centered design prioritizing client feedback and continuous improvement</li>
-              <li>Transparent reporting and stakeholder engagement</li>
-              <li>Sustainable organizational practices and regional expansion</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Fast Facts Section */}
-        <section className="fast-facts-section">
-          <h2>Quick Reference: Key Statistics</h2>
-          <div className="fast-facts-grid">
-            <div className="fast-fact">
-              <h4>10,000+</h4>
-              <p>Active Volunteers Registered</p>
-            </div>
-            <div className="fast-fact">
-              <h4>50,000+</h4>
-              <p>Community Members Assisted</p>
-            </div>
-            <div className="fast-fact">
-              <h4>18,500+</h4>
-              <p>Medical Appointments Facilitated</p>
-            </div>
-            <div className="fast-fact">
-              <h4>127%</h4>
-              <p>Year-over-Year Growth Rate</p>
-            </div>
-            <div className="fast-fact">
-              <h4>89%</h4>
-              <p>Client Satisfaction Rating</p>
-            </div>
-            <div className="fast-fact">
-              <h4>2022</h4>
-              <p>Year Organization Founded</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Newsletter Signup */}
-        <section className="press-newsletter-section">
-          <h2>Press Distribution List</h2>
-          <p>Subscribe to receive official press releases, organizational announcements, media updates, and news briefings delivered directly to your inbox</p>
-          <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
-            <div className="form-group">
-              <input 
-                type="email" 
-                placeholder="Enter your email address" 
-                required
-              />
-              <button type="submit">Subscribe to Press Distribution</button>
-            </div>
-            <p className="form-note">We respect your privacy. Unsubscribe at any time. No spam, ever.</p>
-          </form>
-        </section>
-
-        {/* Footer Information */}
-        <section className="press-footer-section">
-          <h2>Additional Resources & Support</h2>
-          <div className="footer-resources">
-            <div className="resource-card">
-              <h3>Media Inquiries</h3>
-              <p>For journalists, broadcasters, and media organizations seeking comment, interviews, or detailed information</p>
-              <p><strong>Email:</strong> <a href="mailto:press@localaids.org">press@localaids.org</a></p>
-            </div>
-            <div className="resource-card">
-              <h3>Partnership & Sponsorship</h3>
-              <p>For organizations interested in strategic partnerships, sponsorship opportunities, or collaborative initiatives</p>
-              <p><strong>Email:</strong> <a href="mailto:partnerships@localaids.org">partnerships@localaids.org</a></p>
-            </div>
-            <div className="resource-card">
-              <h3>Technical Support</h3>
-              <p>For issues accessing media resources, downloading assets, or technical assistance with media kit materials</p>
-              <p><strong>Email:</strong> <a href="mailto:support@localaids.org">support@localaids.org</a></p>
-            </div>
-          </div>
-        </section>
+      {/* Organization Overview */}
+      <div className="safety-content" style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <h2>About Local Aid</h2>
+        <p style={{ fontSize: '1.1rem', lineHeight: '1.8', marginBottom: '1.5rem' }}>
+          Local Aid is a community-driven platform connecting volunteers with individuals requiring healthcare support, 
+          transportation assistance, and community services across Australia. Founded in 2022, the organization has established 
+          a peer-to-peer support model addressing critical service gaps in healthcare accessibility and community-led assistance.
+        </p>
+        <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>
+          The platform leverages proprietary matching technology to connect trained volunteers with community members requiring 
+          support services including medical transportation, shopping assistance, appointment coordination, and specialized assistance 
+          for vulnerable populations.
+        </p>
       </div>
     </div>
   );

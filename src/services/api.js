@@ -107,7 +107,7 @@ export const authAPI = {
       console.error('Network error during registration:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
       }
       // Re-throw API errors as-is
       throw error;
@@ -129,7 +129,7 @@ export const authAPI = {
       console.error('Network error during login:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
       }
       // Re-throw API errors (like invalid credentials) as-is
       throw error;

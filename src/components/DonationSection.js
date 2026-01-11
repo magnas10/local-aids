@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './DonationSection.css';
 
 function DonationSection() {
+  const navigate = useNavigate();
   const [selectedAmount, setSelectedAmount] = useState(100);
   const [customAmount, setCustomAmount] = useState('');
 
@@ -94,7 +96,7 @@ function DonationSection() {
               <button className="freq-btn">Monthly</button>
             </div>
 
-            <button className="main-donate-btn">
+            <button className="main-donate-btn" onClick={() => navigate('/donate')}>
               <span>Donate ${customAmount || selectedAmount}</span>
               <span className="btn-arrow">→</span>
             </button>

@@ -76,6 +76,7 @@ const app = express();
 // Allowed origins for CORS
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://local-aid-dcbca.web.app',
   'https://local-aid-dcbca.firebaseapp.com',
   'https://local-aid-frontend.onrender.com',
