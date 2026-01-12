@@ -65,7 +65,8 @@
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-bottom: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--gold);
+    border: 1px solid var(--gold);
 }
 
 .contact-badge-pro svg {
@@ -81,6 +82,7 @@
     line-height: 1.05;
     letter-spacing: -2px;
     text-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
+    color: #ffffff;
 }
 
 .contact-hero-content-pro h1 .highlight {
@@ -100,6 +102,7 @@
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
+    color: #ffffff;
 }
 
 .contact-hero-cta-section {

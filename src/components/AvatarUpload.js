@@ -99,7 +99,7 @@ function AvatarUpload({ user, updateUser, profileData }) {
     
     // If it's a relative path, construct the full URL
     if (profileData.avatar.startsWith('/uploads/')) {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
       // Add timestamp to prevent caching
       const timestamp = new Date().getTime();
       return `${API_BASE_URL}${profileData.avatar}?t=${timestamp}`;

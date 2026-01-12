@@ -1,5 +1,6 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+// DIRECT CONNECTION FIX: Use full URL to bypass proxy issues
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -110,7 +111,7 @@ export const authAPI = {
       console.error('Network error during registration:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5001) are running.');
       }
       // Re-throw API errors as-is
       throw error;
@@ -132,7 +133,7 @@ export const authAPI = {
       console.error('Network error during login:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5001) are running.');
       }
       // Re-throw API errors (like invalid credentials) as-is
       throw error;

@@ -7,11 +7,11 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:5002',
+      target: 'http://localhost:5001',
       changeOrigin: true,
       logLevel: 'debug',
       onProxyReq: (proxyReq, req, res) => {
-        console.log(`[PROXY] ${req.method} ${req.url} -> http://localhost:5002${req.url}`);
+        console.log(`[PROXY] ${req.method} ${req.url} -> http://localhost:5001${req.url}`);
       },
       onProxyRes: (proxyRes, req, res) => {
         console.log(`[PROXY] ${proxyRes.statusCode} from ${req.url}`);
@@ -23,7 +23,7 @@ module.exports = function(app) {
         });
         res.end(JSON.stringify({
           success: false,
-          message: 'Backend server connection failed. Please ensure the backend is running on port 5002.'
+          message: 'Backend server connection failed. Please ensure the backend is running on port 5001.'
         }));
       }
     })
@@ -33,7 +33,7 @@ module.exports = function(app) {
   app.use(
     '/uploads',
     createProxyMiddleware({
-      target: 'http://localhost:5002',
+      target: 'http://localhost:5001',
       changeOrigin: true
     })
   );

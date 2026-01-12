@@ -60,7 +60,7 @@ function Gallery() {
       const response = await galleryAPI.getAll(params);
       
       // Convert relative image URLs to full URLs
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
       const imagesWithFullUrls = (response.data || []).map(img => ({
         ...img,
         imageUrl: img.imageUrl.startsWith('http') 
