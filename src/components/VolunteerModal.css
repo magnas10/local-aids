@@ -1,0 +1,104 @@
+/* Volunteer Modal - Golden Theme Override */
+
+.volunteer-modal-header {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 40px 40px 20px !important;
+  text-align: center !important;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.volunteer-modal-badge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 160, 23, 0.1) !important;
+  color: #d4a017 !important;
+  padding: 8px 16px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  margin-bottom: 20px !important;
+  border: 1px solid rgba(212, 160, 23, 0.2) !important;
+  width: auto !important;
+}
+
+.volunteer-modal h2 {
+  font-size: 2.2rem !important;
+  font-weight: 800 !important;
+  color: #1a1a1a !important;
+  margin: 0 0 10px 0 !important;
+  letter-spacing: -1px !important;
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+}
+
+.volunteer-modal-header p {
+  color: #555 !important;
+  font-size: 1.05rem !important;
+  margin: 0 !important;
+  line-height: 1.6 !important;
+  max-width: 90% !important;
+}
+
+.volunteer-modal-header p strong {
+  color: #d4a017 !important;
+  font-weight: 700;
+}
+
+.volunteer-modal-close {
+  background: white !important;
+  border: 1px solid #e0e0e0 !important;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #666 !important;
+  position: absolute !important;
+  top: 20px !important;
+  right: 20px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+}
+
+.volunteer-modal-close:hover {
+  background: #ff6b6b !important;
+  color: white !important;
+  border-color: #ff6b6b !important;
+  transform: rotate(90deg) !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3) !important;
+}
+
+/* Form Styles */
+.volunteer-form-group input:focus,
+.volunteer-form-group select:focus,
+.volunteer-form-group textarea:focus {
+  border-color: #d4a017 !important;
+  box-shadow: 0 0 0 4px rgba(212, 160, 23, 0.1) !important;
+}
+
+.volunteer-btn-submit {
+  background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 14px 28px !important;
+  font-weight: 700 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease !important;
+}
+
+.volunteer-btn-submit:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(212, 160, 23, 0.3) !important;
+}
+
+.volunteer-form-group label svg {
+  color: #d4a017 !important;
+}

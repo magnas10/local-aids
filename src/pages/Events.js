@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getHelpRequests, deleteHelpRequest } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import './Pages.css';
+import '../components/Opportunities.css';
+import '../components/VolunteerModal.css';
 
 function Events() {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     distance: 'all',
     type: 'all',
@@ -17,6 +21,67 @@ function Events() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // Volunteer Modal State
+  const [showVolunteerModal, setShowVolunteerModal] = useState(false);
+  const [volunteerOpportunity, setVolunteerOpportunity] = useState(null);
+  const [volunteerForm, setVolunteerForm] = useState({
+    message: '',
+    phone: '',
+    availability: '',
+    experience: '',
+    transportMode: 'own'
+  });
+  const [notification, setNotification] = useState({ show: false, type: '', message: '' });
+
+  // Volunteer Handlers
+  const handleVolunteerNow = (opportunity, e) => {
+    if (e) e.stopPropagation();
+    
+    if (!isLoggedIn) {
+      navigate('/login', { state: { from: '/events', opportunityId: opportunity.id } });
+      return;
+    }
+    
+    setVolunteerOpportunity(opportunity);
+    setShowVolunteerModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeVolunteerModal = () => {
+    setShowVolunteerModal(false);
+    setVolunteerOpportunity(null);
+    setVolunteerForm({
+      message: '',
+      phone: '',
+      availability: '',
+      experience: '',
+      transportMode: 'own'
+    });
+    document.body.style.overflow = 'auto';
+  };
+
+  const handleVolunteerFormChange = (e) => {
+    const { name, value } = e.target;
+    setVolunteerForm(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleVolunteerSubmit = (e) => {
+    e.preventDefault();
+    showNotification('success', `🎉 Thank you for volunteering! We will connect you with the requester of "${volunteerOpportunity.title}".`);
+    closeVolunteerModal();
+  };
+
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification({ show: false, type: '', message: '' });
+    }, 5000);
+  };
+
+  const closeNotification = () => {
+    setNotification({ show: false, type: '', message: '' });
+  };
 
   // Fetch help requests on component mount
   useEffect(() => {
@@ -479,7 +544,10 @@ function Events() {
                     🗑️ Delete
                   </button>
                 )}
-                <button className="volunteer-btn">
+                <button 
+                  className="volunteer-btn"
+                  onClick={(e) => handleVolunteerNow(event, e)}
+                >
                   Volunteer Now
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14m-7-7l7 7-7 7"/>
@@ -526,6 +594,171 @@ function Events() {
               </form>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Volunteer Modal */}
+      {showVolunteerModal && (
+        <div className="volunteer-modal-overlay">
+          <div className="volunteer-modal">
+            <div className="volunteer-modal-header">
+              <span className="volunteer-modal-badge">
+                Volunteer Response
+              </span>
+              <h2>Thank You for Helping!</h2>
+              <p>You're offering to help with: <strong>{volunteerOpportunity?.title}</strong></p>
+              <button className="volunteer-modal-close" onClick={closeVolunteerModal}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div className="volunteer-modal-body">
+              <form onSubmit={handleVolunteerSubmit}>
+                <div className="volunteer-form-grid">
+                  <div className="volunteer-form-group full-width">
+                    <label>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      </svg>
+                      Message to Requester
+                    </label>
+                    <textarea
+                      name="message"
+                      placeholder="Hi! I'd love to help with this request. I am available..."
+                      value={volunteerForm.message}
+                      onChange={handleVolunteerFormChange}
+                      required
+                      rows="3"
+                    ></textarea>
+                  </div>
+
+                  <div className="volunteer-form-group">
+                    <label>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                      Phone Number (Optional)
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Your contact number"
+                      value={volunteerForm.phone}
+                      onChange={handleVolunteerFormChange}
+                    />
+                  </div>
+
+                  <div className="volunteer-form-group">
+                    <label>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                      Availability
+                    </label>
+                    <input
+                      type="text"
+                      name="availability"
+                      placeholder="e.g. Weekends, Evenings"
+                      value={volunteerForm.availability}
+                      onChange={handleVolunteerFormChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="volunteer-form-group">
+                    <label>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                      </svg>
+                      Relevant Experience
+                    </label>
+                    <select
+                      name="experience"
+                      value={volunteerForm.experience}
+                      onChange={handleVolunteerFormChange}
+                      required
+                    >
+                      <option value="">Select experience level</option>
+                      <option value="first">First time volunteer</option>
+                      <option value="some">Some volunteer experience</option>
+                      <option value="experienced">Experienced volunteer</option>
+                      <option value="professional">Professional background</option>
+                    </select>
+                  </div>
+
+                  <div className="volunteer-form-group">
+                    <label>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <line x1="21.17" y1="8" x2="12" y2="8"/>
+                        <line x1="3.95" y1="6.06" x2="8.54" y2="14"/>
+                        <line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+                      </svg>
+                      Transport Mode
+                    </label>
+                    <select
+                      name="transportMode"
+                      value={volunteerForm.transportMode}
+                      onChange={handleVolunteerFormChange}
+                    >
+                      <option value="own">Own vehicle</option>
+                      <option value="public">Public transport</option>
+                      <option value="bike">Bicycle</option>
+                      <option value="walk">Walking</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="volunteer-form-actions">
+                  <button type="button" className="volunteer-btn-cancel" onClick={closeVolunteerModal}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="volunteer-btn-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                      <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    Submit Application
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification Alert */}
+      {notification.show && (
+        <div className={`notification-alert ${notification.type}`}>
+          <div className="notification-content">
+            <div className="notification-icon">
+              {notification.type === 'success' ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="24" height="24">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+              )}
+            </div>
+            <p>{notification.message}</p>
+          </div>
+          <button className="notification-close" onClick={closeNotification}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
         </div>
       )}
     </div>
