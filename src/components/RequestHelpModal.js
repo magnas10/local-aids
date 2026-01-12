@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { submitHelpRequest } from '../services/api';
 import './RequestHelpModal.css';
 
@@ -533,7 +534,7 @@ function RequestHelpModal({ isOpen, onClose }) {
                         onChange={handleChange}
                         required
                       />
-                      <span>I agree to the <a href="/terms">Terms of Service</a> *</span>
+                      <span>I agree to the <Link to="/terms" target="_blank">Terms of Service</Link> *</span>
                     </label>
                     <label className="checkbox-label">
                       <input
@@ -543,7 +544,7 @@ function RequestHelpModal({ isOpen, onClose }) {
                         onChange={handleChange}
                         required
                       />
-                      <span>I agree to the <a href="/privacy">Privacy Policy</a> and consent to being contacted *</span>
+                      <span>I agree to the <Link to="/privacy" target="_blank">Privacy Policy</Link> and consent to being contacted *</span>
                     </label>
                   </div>
                 </div>

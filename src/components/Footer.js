@@ -167,9 +167,9 @@ function Footer() {
             © 2025 Local Aid. Connecting Communities Through Kindness. All rights reserved.
           </p>
           <div className="footer-legal">
-            <a href="/terms">Terms of Service</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/cookies">Cookie Policy</a>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/cookies">Cookie Policy</Link>
           </div>
         </div>
       </div>

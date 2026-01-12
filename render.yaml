@@ -5,11 +5,11 @@ databases:
     plan: free
 
 services:
+  # Backend API Service
   - type: web
     name: local-aid-api
     runtime: node
     plan: free
-    branch: local-aid
     rootDir: server
     buildCommand: npm install
     startCommand: npm start
@@ -23,4 +23,21 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: CLIENT_URL
-        value: https://local-aid-dcbca.web.app
+        sync: false
+      - key: PORT
+        value: 5000
+
+  # Frontend Static Site
+  - type: web
+    name: local-aid-frontend
+    runtime: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

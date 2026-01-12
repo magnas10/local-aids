@@ -168,17 +168,17 @@
   animation: floatRight 6s ease-in-out infinite;
 }
 
-.stat-number {
+.floating-stat .stat-number {
   display: block;
   font-size: 1.8rem;
   font-weight: 800;
   color: white !important;
 }
 
-.stat-text {
+.floating-stat .stat-text {
   display: block;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: white !important;
   margin-top: 5px;
 }
 

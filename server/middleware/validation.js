@@ -109,14 +109,17 @@ const handleValidationErrors = (req, res, next) => {
       message: error.msg
     }));
     
+    // Get the first error message for simple display
+    const firstError = formattedErrors[0];
+    
     return res.status(400).json({
       success: false,
-      message: 'Validation failed',
+      message: firstError.message || 'Validation failed',
       errors: formattedErrors
     });
   }
   
-  next();
+  return next();
 };
 
 /**
@@ -136,10 +139,14 @@ const registrationValidation = [
 /**
  * Login Validation Chain
  * Validation rules for user login
+ * Note: Password format not enforced during login (only check if provided)
  */
 const loginValidation = [
   emailValidation(),
-  passwordValidation(),
+  body('password')
+    .trim()
+    .notEmpty()
+    .withMessage('Password is required'),
   handleValidationErrors
 ];
 

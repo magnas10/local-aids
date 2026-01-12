@@ -38,12 +38,6 @@ function Login() {
       return;
     }
     
-    // Validate password (exactly 8 numeric digits)
-    if (!/^[0-9]{8}$/.test(formData.password)) {
-      setFormError('Password must be exactly 8 numeric digits');
-      return;
-    }
-    
     setLoading(true);
     setFormError('');
     
@@ -70,18 +64,6 @@ function Login() {
           <h1>Welcome Back</h1>
           <p>Sign in to continue to Local Aid</p>
           
-          {/* Password Format Reminder */}
-          <div style={{
-            background: '#fff3e0',
-            border: '1px solid #ff9800',
-            borderRadius: '8px',
-            padding: '10px 16px',
-            marginBottom: '20px',
-            fontSize: '0.9em'
-          }}>
-            <strong>🔑 Password Format:</strong> Your password is exactly 8 numeric digits
-          </div>
-          
           <form onSubmit={handleSubmit} className="auth-form" aria-label="Login form">
             {formError && (
               <div className="form-error" role="alert">
@@ -104,22 +86,19 @@ function Login() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="login-password">Password (8 Digits)</label>
+              <label htmlFor="login-password">Password</label>
               <input 
                 id="login-password"
                 type="password" 
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter your 8-digit numeric password"
+                placeholder="Enter your password"
                 required 
                 autoComplete="current-password"
                 aria-required="true"
-                pattern="[0-9]{8}"
-                maxLength="8"
                 disabled={loading}
               />
-              <small style={{color: '#666', fontSize: '0.85em'}}>Password must be exactly 8 numeric digits</small>
             </div>
             <div className="form-options">
               <label className="remember-me">

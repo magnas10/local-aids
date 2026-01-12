@@ -293,7 +293,7 @@ router.put('/:id/admin-update', protect, admin, [
 });
 
 // @route   DELETE /api/users/:id
-// @desc    Delete/deactivate user (admin only)
+// @desc    Delete user (admin only)
 // @access  Private/Admin
 router.delete('/:id', protect, admin, async (req, res) => {
   try {
@@ -303,11 +303,23 @@ router.delete('/:id', protect, admin, async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Soft delete - deactivate instead of removing
-    user.isActive = false;
-    await user.save();
+    // Prevent deleting yourself
+    if (user.id === req.user.id) {
+      return res.status(400).json({ message: 'You cannot delete your own account' });
+    }
 
-    res.json({ message: 'User deactivated successfully' });
+    // Delete user's avatar if it exists
+    if (user.profileImage && user.profileImage.startsWith('/uploads/avatars/')) {
+      const avatarPath = path.join(__dirname, '..', user.profileImage);
+      if (fs.existsSync(avatarPath)) {
+        fs.unlinkSync(avatarPath);
+      }
+    }
+
+    // Hard delete - permanently remove from database
+    await user.destroy();
+
+    res.json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Delete user error:', error);
     res.status(500).json({ message: 'Server error' });

@@ -42,15 +42,18 @@ const authFetch = async (url, options = {}) => {
 
 // Parse response and handle errors
 const handleResponse = async (response) => {
+  // Clone the response so we can read it multiple times if needed
+  const responseClone = response.clone();
+  
   let data;
   try {
     data = await response.json();
   } catch (err) {
-    // When JSON parsing fails, capture raw response body for debugging
+    // When JSON parsing fails, try to read as text from the cloned response
     console.error('Failed to parse JSON response:', err);
     console.error('Response status:', response.status);
     try {
-      const rawText = await response.text();
+      const rawText = await responseClone.text();
       console.error('Raw response body:', rawText);
       // Surface a more helpful, user-friendly error
       const snippet = rawText ? rawText.slice(0, 1000) : '<empty body>';
@@ -107,7 +110,7 @@ export const authAPI = {
       console.error('Network error during registration:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
       }
       // Re-throw API errors as-is
       throw error;
@@ -129,7 +132,7 @@ export const authAPI = {
       console.error('Network error during login:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure the server is running on port 5001.');
+        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
       }
       // Re-throw API errors (like invalid credentials) as-is
       throw error;
@@ -613,7 +616,7 @@ export const getAllNotificationsForAdmin = notificationsAPI.getAllForAdmin;
 export const updateNotification = notificationsAPI.update;
 export const deleteNotification = notificationsAPI.delete;
 
-export default {
+const api = {
   auth: authAPI,
   users: usersAPI,
   events: eventsAPI,
@@ -625,3 +628,5 @@ export default {
   helpRequests: helpRequestsAPI,
   notifications: notificationsAPI,
 };
+
+export default api;
