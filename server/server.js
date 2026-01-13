@@ -125,9 +125,19 @@ app.use('/api/help-requests', helpRequestRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 
+// Global DB status variables
+let dbStatus = 'connecting';
+let dbError = null;
+
 // Root endpoint (for Render health checks)
 app.get('/', (req, res) => {
-  res.json({ status: 'OK', message: 'Local Aid API Server is running' });
+  res.json({ 
+    status: 'OK', 
+    message: 'Local Aid API Server is running',
+    dbStatus,
+    dbError: dbError ? dbError.message : null,
+    env: process.env.NODE_ENV
+  });
 });
 
 // Health check endpoint
@@ -167,9 +177,16 @@ app.use((err, req, res, next) => {
 // Database connection & Sync
 const PORT = process.env.PORT || 5001;
 
+// Start server immediately to satisfy Render health check
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+});
+
 sequelize.sync({ alter: true }) // Sync models with database
   .then(() => {
     console.log('PostgreSQL Database Connected & Synced');
+    dbStatus = 'connected';
 
     // Ensure admin user exists and has admin role (useful for demos)
     (async () => {
@@ -200,15 +217,12 @@ sequelize.sync({ alter: true }) // Sync models with database
       } catch (err) {
         console.error('Error ensuring admin user:', err);
       }
-
-      app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      });
     })();
   })
   .catch((err) => {
     console.error('Failed to connect to PostgreSQL:', err);
+    dbStatus = 'error';
+    dbError = err;
   });
 
 module.exports = app;
