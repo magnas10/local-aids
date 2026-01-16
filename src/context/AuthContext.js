@@ -88,8 +88,9 @@ export function AuthProvider({ children }) {
       return { success: true, user: response.user };
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.message);
-      return { success: false, error: err.message };
+      const errorMessage = err.message || String(err) || 'An unknown error occurred';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
     }
   };
 

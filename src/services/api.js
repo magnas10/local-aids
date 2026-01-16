@@ -122,15 +122,32 @@ export const authAPI = {
     try {
       console.log('AuthAPI login called with:', { email: credentials.email });
       console.log('API URL:', `${API_BASE_URL}/auth/login`);
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
-      });
-      console.log('Login response status:', response.status);
-      return handleResponse(response);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        console.log('Login response status:', response.status);
+        return handleResponse(response);
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
+      }
     } catch (error) {
       console.error('Network error during login:', error);
+      
+      if (error.name === 'AbortError') {
+        throw new Error('Connection timed out. The server might be waking up, please try again.');
+      }
+
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5001) are running.');
