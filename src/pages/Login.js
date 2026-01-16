@@ -46,6 +46,18 @@ function Login() {
     
     setLoading(true);
     setFormError('');
+
+    // Safety timeout: Reset loading state after 30s max (UI failsafe)
+    // This runs independently of the API timeout to guarantee button re-enables
+    const safetyTimeout = setTimeout(() => {
+        setLoading((currentLoading) => {
+            if (currentLoading) {
+                setFormError('Request timed out. Please check your internet connection and try again.');
+                return false;
+            }
+            return currentLoading;
+        });
+    }, 30000);
     
     try {
       // Login the user with API
@@ -53,6 +65,8 @@ function Login() {
         email: formData.email,
         password: formData.password
       });
+
+      clearTimeout(safetyTimeout);
       
       if (result.success) {
         // Redirect to home on success
@@ -62,9 +76,13 @@ function Login() {
         setLoading(false);
       }
     } catch (err) {
+      clearTimeout(safetyTimeout);
       console.error('Unexpected login error:', err);
-      setFormError('An unexpected error occurred. Please try again.');
-      setLoading(false);
+      // Only set error if not already handled by safety timeout
+      if (loading) {
+          setFormError('An unexpected error occurred. Please try again.');
+          setLoading(false);
+      }
     }
   };
 
