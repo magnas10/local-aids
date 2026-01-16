@@ -120,7 +120,8 @@ export const authAPI = {
       console.log('API URL:', `${API_BASE_URL}/auth/login`);
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+      // Increased timeout to 60 seconds to handle Render free tier cold starts
+      const timeoutId = setTimeout(() => controller.abort(), 60000); 
 
       try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -141,7 +142,7 @@ export const authAPI = {
       console.error('Network error during login:', error);
       
       if (error.name === 'AbortError') {
-        throw new Error('Connection timed out. The server might be waking up, please try again.');
+        throw new Error('Connection timed out. The server is taking too long to respond (likely waking up from sleep mode). Please try again in a moment.');
       }
 
       // Only treat as network error if it's actually a fetch/network issue
