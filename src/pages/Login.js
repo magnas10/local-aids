@@ -47,19 +47,24 @@ function Login() {
     setLoading(true);
     setFormError('');
     
-    // Login the user with API
-    const result = await login({
-      email: formData.email,
-      password: formData.password
-    });
-    
-    setLoading(false);
-    
-    if (result.success) {
-      // Redirect to home on success
-      navigate('/');
-    } else {
-      setFormError(result.error || 'Login failed. Please try again.');
+    try {
+      // Login the user with API
+      const result = await login({
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (result.success) {
+        // Redirect to home on success
+        navigate('/');
+      } else {
+        setFormError(result.error || 'Login failed. Please try again.');
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Unexpected login error:', err);
+      setFormError('An unexpected error occurred. Please try again.');
+      setLoading(false);
     }
   };
 
