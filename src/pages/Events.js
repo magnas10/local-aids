@@ -19,6 +19,15 @@ function Events() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [volunteerModalOpen, setVolunteerModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [volunteerForm, setVolunteerForm] = useState({
+    message: '',
+    phone: '',
+    availability: '',
+    experience: '',
+    transportMode: 'own'
+  });
 
   // Fetch help requests on component mount
   useEffect(() => {
@@ -323,11 +332,35 @@ function Events() {
       return;
     }
 
-    // Show success message for all events
-    alert(`Thank you for your interest in "${event.title}"!\n\nYou'll be contacted by email with more details about this opportunity.`);
-    
-    // Optional: Navigate to a confirmation or details page
-    // navigate(`/events/${event.id}`);
+    // Open volunteer modal
+    setSelectedEvent(event);
+    setVolunteerModalOpen(true);
+  };
+
+  const closeVolunteerModal = () => {
+    setVolunteerModalOpen(false);
+    setSelectedEvent(null);
+    setVolunteerForm({
+      message: '',
+      phone: '',
+      availability: '',
+      experience: '',
+      transportMode: 'own'
+    });
+  };
+
+  const handleVolunteerFormChange = (e) => {
+    setVolunteerForm({
+      ...volunteerForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleVolunteerSubmit = (e) => {
+    e.preventDefault();
+    setSuccess(`Application submitted for "${selectedEvent.title}"! You'll be contacted soon.`);
+    closeVolunteerModal();
+    setTimeout(() => setSuccess(''), 5000);
   };
 
   const canDelete = (event) => {
@@ -551,6 +584,114 @@ function Events() {
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Volunteer Application Modal */}
+      {volunteerModalOpen && selectedEvent && (
+        <div className="modal-overlay" onClick={closeVolunteerModal}>
+          <div className="modal-content volunteer-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeVolunteerModal}>×</button>
+            
+            <div className="modal-header">
+              <h2>{selectedEvent.title}</h2>
+              <div className="event-quick-info">
+                <span>📍 {selectedEvent.location}</span>
+                <span>⏰ {selectedEvent.date}, {selectedEvent.time}</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleVolunteerSubmit} className="volunteer-application-form">
+              <div className="form-group">
+                <label htmlFor="message">Message *</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  placeholder="Introduce yourself and explain why you'd like to help..."
+                  value={volunteerForm.message}
+                  onChange={handleVolunteerFormChange}
+                  required
+                  rows="4"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="phone">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="04XX XXX XXX"
+                    value={volunteerForm.phone}
+                    onChange={handleVolunteerFormChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="availability">Your Availability *</label>
+                  <select
+                    id="availability"
+                    name="availability"
+                    value={volunteerForm.availability}
+                    onChange={handleVolunteerFormChange}
+                    required
+                  >
+                    <option value="">Select availability</option>
+                    <option value="morning">Morning (6am - 12pm)</option>
+                    <option value="afternoon">Afternoon (12pm - 6pm)</option>
+                    <option value="evening">Evening (6pm - 10pm)</option>
+                    <option value="flexible">Flexible</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="experience">Relevant Experience *</label>
+                  <select
+                    id="experience"
+                    name="experience"
+                    value={volunteerForm.experience}
+                    onChange={handleVolunteerFormChange}
+                    required
+                  >
+                    <option value="">Select experience level</option>
+                    <option value="first-time">First-time volunteer</option>
+                    <option value="some">Some experience</option>
+                    <option value="experienced">Experienced volunteer</option>
+                    <option value="professional">Professional background</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="transportMode">Transport Mode *</label>
+                  <select
+                    id="transportMode"
+                    name="transportMode"
+                    value={volunteerForm.transportMode}
+                    onChange={handleVolunteerFormChange}
+                    required
+                  >
+                    <option value="own">Own vehicle</option>
+                    <option value="public">Public transport</option>
+                    <option value="bike">Bicycle</option>
+                    <option value="walk">Walking</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" onClick={closeVolunteerModal} className="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Submit Application
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
