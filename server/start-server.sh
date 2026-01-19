@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Kill any process using port 5001
-PORT=5001
+# Kill any process using port 5002
+PORT=5002
 echo "Checking for processes on port $PORT..."
 PID=$(lsof -ti:$PORT)
 

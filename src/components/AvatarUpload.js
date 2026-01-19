@@ -32,20 +32,12 @@ function AvatarUpload({ user, updateUser, profileData }) {
       const response = await uploadAvatar(file);
       console.log('Avatar upload successful:', response);
 
-      // Update user in context with the new avatar
+      // Update user in context
       if (updateUser && response.user) {
-        // Force update by creating new user object
-        const updatedUser = { ...response.user };
-        updateUser(updatedUser);
-        
-        // Store in localStorage to persist
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        updateUser(response.user);
       }
 
       alert('Avatar updated successfully!');
-      
-      // Force re-render by reloading page
-      setTimeout(() => window.location.reload(), 500);
     } catch (error) {
       console.error('Avatar upload error:', error);
       alert(error.message || 'Failed to upload avatar');
@@ -73,17 +65,10 @@ function AvatarUpload({ user, updateUser, profileData }) {
 
       // Update user in context
       if (updateUser && response.user) {
-        const updatedUser = { ...response.user };
-        updateUser(updatedUser);
-        
-        // Store in localStorage to persist
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        updateUser(response.user);
       }
 
       alert('Avatar deleted successfully!');
-      
-      // Force re-render by reloading page
-      setTimeout(() => window.location.reload(), 500);
     } catch (error) {
       console.error('Avatar delete error:', error);
       alert(error.message || 'Failed to delete avatar');
@@ -92,34 +77,14 @@ function AvatarUpload({ user, updateUser, profileData }) {
     }
   };
 
-  // Get the correct avatar URL
-  const getAvatarUrl = () => {
-    const avatarSource = user?.profileImage || profileData?.avatar;
-    
-    if (!avatarSource) {
-      return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
-    }
-    
-    // If it's already a full URL, use it
-    if (avatarSource.startsWith('http')) {
-      return avatarSource;
-    }
-    
-    // If it's a relative path, construct the full URL
-    if (avatarSource.startsWith('/uploads/')) {
-      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5002';
-      // Add timestamp to prevent caching
-      const timestamp = new Date().getTime();
-      return `${API_BASE_URL}${avatarSource}?t=${timestamp}`;
-    }
-    
-    return avatarSource;
-  };
-
   return (
     <div className="profile-avatar-large">
       <img 
-        src={getAvatarUrl()} 
+        src={
+          profileData.avatar 
+            ? (profileData.avatar.startsWith('http') ? profileData.avatar : profileData.avatar)
+            : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+        } 
         alt={profileData.name} 
         onError={(e) => {
           e.target.src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face";
@@ -134,7 +99,7 @@ function AvatarUpload({ user, updateUser, profileData }) {
         >
           {uploadingAvatar ? '⏳' : '📷'}
         </button>
-        {(user?.profileImage || profileData?.avatar) && (
+        {profileData.avatar && (
           <button 
             className="avatar-delete-btn" 
             aria-label="Delete profile photo"

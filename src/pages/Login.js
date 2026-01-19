@@ -47,17 +47,17 @@ function Login() {
     setLoading(true);
     setFormError('');
 
-    // Safety timeout: Reset loading state after 90s max (UI failsafe for Render cold starts)
-    // Render free tier can take 60s+ to wake up
+    // Safety timeout: Reset loading state after 30s max (UI failsafe)
+    // This runs independently of the API timeout to guarantee button re-enables
     const safetyTimeout = setTimeout(() => {
         setLoading((currentLoading) => {
             if (currentLoading) {
-                setFormError('Request timed out. The server might be waking up (can take ~60s). Please try again.');
+                setFormError('Request timed out. Please check your internet connection and try again.');
                 return false;
             }
             return currentLoading;
         });
-    }, 90000); // Increased to 90s
+    }, 30000);
     
     try {
       // Login the user with API
