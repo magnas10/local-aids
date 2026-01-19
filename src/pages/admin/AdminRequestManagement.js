@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getHelpRequests, updateHelpRequestStatus, deleteHelpRequest } from '../../services/api';
+import { getHelpRequests, updateHelpRequestStatus, updateHelpRequestUrgency, deleteHelpRequest } from '../../services/api';
 import './AdminPages.css';
 
 function AdminRequestManagement() {
@@ -63,6 +63,9 @@ function AdminRequestManagement() {
         case 'cancel':
           await updateHelpRequestStatus(requestId, 'cancelled');
           break;
+        case 'urgent':
+          await updateHelpRequestUrgency(requestId, 'urgent');
+          break;
         case 'delete':
           if (window.confirm('Are you sure you want to permanently delete this request? The user will be notified via direct message.')) {
             await deleteHelpRequest(requestId);
@@ -88,9 +91,9 @@ function AdminRequestManagement() {
 
   const getUrgencyColor = (urgency) => {
     switch (urgency) {
-      case 'critical': return '#dc3545';
+      case 'urgent': return '#dc3545';
       case 'high': return '#fd7e14';
-      case 'medium': return '#ffc107';
+      case 'normal': return '#ffc107';
       case 'low': return '#28a745';
       default: return '#6c757d';
     }
@@ -238,9 +241,9 @@ function AdminRequestManagement() {
                 style={{ marginLeft: '10px', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
               >
                 <option value="all">All Urgency</option>
-                <option value="critical">Critical</option>
+                <option value="urgent">Urgent</option>
                 <option value="high">High</option>
-                <option value="medium">Medium</option>
+                <option value="normal">Normal</option>
                 <option value="low">Low</option>
               </select>
             </div>
@@ -388,7 +391,7 @@ function AdminRequestManagement() {
                         </button>
                       )}
 
-                      {request.urgency !== 'critical' && (
+                      {request.urgency !== 'urgent' && (
                         <button
                           onClick={() => handleRequestAction(request.id, 'urgent')}
                           style={{
@@ -458,8 +461,8 @@ function AdminRequestManagement() {
           <div className="stat-card urgent">
             <div className="stat-icon">🚨</div>
             <div className="stat-content">
-              <div className="stat-number">{requests.filter(r => r.urgency === 'critical').length}</div>
-              <div className="stat-label">Critical Requests</div>
+              <div className="stat-number">{requests.filter(r => r.urgency === 'urgent').length}</div>
+              <div className="stat-label">Urgent Requests</div>
             </div>
           </div>
           <div className="stat-card">

@@ -104,10 +104,15 @@ router.get('/', optionalAuth, async (req, res) => {
     if (showAsEvent === 'true') whereClause.showAsEvent = true;
 
     const isAdmin = req.user && req.user.role === 'admin';
+    
+    console.log('GET /api/help-requests - User:', req.user?.email, 'IsAdmin:', isAdmin);
 
     // Non-admin users can only see approved requests
     if (!isAdmin) {
       whereClause.status = 'approved';
+      console.log('Non-admin access: filtering to approved requests only');
+    } else {
+      console.log('Admin access: showing all requests');
     }
 
     let attributes = undefined;
@@ -127,6 +132,8 @@ router.get('/', optionalAuth, async (req, res) => {
       offset,
       limit
     });
+    
+    console.log(`Found ${count} help requests (page ${page}, showing ${helpRequests.length})`);
 
     res.json({
       helpRequests,
@@ -255,7 +262,7 @@ router.get('/:id', optionalAuth, async (req, res) => {
 // @desc    Update help request status
 // @access  Admin only
 router.put('/:id/status', protect, admin, [
-  body('status').isIn(['pending', 'matched', 'in-progress', 'completed', 'cancelled']).withMessage('Valid status is required')
+  body('status').isIn(['pending', 'approved', 'rejected', 'matched', 'in-progress', 'completed', 'cancelled']).withMessage('Valid status is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -349,6 +356,40 @@ router.put('/:id/reject', protect, admin, async (req, res) => {
   } catch (error) {
     console.error('Reject help request error:', error);
     res.status(500).json({ message: 'Server error while rejecting help request' });
+  }
+});
+
+// @route   PUT /api/help-requests/:id/urgency
+// @desc    Update help request urgency
+// @access  Admin only
+router.put('/:id/urgency', protect, admin, [
+  body('urgency').isIn(['low', 'normal', 'high', 'urgent']).withMessage('Valid urgency level is required')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: 'Validation failed',
+        errors: errors.array()
+      });
+    }
+
+    const helpRequest = await HelpRequest.findByPk(req.params.id);
+    
+    if (!helpRequest) {
+      return res.status(404).json({ message: 'Help request not found' });
+    }
+
+    helpRequest.urgency = req.body.urgency;
+    await helpRequest.save();
+
+    res.json({
+      message: 'Help request urgency updated successfully',
+      helpRequest
+    });
+  } catch (error) {
+    console.error('Update help request urgency error:', error);
+    res.status(500).json({ message: 'Server error while updating urgency' });
   }
 });
 

@@ -68,7 +68,7 @@ const adminOrModerator = (req, res, next) => {
 const optionalAuth = async (req, res, next) => {
   let token;
 
-  if (req.headers.auithorization && req.headers.authorization.startsWith('Bearer')) {
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
 
@@ -78,10 +78,14 @@ const optionalAuth = async (req, res, next) => {
       req.user = await User.findByPk(decoded.id, {
         attributes: { exclude: ['password'] }
       });
+      console.log('OptionalAuth: User authenticated -', req.user?.email, 'Role:', req.user?.role);
     } catch (error) {
       // Token invalid, but continue without user
+      console.log('OptionalAuth: Token invalid or expired, continuing as guest');
       req.user = null;
     }
+  } else {
+    console.log('OptionalAuth: No token provided, continuing as guest');
   }
 
   next();

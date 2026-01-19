@@ -473,6 +473,20 @@ export const helpRequestsAPI = {
   },
 
   updateStatus: async (id, status, volunteerId = null) => {
+    // Use dedicated endpoints for approve/reject actions
+    if (status === 'approved') {
+      const response = await authFetch(`/help-requests/${id}/approve`, {
+        method: 'PUT',
+      });
+      return handleResponse(response);
+    }
+    if (status === 'rejected') {
+      const response = await authFetch(`/help-requests/${id}/reject`, {
+        method: 'PUT',
+      });
+      return handleResponse(response);
+    }
+    // Use generic status endpoint for other status updates
     const response = await authFetch(`/help-requests/${id}/status`, {
       method: 'PUT',
       body: JSON.stringify({ status, volunteerId }),
@@ -484,6 +498,14 @@ export const helpRequestsAPI = {
     const response = await authFetch(`/help-requests/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ ...requestData, email }),
+    });
+    return handleResponse(response);
+  },
+
+  updateUrgency: async (id, urgency) => {
+    const response = await authFetch(`/help-requests/${id}/urgency`, {
+      method: 'PUT',
+      body: JSON.stringify({ urgency }),
     });
     return handleResponse(response);
   },
@@ -538,6 +560,7 @@ export const getHelpRequests = helpRequestsAPI.getAll;
 export const getHelpOpportunities = helpRequestsAPI.getOpportunities;
 export const updateHelpRequestStatus = helpRequestsAPI.updateStatus;
 export const updateHelpRequest = helpRequestsAPI.update;
+export const updateHelpRequestUrgency = helpRequestsAPI.updateUrgency;
 export const deleteHelpRequest = helpRequestsAPI.delete;
 
 // ============ NOTIFICATIONS API ============
