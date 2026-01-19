@@ -2,6 +2,9 @@ import React from 'react';
 import './Pages.css';
 
 function Press() {
+  const handleDownload = (kitTitle) => {
+    alert(`Downloading ${kitTitle}...\n\nThis would normally download the media kit. Contact press@localaids.org.au to request press materials.`);
+  };
   const heroImage = {
     url: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1400&h=700&fit=crop',
     alt: 'Professional press and media center'
@@ -179,7 +182,7 @@ function Press() {
                 <div className="kit-icon">{kit.icon}</div>
                 <h3>{kit.title}</h3>
                 <p>{kit.description}</p>
-                <button className="kit-download-btn">Download Resource</button>
+                <button className="kit-download-btn" onClick={() => handleDownload(kit.title)}>Download Resource</button>
               </div>
             ))}
           </div>

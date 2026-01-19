@@ -13,6 +13,10 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
+  const handleSocialLogin = (provider) => {
+    alert(`${provider} login coming soon!\n\nFor now, please use email/password login or create an account.`);
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -161,8 +165,8 @@ function Login() {
           </div>
 
           <div className="social-auth" role="group" aria-label="Social login options">
-            <button className="social-btn google" aria-label="Sign in with Google">Google</button>
-            <button className="social-btn facebook" aria-label="Sign in with Facebook">Facebook</button>
+            <button className="social-btn google" aria-label="Sign in with Google" onClick={() => handleSocialLogin('Google')}>Google</button>
+            <button className="social-btn facebook" aria-label="Sign in with Facebook" onClick={() => handleSocialLogin('Facebook')}>Facebook</button>
           </div>
 
           <p className="auth-footer">

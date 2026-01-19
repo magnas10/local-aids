@@ -291,7 +291,7 @@ function Careers() {
                 </div>
               )}
 
-              <button className="job-toggle-btn">
+              <button className="job-toggle-btn" onClick={() => setSelectedJob(selectedJob?.id === job.id ? null : job)}>
                 {selectedJob?.id === job.id ? '▲ Hide Details' : '▼ View Details'}
               </button>
             </div>

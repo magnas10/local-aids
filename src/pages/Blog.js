@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
 function Blog() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('all');
+  
+  const handleReadMore = (postId) => {
+    alert('Blog post feature coming soon!\n\nThis will navigate to the full blog post. For now, please check our social media for the latest updates.');
+  };
 
   const blogPosts = [
     {

@@ -16,6 +16,10 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
+  const handleSocialSignup = (provider) => {
+    alert(`${provider} signup coming soon!\n\nFor now, please create an account using the signup form above.`);
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -222,8 +226,8 @@ function Signup() {
           </div>
 
           <div className="social-auth" role="group" aria-label="Social signup options">
-            <button className="social-btn google" aria-label="Sign up with Google">Google</button>
-            <button className="social-btn facebook" aria-label="Sign up with Facebook">Facebook</button>
+            <button className="social-btn google" aria-label="Sign up with Google" onClick={() => handleSocialSignup('Google')}>Google</button>
+            <button className="social-btn facebook" aria-label="Sign up with Facebook" onClick={() => handleSocialSignup('Facebook')}>Facebook</button>
           </div>
 
           <p className="auth-footer">
