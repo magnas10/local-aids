@@ -55,23 +55,41 @@ function Signup() {
     
     setLoading(true);
     setFormError('');
+
+    // Safety timeout: Reset loading state after 90s max (UI failsafe for Render cold starts)
+    const safetyTimeout = setTimeout(() => {
+      setLoading((currentLoading) => {
+        if (currentLoading) {
+           setFormError('Request timed out. The server might be waking up (can take ~60s). Please try again.');
+           return false;
+        }
+        return currentLoading;
+      });
+    }, 90000);
     
     // Register the user with API
-    const result = await register({
-      name: formData.fullName,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword
-    });
-    
-    setLoading(false);
-    
-    if (result.success) {
-      // Redirect to home on success
-      navigate('/');
-    } else {
-      setFormError(result.error || 'Registration failed. Please try again.');
+    try {
+      const result = await register({
+        name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword
+      });
+      
+      clearTimeout(safetyTimeout);
+      setLoading(false);
+      
+      if (result.success) {
+        // Redirect to home on success
+        navigate('/');
+      } else {
+        setFormError(result.error || 'Registration failed. Please try again.');
+      }
+    } catch (err) {
+      clearTimeout(safetyTimeout);
+      setLoading(false);
+      setFormError('An unexpected error occurred.');
     }
   };
 

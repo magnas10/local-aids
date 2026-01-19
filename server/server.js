@@ -88,7 +88,9 @@ app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    
+    // Check if origin checks allowed list OR is any localhost port
+    if (allowedOrigins.includes(origin) || /^http:\/\/localhost:\d+$/.test(origin)) {
       return callback(null, true);
     }
     return callback(null, false);

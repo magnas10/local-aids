@@ -7226,8 +7226,8 @@
 }
 
 .donate-hero-btn-primary {
-  background: linear-gradient(135deg, #dc2626, #ea580c);
-  color: white;
+  background: linear-gradient(135deg, var(--gold), var(--gold-strong));
+  color: var(--black);
   border: 3px solid white;
   padding: 16px 44px;
   border-radius: 50px;
@@ -7236,7 +7236,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow:
-    0 10px 30px rgba(220, 38, 38, 0.5),
+    0 10px 30px rgba(212, 160, 23, 0.5),
     0 6px 12px rgba(0, 0, 0, 0.3),
     inset 0 -4px 8px rgba(0, 0, 0, 0.2);
   text-transform: uppercase;
@@ -7246,7 +7246,7 @@
 
 .donate-hero-btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 35px rgba(220, 38, 38, 0.6);
+  box-shadow: 0 12px 35px rgba(212, 160, 23, 0.6);
 }
 
 .donate-hero-stats {

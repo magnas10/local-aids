@@ -1,5 +1,14 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+let API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+
+// FORCE OVERRIDE for local development if environment variables fail
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+   if (!process.env.REACT_APP_API_URL) {
+      // Connect directly to backend port 5002 to avoid proxy issues
+      API_BASE_URL = 'http://localhost:5002/api';
+      console.log('Detected localhost: Using direct backend URL ->', API_BASE_URL);
+   }
+}
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -42,27 +51,29 @@ const authFetch = async (url, options = {}) => {
 
 // Parse response and handle errors
 const handleResponse = async (response) => {
+  let text = '';
+  try {
+    text = await response.text();
+  } catch (readErr) {
+    console.error('Failed to read response body:', readErr);
+    throw new Error('Network response body could not be read. The connection might have been closed prematurely.');
+  }
+
   let data;
   try {
-    data = await response.json();
+    data = text ? JSON.parse(text) : {};
   } catch (err) {
-    // When JSON parsing fails, capture raw response body for debugging
-    console.error('Failed to parse JSON response:', err);
-    console.error('Response status:', response.status);
-    try {
-      const rawText = await response.text();
-      console.error('Raw response body:', rawText);
-      // Surface a more helpful, user-friendly error
-      const snippet = rawText ? rawText.slice(0, 1000) : '<empty body>';
-      if (snippet.trim().startsWith('<')) {
-        // Likely an HTML error page
-        throw new Error('Server returned a non-JSON (HTML) response. Please check server logs (server console) for details.');
+    const isHtml = text.trim().startsWith('<');
+    console.error('Failed to parse JSON response. Status:', response.status);
+    console.error('Raw body:', text.slice(0, 1000)); // Log first 1000 chars
+
+    if (isHtml) {
+      if (text.includes('Proxy Error')) {
+        throw new Error('Proxy API Error: The frontend cannot reach the backend. Please ensure "npm run server" is running on port 5002.');
       }
-      throw new Error(`Server response was not valid JSON. Response body: ${snippet}`);
-    } catch (readErr) {
-      console.error('Failed to read raw response body:', readErr);
-      throw new Error('Server response was not valid JSON and response body could not be read.');
+      throw new Error('Configuration Error: The app received an HTML page instead of JSON. Check your API URL configuration.');
     }
+    throw new Error(`Server response was not valid JSON. Status: ${response.status}. Body: ${text.slice(0, 100)}...`);
   }
   
   console.log('Response data:', data);
@@ -96,18 +107,33 @@ export const authAPI = {
     try {
       console.log('AuthAPI register called with:', userData);
       console.log('API URL:', `${API_BASE_URL}/auth/register`);
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData),
-      });
-      console.log('Register response status:', response.status);
-      return handleResponse(response);
+      
+      const controller = new AbortController();
+      // Increased timeout to 90 seconds to handle Render free tier cold starts
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        console.log('Register response status:', response.status);
+        return handleResponse(response);
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          throw new Error('Request timed out. The server might be waking up from sleep (can take ~60s on free tier). Please try again.');
+        }
+        throw fetchError;
+      }
     } catch (error) {
       console.error('Network error during registration:', error);
       // Only treat as network error if it's actually a fetch/network issue
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to server. Please ensure both frontend (port 3000) and backend (port 5002) are running.');
+        throw new Error('Unable to connect to server. Please ensure backend is running and URL is correct.');
       }
       // Re-throw API errors as-is
       throw error;
@@ -120,8 +146,8 @@ export const authAPI = {
       console.log('API URL:', `${API_BASE_URL}/auth/login`);
       
       const controller = new AbortController();
-      // Increased timeout to 60 seconds to handle Render free tier cold starts
-      const timeoutId = setTimeout(() => controller.abort(), 60000); 
+      // Increased timeout to 90 seconds to handle Render free tier cold starts
+      const timeoutId = setTimeout(() => controller.abort(), 90000); 
 
       try {
         const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -631,7 +657,7 @@ export const getAllNotificationsForAdmin = notificationsAPI.getAllForAdmin;
 export const updateNotification = notificationsAPI.update;
 export const deleteNotification = notificationsAPI.delete;
 
-export default {
+const api = {
   auth: authAPI,
   users: usersAPI,
   events: eventsAPI,
@@ -643,3 +669,5 @@ export default {
   helpRequests: helpRequestsAPI,
   notifications: notificationsAPI,
 };
+
+export default api;

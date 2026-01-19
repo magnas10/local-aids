@@ -116,10 +116,11 @@ function AdminRequestManagement() {
 
   const filteredRequests = requests.filter(request => {
     const matchesStatus = filterStatus === 'all' || request.status === filterStatus;
-    const matchesUrgency = filterUrgency === 'all' || request.priority === filterUrgency;
-    const matchesSearch = (request.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (request.contactName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (request.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesUrgency = filterUrgency === 'all' || request.urgency === filterUrgency;
+    const matchesSearch = (request.helpType || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.fullName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (request.suburb || '').toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesStatus && matchesUrgency && matchesSearch;
   });
@@ -181,23 +182,23 @@ function AdminRequestManagement() {
       )}
 
       {/* Urgent Requests Alert */}
-      {requests.filter(r => (r.priority === 'urgent' || r.priority === 'high') && r.status !== 'completed').length > 0 && (
+      {requests.filter(r => (r.urgency === 'urgent' || r.urgency === 'high') && r.status !== 'completed').length > 0 && (
         <div className="urgent-alerts">
           <h3>🚨 Critical Requests Needing Immediate Attention</h3>
           <div className="alerts-grid">
             {requests
-              .filter(r => (r.priority === 'urgent' || r.priority === 'high') && r.status !== 'completed')
+              .filter(r => (r.urgency === 'urgent' || r.urgency === 'high') && r.status !== 'completed')
               .map(request => (
-                <div key={request._id} className="alert-card priority-critical">
+                <div key={request.id} className="alert-card priority-critical">
                   <div className="alert-content">
                     <div className="alert-type">HIGH PRIORITY REQUEST</div>
-                    <h4>{request.title}</h4>
-                    <p><strong>Requester:</strong> {request.contactName}</p>
-                    <p><strong>Location:</strong> {request.location}</p>
+                    <h4>{request.helpType.toUpperCase()} - {request.suburb}, {request.state}</h4>
+                    <p><strong>Requester:</strong> {request.fullName}</p>
+                    <p><strong>Location:</strong> {request.suburb}, {request.state} {request.postcode}</p>
                     <p><strong>Time:</strong> {new Date(request.createdAt).toLocaleString()}</p>
                     <button
                       className="alert-action-btn"
-                      onClick={() => window.open(`mailto:volunteers@localaid.org?subject=Urgent Help Needed&body=High priority request needs attention: ${request.title}`, '_blank')}
+                      onClick={() => window.open(`mailto:volunteers@localaid.org?subject=Urgent Help Needed&body=High priority request needs attention: ${request.helpType}`, '_blank')}
                     >
                       Send Alert to Volunteers
                     </button>
@@ -283,19 +284,20 @@ function AdminRequestManagement() {
                 <tr key={request.id}>
                   <td>
                     <div>
-                      <div style={{ fontWeight: '600', marginBottom: '5px' }}>{request.title}</div>
+                      <div style={{ fontWeight: '600', marginBottom: '5px' }}>{request.helpType.toUpperCase()}</div>
                       <div style={{ fontSize: '0.9rem', color: '#6c757d', marginBottom: '5px' }}>
                         {request.description}
                       </div>
                       <div style={{ fontSize: '0.8rem', color: '#6c757d' }}>
-                        📍 {request.location} • ⏱️ {request.estimatedTime} • 📂 {request.category}
+                        📍 {request.suburb}, {request.state} {request.postcode} • ⏱️ {request.preferredTime || 'Anytime'} • 📅 {request.preferredDate || 'Flexible'}
                       </div>
                     </div>
                   </td>
                   <td>
                     <div>
-                      <div style={{ fontWeight: '600' }}>{request.requester}</div>
-                      <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>{request.requesterEmail}</div>
+                      <div style={{ fontWeight: '600' }}>{request.fullName}</div>
+                      <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>{request.email}</div>
+                      <div style={{ fontSize: '0.85rem', color: '#6c757d' }}>📞 {request.phone}</div>
                     </div>
                   </td>
                   <td>
@@ -323,9 +325,9 @@ function AdminRequestManagement() {
                     </span>
                   </td>
                   <td>
-                    {request.volunteer ? (
+                    {request.assignedVolunteerId ? (
                       <div style={{ fontWeight: '600', color: '#28a745' }}>
-                        ✅ {request.volunteer}
+                        ✅ Assigned
                       </div>
                     ) : (
                       <div style={{ color: '#dc3545' }}>

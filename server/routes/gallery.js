@@ -43,16 +43,25 @@ router.get('/', optionalAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 50;
     const offset = (page - 1) * limit;
-    const { category, status } = req.query;
+    const { category, status, myPosts } = req.query;
 
     const where = {};
     
+    // If user wants to see their own posts
+    if (myPosts === 'true' && req.user) {
+      where.uploadedBy = req.user.id;
+      // User can see all their own posts regardless of status
+    }
+    // Admin can filter by status or see all
+    else if (req.user && req.user.role === 'admin') {
+      if (status) {
+        where.status = status;
+      }
+      // If no status specified, admin sees all posts (no filter)
+    }
     // Only show approved images to non-admin users
-    if (!req.user || req.user.role !== 'admin') {
+    else {
       where.status = 'approved';
-    } else if (status) {
-      // Admin can filter by status
-      where.status = status;
     }
     
     if (category && category !== 'all') {

@@ -18,6 +18,19 @@ function AdminGallery() {
     fetchGallery();
   }, [filter]);
 
+  // Manage body overflow when modal is open
+  useEffect(() => {
+    if (selectedImage) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedImage]);
+
   const fetchGallery = async () => {
     try {
       setLoading(true);

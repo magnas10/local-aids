@@ -10,6 +10,7 @@ function Gallery() {
   
   const [activeFilter, setActiveFilter] = useState('all');
   const [adminView, setAdminView] = useState('approved'); // approved, pending, rejected
+  const [showMyPosts, setShowMyPosts] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -41,7 +42,20 @@ function Gallery() {
   // Fetch gallery data
   useEffect(() => {
     fetchGallery();
-  }, [activeFilter, adminView, isAdmin]);
+  }, [activeFilter, adminView, isAdmin, showMyPosts]);
+
+  // Manage body overflow when modals are open
+  useEffect(() => {
+    if (selectedImage || showUploadModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [selectedImage, showUploadModal]);
 
   const fetchGallery = async () => {
     try {
@@ -52,8 +66,12 @@ function Gallery() {
         params.category = activeFilter;
       }
       
+      // Show user's own posts (all statuses)
+      if (showMyPosts && isLoggedIn) {
+        params.myPosts = true;
+      }
       // Admin can see different statuses
-      if (isAdmin && adminView !== 'approved') {
+      else if (isAdmin && adminView !== 'approved') {
         params.status = adminView;
       }
       
@@ -290,6 +308,23 @@ function Gallery() {
           </div>
         )}
 
+        {/* My Posts Toggle for logged-in users */}
+        {isLoggedIn && !isAdmin && (
+          <div className="my-posts-toggle">
+            <button 
+              className={`toggle-btn ${showMyPosts ? 'active' : ''}`}
+              onClick={() => setShowMyPosts(!showMyPosts)}
+            >
+              {showMyPosts ? '📋 My Posts' : '🌍 All Posts'}
+            </button>
+            {showMyPosts && (
+              <p className="toggle-info">
+                Showing your posts (including pending & rejected)
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Category Filter */}
         <div className="gallery-filters">
           {categories.map(category => (
@@ -462,7 +497,8 @@ function Gallery() {
               <div className="success-message">
                 <div className="success-icon">✓</div>
                 <p>Image uploaded successfully!</p>
-                <p className="small-text">Your image will be visible after admin approval.</p>
+                <p className="small-text">Your image is pending admin approval.</p>
+                <p className="small-text">Click "My Posts" to view all your uploads.</p>
               </div>
             ) : (
               <form onSubmit={handleUploadSubmit} className="upload-form">
@@ -729,6 +765,46 @@ function Gallery() {
           color: white;
           border-color: #4db3a2;
           box-shadow: 0 4px 12px rgba(77, 179, 162, 0.3);
+        }
+
+        .my-posts-toggle {
+          text-align: center;
+          margin: 30px auto;
+          padding: 20px;
+          background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+          border-radius: 16px;
+          max-width: 500px;
+        }
+
+        .toggle-btn {
+          padding: 14px 32px;
+          border: 2px solid #4db3a2;
+          background: white;
+          border-radius: 50px;
+          cursor: pointer;
+          transition: all 0.3s;
+          font-weight: 600;
+          font-family: 'Outfit', sans-serif;
+          font-size: 1rem;
+          color: #3d8b7a;
+        }
+
+        .toggle-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(77, 179, 162, 0.3);
+        }
+
+        .toggle-btn.active {
+          background: linear-gradient(135deg, #4db3a2 0%, #3d8b7a 100%);
+          color: white;
+          border-color: #4db3a2;
+        }
+
+        .toggle-info {
+          margin-top: 12px;
+          font-size: 0.9rem;
+          color: #64748b;
+          font-weight: 500;
         }
 
         .gallery-filters {
