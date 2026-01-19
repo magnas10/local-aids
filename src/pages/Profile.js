@@ -6,6 +6,8 @@ import AvatarUpload from '../components/AvatarUpload';
 import './Pages.css';
 import './ProfessionalProfile.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+
 function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [showEditModal, setShowEditModal] = useState(false);
