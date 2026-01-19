@@ -91,7 +91,7 @@ function Profile() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ function Profile() {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('/api/users/profile', {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
