@@ -28,11 +28,11 @@ services:
         value: 5000
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: local-aid-frontend
-    plan: free
+    runtime: static
     buildCommand: npm install && npm run build
-    publishPath: ./build
+    staticPublishPath: ./build
     envVars:
       - key: REACT_APP_API_URL
         sync: false
