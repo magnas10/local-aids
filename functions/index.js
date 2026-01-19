@@ -8,6 +8,16 @@ const sequelize = require('./config/database');
 // Load environment variables
 dotenv.config();
 
+// Populate process.env from firebase functions config (for production)
+if (functions.config().env) {
+  if (functions.config().env.database_url) {
+    process.env.DATABASE_URL = functions.config().env.database_url;
+  }
+  if (functions.config().env.jwt_secret) {
+    process.env.JWT_SECRET = functions.config().env.jwt_secret;
+  }
+}
+
 // Import models to set up associations
 const User = require('./models/User');
 const GalleryItem = require('./models/GalleryItem');

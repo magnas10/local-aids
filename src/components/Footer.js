@@ -43,7 +43,8 @@ function Footer() {
     setMessage({ type: '', text: '' });
 
     try {
-      const response = await fetch('/api/newsletter/subscribe', {
+      const baseUrl = process.env.REACT_APP_API_URL || '/api';
+      const response = await fetch(`${baseUrl}/newsletter/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

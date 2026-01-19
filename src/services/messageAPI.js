@@ -1,5 +1,5 @@
 // Message API service functions
-const API_BASE_URL = '/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 // Get auth token
 const getAuthToken = () => localStorage.getItem('token');
