@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getHelpRequests, deleteHelpRequest } from '../services/api';
+import { getHelpRequests, deleteHelpRequest, eventsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Pages.css';
 
 function Events() {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [filters, setFilters] = useState({
     distance: 'all',
     type: 'all',
@@ -311,6 +313,42 @@ function Events() {
     }
   };
 
+  const handleVolunteer = async (event) => {
+    // Check if user is logged in
+    if (!isLoggedIn || !user) {
+      setError('Please log in to volunteer for events');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+      return;
+    }
+
+    // For static events, register through events API
+    if (!event.isHelpRequest) {
+      try {
+        setSuccess('');
+        setError('');
+        await eventsAPI.register(event.id);
+        setSuccess(`Successfully registered for "${event.title}"! You'll receive confirmation via email.`);
+        setTimeout(() => setSuccess(''), 5000);
+      } catch (error) {
+        console.error('Registration error:', error);
+        if (error.message && error.message.includes('Already registered')) {
+          setError('You are already registered for this event.');
+        } else if (error.message && error.message.includes('full')) {
+          setError('Sorry, this event is full.');
+        } else {
+          setError(error.message || 'Failed to register. Please try again.');
+        }
+        setTimeout(() => setError(''), 5000);
+      }
+    } else {
+      // For help requests, show message to contact requester
+      setSuccess('To volunteer for this help request, please contact the requester or use the messaging system.');
+      setTimeout(() => setSuccess(''), 5000);
+    }
+  };
+
   const canDelete = (event) => {
     // Only show delete for help requests
     if (!event.isHelpRequest) return false;
@@ -479,7 +517,10 @@ function Events() {
                     🗑️ Delete
                   </button>
                 )}
-                <button className="volunteer-btn">
+                <button 
+                  className="volunteer-btn"
+                  onClick={() => handleVolunteer(event)}
+                >
                   Volunteer Now
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M5 12h14m-7-7l7 7-7 7"/>

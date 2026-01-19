@@ -208,6 +208,20 @@ export const eventsAPI = {
     return handleResponse(response);
   },
 
+  register: async (id) => {
+    const response = await authFetch(`/events/${id}/register`, {
+      method: 'POST',
+    });
+    return handleResponse(response);
+  },
+
+  unregister: async (id) => {
+    const response = await authFetch(`/events/${id}/register`, {
+      method: 'DELETE',
+    });
+    return handleResponse(response);
+  },
+
   create: async (eventData) => {
     const response = await authFetch('/events', {
       method: 'POST',
