@@ -314,6 +314,8 @@ function Events() {
   };
 
   const handleVolunteer = async (event) => {
+    console.log('Volunteer button clicked!', event);
+    
     // Check if user is logged in
     if (!isLoggedIn || !user) {
       setError('Please log in to volunteer for events');
@@ -519,7 +521,11 @@ function Events() {
                 )}
                 <button 
                   className="volunteer-btn"
-                  onClick={() => handleVolunteer(event)}
+                  onClick={() => {
+                    console.log('Button clicked in DOM!');
+                    handleVolunteer(event);
+                  }}
+                  style={{ cursor: 'pointer', pointerEvents: 'auto' }}
                 >
                   Volunteer Now
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
