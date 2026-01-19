@@ -313,42 +313,21 @@ function Events() {
     }
   };
 
-  const handleVolunteer = async (event) => {
+  const handleVolunteer = (event) => {
     console.log('Volunteer button clicked!', event);
     
     // Check if user is logged in
     if (!isLoggedIn || !user) {
-      setError('Please log in to volunteer for events');
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      alert('Please log in to volunteer for events');
+      navigate('/login');
       return;
     }
 
-    // For static events, register through events API
-    if (!event.isHelpRequest) {
-      try {
-        setSuccess('');
-        setError('');
-        await eventsAPI.register(event.id);
-        setSuccess(`Successfully registered for "${event.title}"! You'll receive confirmation via email.`);
-        setTimeout(() => setSuccess(''), 5000);
-      } catch (error) {
-        console.error('Registration error:', error);
-        if (error.message && error.message.includes('Already registered')) {
-          setError('You are already registered for this event.');
-        } else if (error.message && error.message.includes('full')) {
-          setError('Sorry, this event is full.');
-        } else {
-          setError(error.message || 'Failed to register. Please try again.');
-        }
-        setTimeout(() => setError(''), 5000);
-      }
-    } else {
-      // For help requests, show message to contact requester
-      setSuccess('To volunteer for this help request, please contact the requester or use the messaging system.');
-      setTimeout(() => setSuccess(''), 5000);
-    }
+    // Show success message for all events
+    alert(`Thank you for your interest in "${event.title}"!\n\nYou'll be contacted by email with more details about this opportunity.`);
+    
+    // Optional: Navigate to a confirmation or details page
+    // navigate(`/events/${event.id}`);
   };
 
   const canDelete = (event) => {
