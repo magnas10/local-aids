@@ -73,6 +73,17 @@ function AvatarUpload({ user, updateUser, profileData }) {
       setUploadingAvatar(true);
       console.log('Deleting avatar');
 
+      const response = await deleteAvatar();
+      console.log('Avatar delete successful:', response);
+
+      // Update user in context
+      if (updateUser && response.user) {
+        updateUser(response.user);
+      }
+
+      alert('Avatar deleted successfully!');
+    } catch (error) {
+      console.error('Avatar delete error:', error);
       
       // Check if it's a token expiration error
       if (error.message.includes('token') || error.message.includes('authorized') || error.message.includes('invalid')) {
@@ -85,17 +96,6 @@ function AvatarUpload({ user, updateUser, profileData }) {
       } else {
         alert(error.message || 'Failed to delete avatar');
       }
-      console.log('Avatar delete successful:', response);
-
-      // Update user in context
-      if (updateUser && response.user) {
-        updateUser(response.user);
-      }
-
-      alert('Avatar deleted successfully!');
-    } catch (error) {
-      console.error('Avatar delete error:', error);
-      alert(error.message || 'Failed to delete avatar');
     } finally {
       setUploadingAvatar(false);
     }
