@@ -28,6 +28,16 @@ function Events() {
     experience: '',
     transportMode: 'own'
   });
+  const [createEventModalOpen, setCreateEventModalOpen] = useState(false);
+  const [newEventForm, setNewEventForm] = useState({
+    title: '',
+    description: '',
+    date: '',
+    time: '',
+    location: '',
+    type: 'volunteer',
+    urgency: 'normal'
+  });
 
   // Fetch help requests on component mount
   useEffect(() => {
@@ -363,6 +373,78 @@ function Events() {
     setTimeout(() => setSuccess(''), 5000);
   };
 
+  const openCreateEventModal = () => {
+    if (!isLoggedIn || !user) {
+      alert('Please log in to create a volunteer opportunity');
+      navigate('/login');
+      return;
+    }
+    setCreateEventModalOpen(true);
+  };
+
+  const closeCreateEventModal = () => {
+    setCreateEventModalOpen(false);
+    setNewEventForm({
+      title: '',
+      description: '',
+      date: '',
+      time: '',
+      location: '',
+      type: 'volunteer',
+      urgency: 'normal'
+    });
+  };
+
+  const handleNewEventFormChange = (e) => {
+    setNewEventForm({
+      ...newEventForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCreateEventSubmit = (e) => {
+    e.preventDefault();
+    setSuccess(`Volunteer opportunity "${newEventForm.title}" created successfully!`);
+    closeCreateEventModal();
+    setTimeout(() => setSuccess(''), 5000);
+  };
+
+  const openCreateEventModal = () => {
+    if (!isLoggedIn || !user) {
+      alert('Please log in to create a volunteer opportunity');
+      navigate('/login');
+      return;
+    }
+    setCreateEventModalOpen(true);
+  };
+
+  const closeCreateEventModal = () => {
+    setCreateEventModalOpen(false);
+    setNewEventForm({
+      title: '',
+      description: '',
+      date: '',
+      time: '',
+      location: '',
+      type: 'volunteer',
+      urgency: 'normal'
+    });
+  };
+
+  const handleNewEventFormChange = (e) => {
+    setNewEventForm({
+      ...newEventForm,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCreateEventSubmit = (e) => {
+    e.preventDefault();
+    setSuccess(`Volunteer opportunity "${newEventForm.title}" created successfully!`);
+    closeCreateEventModal();
+    setTimeout(() => setSuccess(''), 5000);
+  };
+
   const canDelete = (event) => {
     // Only show delete for help requests
     if (!event.isHelpRequest) return false;
@@ -383,6 +465,9 @@ function Events() {
       <div className="opportunities-header">
         <h1>Make a Difference <span className="highlight-text">Today</span></h1>
         <p>These are the most recent requests for help in your community. Each opportunity is a chance to positively impact someone's life.</p>
+        <button className="btn btn-primary" onClick={openCreateEventModal} style={{ marginTop: '20px' }}>
+          + Create Volunteer Opportunity
+        </button>
       </div>
 
       <section className="filters-container" aria-label="Filter events">
@@ -588,6 +673,134 @@ function Events() {
         </div>
       )}
 
+      {/* Create Event Modal */}
+      {createEventModalOpen && (
+        <div className="modal-overlay" onClick={closeCreateEventModal}>
+          <div className="modal-content create-event-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeCreateEventModal}>×</button>
+            
+            <div className="modal-header">
+              <h2>Create Volunteer Opportunity</h2>
+              <p>Share a volunteer opportunity with the community</p>
+            </div>
+
+            <form onSubmit={handleCreateEventSubmit} className="create-event-form">
+              <div className="form-group">
+                <label htmlFor="title">Title *</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Help with Food Distribution"
+                  value={newEventForm.title}
+                  onChange={handleNewEventFormChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Describe what help you need and what volunteers will do..."
+                  value={newEventForm.description}
+                  onChange={handleNewEventFormChange}
+                  required
+                  rows="4"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="date">Date *</label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={newEventForm.date}
+                    onChange={handleNewEventFormChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="time">Time *</label>
+                  <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={newEventForm.time}
+                    onChange={handleNewEventFormChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="location">Location *</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="e.g., 123 Main St, Melbourne VIC"
+                  value={newEventForm.location}
+                  onChange={handleNewEventFormChange}
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="type">Type *</label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={newEventForm.type}
+                    onChange={handleNewEventFormChange}
+                    required
+                  >
+                    <option value="volunteer">Volunteer</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="training">Training</option>
+                    <option value="care">Care & Support</option>
+                    <option value="outreach">Outreach</option>
+                    <option value="health">Health Services</option>
+                    <option value="fundraising">Fundraising</option>
+                    <option value="support">Support Group</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="urgency">Priority *</label>
+                  <select
+                    id="urgency"
+                    name="urgency"
+                    value={newEventForm.urgency}
+                    onChange={handleNewEventFormChange}
+                    required
+                  >
+                    <option value="low">Low</option>
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" onClick={closeCreateEventModal} className="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Create Opportunity
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Volunteer Application Modal */}
       {volunteerModalOpen && selectedEvent && (
         <div className="modal-overlay" onClick={closeVolunteerModal}>
@@ -689,6 +902,134 @@ function Events() {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   Submit Application
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Create Event Modal */}
+      {createEventModalOpen && (
+        <div className="modal-overlay" onClick={closeCreateEventModal}>
+          <div className="modal-content create-event-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeCreateEventModal}>×</button>
+            
+            <div className="modal-header">
+              <h2>Create Volunteer Opportunity</h2>
+              <p>Share a volunteer opportunity with the community</p>
+            </div>
+
+            <form onSubmit={handleCreateEventSubmit} className="create-event-form">
+              <div className="form-group">
+                <label htmlFor="title">Title *</label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="e.g., Help with Food Distribution"
+                  value={newEventForm.title}
+                  onChange={handleNewEventFormChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Describe what help you need and what volunteers will do..."
+                  value={newEventForm.description}
+                  onChange={handleNewEventFormChange}
+                  required
+                  rows="4"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="date">Date *</label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={newEventForm.date}
+                    onChange={handleNewEventFormChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="time">Time *</label>
+                  <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={newEventForm.time}
+                    onChange={handleNewEventFormChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="location">Location *</label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="e.g., 123 Main St, Melbourne VIC"
+                  value={newEventForm.location}
+                  onChange={handleNewEventFormChange}
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="type">Type *</label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={newEventForm.type}
+                    onChange={handleNewEventFormChange}
+                    required
+                  >
+                    <option value="volunteer">Volunteer</option>
+                    <option value="workshop">Workshop</option>
+                    <option value="training">Training</option>
+                    <option value="care">Care & Support</option>
+                    <option value="outreach">Outreach</option>
+                    <option value="health">Health Services</option>
+                    <option value="fundraising">Fundraising</option>
+                    <option value="support">Support Group</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="urgency">Priority *</label>
+                  <select
+                    id="urgency"
+                    name="urgency"
+                    value={newEventForm.urgency}
+                    onChange={handleNewEventFormChange}
+                    required
+                  >
+                    <option value="low">Low</option>
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                    <option value="urgent">Urgent</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button type="button" onClick={closeCreateEventModal} className="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Create Opportunity
                 </button>
               </div>
             </form>
