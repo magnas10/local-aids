@@ -409,42 +409,6 @@ function Events() {
     setTimeout(() => setSuccess(''), 5000);
   };
 
-  const openCreateEventModal = () => {
-    if (!isLoggedIn || !user) {
-      alert('Please log in to create a volunteer opportunity');
-      navigate('/login');
-      return;
-    }
-    setCreateEventModalOpen(true);
-  };
-
-  const closeCreateEventModal = () => {
-    setCreateEventModalOpen(false);
-    setNewEventForm({
-      title: '',
-      description: '',
-      date: '',
-      time: '',
-      location: '',
-      type: 'volunteer',
-      urgency: 'normal'
-    });
-  };
-
-  const handleNewEventFormChange = (e) => {
-    setNewEventForm({
-      ...newEventForm,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleCreateEventSubmit = (e) => {
-    e.preventDefault();
-    setSuccess(`Volunteer opportunity "${newEventForm.title}" created successfully!`);
-    closeCreateEventModal();
-    setTimeout(() => setSuccess(''), 5000);
-  };
-
   const canDelete = (event) => {
     // Only show delete for help requests
     if (!event.isHelpRequest) return false;
