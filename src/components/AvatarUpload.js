@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { uploadAvatar, deleteAvatar } from '../services/avatarAPI';
 import './AvatarUpload.css';
 
 function AvatarUpload({ user, updateUser, profileData }) {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   // Handle avatar upload
   const handleAvatarUpload = async (e) => {
@@ -40,7 +42,18 @@ function AvatarUpload({ user, updateUser, profileData }) {
       alert('Avatar updated successfully!');
     } catch (error) {
       console.error('Avatar upload error:', error);
-      alert(error.message || 'Failed to upload avatar');
+      
+      // Check if it's a token expiration error
+      if (error.message.includes('token') || error.message.includes('authorized') || error.message.includes('invalid')) {
+        alert('Your session has expired. Please log in again.');
+        // Clear expired token
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Redirect to login
+        navigate('/login');
+      } else {
+        alert(error.message || 'Failed to upload avatar');
+      }
     } finally {
       setUploadingAvatar(false);
       // Clear the file input
@@ -60,7 +73,18 @@ function AvatarUpload({ user, updateUser, profileData }) {
       setUploadingAvatar(true);
       console.log('Deleting avatar');
 
-      const response = await deleteAvatar();
+      
+      // Check if it's a token expiration error
+      if (error.message.includes('token') || error.message.includes('authorized') || error.message.includes('invalid')) {
+        alert('Your session has expired. Please log in again.');
+        // Clear expired token
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Redirect to login
+        navigate('/login');
+      } else {
+        alert(error.message || 'Failed to delete avatar');
+      }
       console.log('Avatar delete successful:', response);
 
       // Update user in context
